@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "475086150559",
+    "project_id": "be-fit-25f13",
+    "storage_bucket": "be-fit-25f13.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475086150559:android:4354a4b71a6a3148c2bbaa",
+        "android_client_info": {
+          "package_name": "com.example.be_fit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQS40xTReoWeDQDWXF7DqTs35YjRuU83E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
