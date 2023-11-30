@@ -5,6 +5,7 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../models/add_custom_exercise.dart';
 
 class CreateExercise extends StatelessWidget {
 
@@ -39,10 +40,12 @@ class CreateExercise extends StatelessWidget {
                         }
                       else{
                         await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
-                          uId: 'uId',
-                          muscle: muscleName,
-                          name: nameCont.text,
-                          description: descriptionCont.text,
+                          addCustomExerciseModel: AddCustomExerciseModel(
+                              uId: 'gBWhBoVwrGNldxxAKbKk',
+                              muscle: muscleName,
+                              name: nameCont.text,
+                              description: descriptionCont.text,
+                          ),
                           context: context,
                         );
                       }

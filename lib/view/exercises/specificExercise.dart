@@ -1,14 +1,16 @@
-import 'package:be_fit/models/records_model.dart';
-import 'package:be_fit/modules/myText.dart';
+
 import 'package:be_fit/modules/otp_tff.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../models/setRecord_model.dart';
+import '../../modules/myText.dart';
 import '../../view_model/exercises/states.dart';
+import '../../widgets_models/records_model.dart';
 
-class SpecificExercise extends StatefulWidget {
+class SpecificExercise extends StatelessWidget {
 
   String name;
   String image;
@@ -29,11 +31,6 @@ class SpecificExercise extends StatefulWidget {
     this.index,
   });
 
-  @override
-  State<SpecificExercise> createState() => _SpecificExerciseState();
-}
-
-class _SpecificExerciseState extends State<SpecificExercise> {
   final weightCont = TextEditingController();
 
   final repsCont = TextEditingController();
@@ -43,17 +40,6 @@ class _SpecificExerciseState extends State<SpecificExercise> {
   final formKey = GlobalKey<FormState>();
 
   @override
-  void initState() {
-    if(widget.isCustom == false)
-      {
-        print(false);
-      }
-    else{
-      print(true);
-    }
-    super.initState();
-  }
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ExercisesCubit,ExercisesStates>(
       builder: (context, state)
@@ -61,7 +47,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
         return Scaffold(
           key: scaffoldKey,
           appBar: AppBar(
-            title: MyText(text: widget.name,fontWeight: FontWeight.w500,),
+            title: MyText(text: name,fontWeight: FontWeight.w500,),
           ),
           body: state is GetRecordsLoadingState?
           const Center(
@@ -70,9 +56,9 @@ class _SpecificExerciseState extends State<SpecificExercise> {
           ListView(
             children: [
               StreamBuilder(
-                stream: widget.isCustom == false?
-                FirebaseFirestore.instance.collection(widget.muscleName).doc(widget.id).collection('records').where('uId',isEqualTo: 'gBWhBoVwrGNldxxAKbKk').orderBy('dateTime').snapshots() :
-                FirebaseFirestore.instance.collection('users').doc('gBWhBoVwrGNldxxAKbKk').collection('customExercises').doc(widget.id).collection('records').snapshots(),
+                stream: isCustom == false?
+                FirebaseFirestore.instance.collection(muscleName).doc(id).collection('records').where('uId',isEqualTo: 'gBWhBoVwrGNldxxAKbKk').orderBy('dateTime').snapshots() :
+                FirebaseFirestore.instance.collection('users').doc('gBWhBoVwrGNldxxAKbKk').collection('customExercises').doc(id).collection('records').snapshots(),
                 builder: (context, snapshot)
                 {
                   if(snapshot.hasData)
@@ -152,7 +138,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                 child: SizedBox(
                   width: double.infinity,
                   child: Image.network(
-                    widget.image,
+                    image,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -168,7 +154,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: MyText(
-                            text: widget.docs,
+                            text: docs,
                             maxLines: 20,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
@@ -232,14 +218,16 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                 {
                                   if(formKey.currentState!.validate())
                                   {
-                                    if(widget.isCustom == false)
+                                    if(isCustom == false)
                                       {
                                         await ExercisesCubit.getInstance(context).setRecord(
-                                          muscleName: widget.muscleName,
-                                          exerciseId: widget.id,
-                                          weight: weightCont.text,
-                                          reps: repsCont.text,
-                                          uId: 'gBWhBoVwrGNldxxAKbKk',
+                                          recModel: SetRecModel(
+                                              muscleName: muscleName,
+                                              exerciseId: id,
+                                              weight: weightCont.text,
+                                              reps: repsCont.text,
+                                              uId: 'gBWhBoVwrGNldxxAKbKk',
+                                          ),
                                           context: context,
                                         ).then((value)
                                         {
@@ -249,10 +237,17 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                       }
                                     else{
                                       ExercisesCubit.getInstance(context).setRecordForCustomExercise(
-                                          index: widget.index!,
-                                          reps: repsCont.text,
-                                          weight: weightCont.text,
-                                      );
+                                        setCustomExerciseRecModel: SetCustomExerciseRecModel(
+                                            index: index!,
+                                            reps: repsCont.text,
+                                            weight: weightCont.text,
+                                            uId: 'gBWhBoVwrGNldxxAKbKk',
+                                        ),
+                                      ).then((value)
+                                      {
+                                        repsCont.clear();
+                                        weightCont.clear();
+                                      });
                                     }
                                   }
                                 },

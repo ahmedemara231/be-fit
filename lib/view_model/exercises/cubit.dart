@@ -8,7 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jiffy/jiffy.dart';
 
-import '../../model/exercises.dart';
+import '../../models/add_custom_exercise.dart';
+import '../../models/exercises.dart';
+import '../../models/setRecord_model.dart';
+
 
 class ExercisesCubit extends Cubit<ExercisesStates>
 {
@@ -44,56 +47,23 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       emit(GetExercisesErrorState());
     });
   }
-
-  List<Map<String,dynamic>> records = [];
-  Future<void> getAllRecordsForSpecificEx({
-    required String muscleName,
-    required String exerciseId,
-})async
-  {
-    records = [];
-    emit(GetRecordsLoadingState());
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
-        .collection('exercises')
-        .doc(muscleName)
-        .collection(exerciseId)
-        .get()
-        .then((value)
-    {
-      value.docs.forEach((element) {
-        records.add(element.data());
-      });
-      print(records);
-      emit(GetRecordsSuccessState());
-    }).catchError((error)
-    {
-      emit(GetRecordsErrorState());
-    });
-
-  }
   
  Future<void> setRecord({
-   required String muscleName,
-   required String exerciseId,
-   required String weight,
-   required String reps,
-   required String uId,
+   required SetRecModel recModel,
    required context,
 })async
  {
    emit(SetNewRecordLoadingState());
    FirebaseFirestore.instance
-       .collection(muscleName)
-       .doc(exerciseId)
+       .collection(recModel.muscleName)
+       .doc(recModel.exerciseId)
        .collection('records')
        .add(
        {
-         'weight' : weight,
-         'reps' : reps,
+         'weight' : recModel.weight,
+         'reps' : recModel.reps,
          'dateTime' : Jiffy.now().yMMMd,
-         'uId' : uId,
+         'uId' : recModel.uId,
        },
    ).then((value)
    {
@@ -126,10 +96,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
  }
 
  Future<void> uploadPickedImageAndAddCustomExercise({
-   required String uId,
-   required String muscle,
-   required String name,
-   required String description,
+   required AddCustomExerciseModel addCustomExerciseModel,
    required context,
 })async
  {
@@ -145,14 +112,14 @@ class ExercisesCubit extends Cubit<ExercisesStates>
      {
        FirebaseFirestore.instance
            .collection('users')
-           .doc('gBWhBoVwrGNldxxAKbKk')
+           .doc(addCustomExerciseModel.uId)
            .collection('customExercises')
            .add(
            {
-             'muscle' : muscle,
-             'name' : name,
+             'muscle' : addCustomExerciseModel.muscle,
+             'name' : addCustomExerciseModel.name,
              'image' : value,
-             'description' : description,
+             'description' : addCustomExerciseModel.description,
              'isCustom' : true,
            }).then((value)
        {
@@ -208,22 +175,20 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   }
 
   Future<void> setRecordForCustomExercise({
-    required int index,
-    required String reps,
-    required String weight,
+    required SetCustomExerciseRecModel setCustomExerciseRecModel,
 })async
   {
     emit(SetRecordForCustomExerciseLoadingState());
     await FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(setCustomExerciseRecModel.uId)
         .collection('customExercises')
-        .doc(customExercises[index].id)
+        .doc(customExercises[setCustomExerciseRecModel.index].id)
         .collection('records')
         .add(
         {
-          'reps' : reps,
-          'weight' : weight,
+          'reps' : setCustomExerciseRecModel.reps,
+          'weight' : setCustomExerciseRecModel.weight,
           'dateTime' : Jiffy.now().yMMM,
         },
     ).then((value)

@@ -1,10 +1,11 @@
-import 'package:be_fit/modules/myText.dart';
+
 import 'package:be_fit/view/exercises/exercises.dart';
 import 'package:flutter/material.dart';
-import '../../models/exercise_model.dart';
+import '../../modules/myText.dart';
+import '../../widgets_models/exercise_model.dart';
 
 class BodyMuscles extends StatefulWidget {
-   BodyMuscles({super.key});
+   const BodyMuscles({super.key});
 
   @override
   State<BodyMuscles> createState() => _BodyMusclesState();
