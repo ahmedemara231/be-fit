@@ -2,33 +2,62 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class Titles{
+
   static getTitleData() => FlTitlesData(
       show: true,
       bottomTitles: SideTitles(
         showTitles: true,
-        reservedSize: 35,
+        reservedSize: 50,
         getTextStyles: (value) => const TextStyle(
             fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
         getTitles: (value) {
-          switch (value.toInt()){
-            case 0:
-              return '0';
-            case 1:
+              switch (value) {
+                case 10:
+                  return '10';
+                case 20:
+                  return '20';
+                case 30:
+                  return '30';
+                case 40:
+                  return '40';
+                case 50:
+                  return '50';
+                case 100:
+                  return '100';
+                case 120:
+                  return '120';
+                case 150:
+                  return '150';
+                case 200:
+                  return '200';
+                case 250:
+                  return '250';
+                case 300:
+                  return '300';
+                case 350:
+                  return '350';
+                case 400:
+                  return '400';
+              }
               return '';
-            case 2:
-              return '';
-            case 3:
-              return '';
-            case 4:
-              return '';
-            // case 2:
-            //   return '2020';
-            // case 5:
-            //   return '2021';
-            // case 8:
-            //   return '2022';
-          }
-          return '';
+              //   case 5:
+              //     return '5';
+              //   case 10:
+              //     return '10';
+              //   case 15:
+              //     return '15';
+              //   case 20:
+              //     return '20';
+              //   case 25:
+              //     return '25';
+              //
+              // // case 2:
+              // //   return '2020';
+              // // case 5:
+              // //   return '2021';
+              // // case 8:
+              // //   return '2022';
+              // }
         },
         margin: 5,
       ),
@@ -60,20 +89,16 @@ class Titles{
                 return '9';
               case 10:
                 return '10';
-              // case 10000:
-              //   return '10k';
-              // case 20000:
-              //   return '20k';
-              // case 30000:
-              //   return '30k';
-              // case 40000:
-              //   return '40k';
-              // case 50000:
-              //   return '50k';
-              // case 60000:
-              //   return '60k';
-              // case 70000:
-              //   return '70k';
+              case 11:
+                return '11';
+              case 12:
+                return '12';
+              case 13:
+                return '13';
+              case 14:
+                return '14';
+              case 15:
+                return '15';
             }
             return '';
           },

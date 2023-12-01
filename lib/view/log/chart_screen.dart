@@ -1,27 +1,18 @@
+import 'package:be_fit/models/records_model.dart';
 import 'package:be_fit/view_model/log/cubit.dart';
 import 'package:be_fit/view_model/log/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'line_chart.dart';
 
-class ChartScreen extends StatefulWidget {
+class ChartScreen extends StatelessWidget {
 
-  List<double> reps;
+  List<Records> records;
 
   ChartScreen({super.key,
-    required this.reps,
+    required this.records,
   });
 
-  @override
-  State<ChartScreen> createState() => _ChartScreenState();
-}
-
-class _ChartScreenState extends State<ChartScreen> {
-  @override
-  void initState() {
-    print(widget.reps);
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LogCubit,LogStates>(
@@ -37,7 +28,7 @@ class _ChartScreenState extends State<ChartScreen> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: LineChartWidget(
-                reps: widget.reps,
+                records: records,
               ),
             ),
           ),

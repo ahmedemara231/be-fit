@@ -1,3 +1,4 @@
+import 'package:be_fit/models/records_model.dart';
 import 'package:be_fit/view/log/titles.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -8,19 +9,19 @@ class LineChartWidget extends StatelessWidget {
     Colors.orangeAccent
   ];
 
-  List<double> reps;
+  List<Records> records;
 
   LineChartWidget({super.key,
-    required this.reps,
+    required this.records,
   });
   @override
   Widget build(BuildContext context) {
     return LineChart(
         LineChartData(
-            minX: 0,
-            maxX: 1000,
+            minX: 5,
+            maxX: 400,
             minY: 1,
-            maxY: 50,
+            maxY: 15,
             titlesData: Titles.getTitleData(),
             gridData: FlGridData(
               show: true,
@@ -36,25 +37,15 @@ class LineChartWidget extends StatelessWidget {
                 border: Border.all(color: Colors.grey[800]!, width: 2)
             ),
             lineBarsData: List.generate(
-                reps.length, (index) => LineChartBarData(
+                records.length, (index) => LineChartBarData(
               show: true,
               spots: [
-                // المفروض كل spot ازود 1 على محور x
                 FlSpot(
-                    (index + 1).toDouble(),
-                    reps[index],
+                  records[index].weight,
+                  records[index].reps,
                 ),
-                // FlSpot(1, 3),
-                // FlSpot(2, 2),
-                // FlSpot(3, 6),
-                // FlSpot(4, 4),
-                // FlSpot(0,30000),
-                // FlSpot(2.5,10000),
-                // FlSpot(4,50000),
-                // FlSpot(6,43000),
-                // FlSpot(8,40000),
-                // FlSpot(9,30000),
-                // FlSpot(11,38000),
+                // FlSpot(50, 3),
+                // FlSpot(200, 2),
               ],
               // isCurved: true,
               colors: gradiantColors,

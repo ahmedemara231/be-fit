@@ -9,10 +9,11 @@ class Log extends StatefulWidget {
 
   String exerciseId;
   String muscleName;
-
+  bool isCustom;
    Log({super.key,
     required this.exerciseId,
      required this.muscleName,
+     required this.isCustom,
   });
 
   @override
@@ -23,13 +24,19 @@ class _LogState extends State<Log> {
 
   @override
   void initState() {
-    LogCubit.getInstance(context).sendRecordsToMakeChartForSpeExer(
-        exerciseId: widget.exerciseId,
-    );
-    LogCubit.getInstance(context).sendRecordsToMakeChart(
+    if(widget.isCustom == true)
+      {
+        LogCubit.getInstance(context).sendRecordsToMakeChartForSpeExer(
+          exerciseId: widget.exerciseId,
+        );
+      }
+    else{
+      LogCubit.getInstance(context).sendRecordsToMakeChart(
         muscleName: widget.muscleName,
         exerciseId: widget.exerciseId,
-    );
+      );
+    }
+
     super.initState();
   }
   @override
@@ -42,7 +49,9 @@ class _LogState extends State<Log> {
             title: MyText(text: 'Statistics'),
           ),
           body: ChartScreen(
-            reps: LogCubit.getInstance(context).recordsRepsForExercise,
+            records: widget.isCustom?
+                LogCubit.getInstance(context).recordsRepsForSpecExercise :
+                LogCubit.getInstance(context).recordsRepsForExercise,
           ),
         );
       },

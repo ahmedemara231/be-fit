@@ -1,13 +1,10 @@
-import 'package:be_fit/view/log/chart_screen.dart';
 import 'package:be_fit/view/plans/plans.dart';
 import 'package:be_fit/view/profile/profile.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'exercises/bodyMuscles.dart';
-import 'log/Log.dart';
 
 class BottomNavBar extends StatelessWidget {
     BottomNavBar({super.key});
@@ -16,7 +13,6 @@ class BottomNavBar extends StatelessWidget {
    [
      BodyMuscles(),
      const Plans(),
-     // const Log(),
      const Profile(),
   ];
   @override
@@ -26,17 +22,24 @@ class BottomNavBar extends StatelessWidget {
       {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.red[400],
             selectedIconTheme: const IconThemeData(
-              color: Colors.red,
+              color: Colors.white,
               size: 30,
             ),
-            // selectedLabelStyle: const TextStyle(
-            //   color: Colors.red,
-            // ),
             unselectedIconTheme: const IconThemeData(
-              color: Colors.grey,
+              color: Colors.white70,
               size: 30,
+            ),
+            selectedLabelStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+            ),
+            unselectedLabelStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.white
             ),
             onTap: (newTap)
             {
@@ -52,9 +55,6 @@ class BottomNavBar extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Icon(Icons.notes),
                   label: 'Plans'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.timelapse),
-                  label: 'Log'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.person),
                   label: 'Profile'),

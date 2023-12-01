@@ -59,6 +59,7 @@ class SpecificExercise extends StatelessWidget {
                           builder: (context) => Log(
                             exerciseId: id,
                             muscleName: muscleName,
+                            isCustom: isCustom,
                           ),
                         ),
                     );

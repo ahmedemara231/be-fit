@@ -1,3 +1,4 @@
+import 'package:be_fit/models/records_model.dart';
 import 'package:be_fit/view_model/log/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,12 +8,12 @@ class LogCubit extends Cubit<LogStates>
   LogCubit(super.initialState);
   static LogCubit getInstance(context) => BlocProvider.of(context);
 
-  List<double> recordsRepsForSpecExercise = [];
+  List<Records> recordsRepsForSpecExercise = [];
   Future<void> sendRecordsToMakeChartForSpeExer({
     required String exerciseId,
 })async
   {
-    recordsRepsForExercise = [];
+    recordsRepsForSpecExercise = [];
     emit(GetRecordsRepsForSpecificExerciseLoadingState());
     await FirebaseFirestore.instance
         .collection('users')
@@ -24,10 +25,15 @@ class LogCubit extends Cubit<LogStates>
         .then((value)
     {
       value.docs.forEach((element) {
-        recordsRepsForExercise.add(element.data()['reps']);
+        recordsRepsForSpecExercise.add(
+            Records(
+                reps: element.data()['reps'],
+                weight: element.data()['weight'],
+            ),
+        );
       });
       emit(GetRecordsRepsForSpecificExerciseSuccessState());
-      print(recordsRepsForExercise);
+      print('spe reps : $recordsRepsForSpecExercise');
 
     }).catchError((error)
     {
@@ -35,7 +41,7 @@ class LogCubit extends Cubit<LogStates>
     });
   }
 
-  List<double> recordsRepsForExercise = [];
+  List<Records> recordsRepsForExercise = [];
   Future<void> sendRecordsToMakeChart({
     required String muscleName,
     required String exerciseId,
@@ -51,7 +57,12 @@ class LogCubit extends Cubit<LogStates>
         .then((value)
     {
       value.docs.forEach((element) {
-        recordsRepsForExercise.add(element.data()['reps']);
+        recordsRepsForExercise.add(
+            Records(
+                reps: element.data()['reps'],
+                weight: element.data()['weight'],
+            ),
+        );
       });
       print(recordsRepsForExercise);
       emit(GetRepsForExerciseSuccessState());
