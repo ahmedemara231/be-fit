@@ -1,6 +1,7 @@
 
 import 'package:be_fit/modules/otp_tff.dart';
 import 'package:be_fit/modules/snackBar.dart';
+import 'package:be_fit/view/log/Log.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,22 @@ class SpecificExercise extends StatelessWidget {
           key: scaffoldKey,
           appBar: AppBar(
             title: MyText(text: name,fontWeight: FontWeight.w500,),
+            actions: [
+              TextButton(
+                  onPressed: () 
+                  {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Log(
+                            exerciseId: id,
+                            muscleName: muscleName,
+                          ),
+                        ),
+                    );
+                  },
+                  child: MyText(text: 'Statistics',fontSize: 18,fontWeight: FontWeight.w500,))
+            ],
           ),
           body: state is GetRecordsLoadingState?
           const Center(
@@ -58,7 +75,7 @@ class SpecificExercise extends StatelessWidget {
               StreamBuilder(
                 stream: isCustom == false?
                 FirebaseFirestore.instance.collection(muscleName).doc(id).collection('records').where('uId',isEqualTo: 'gBWhBoVwrGNldxxAKbKk').orderBy('dateTime').snapshots() :
-                FirebaseFirestore.instance.collection('users').doc('gBWhBoVwrGNldxxAKbKk').collection('customExercises').doc(id).collection('records').snapshots(),
+                FirebaseFirestore.instance.collection('users').doc('gBWhBoVwrGNldxxAKbKk').collection('customExercises').doc(id).collection('records').orderBy('dateTime').snapshots(),
                 builder: (context, snapshot)
                 {
                   if(snapshot.hasData)
@@ -95,7 +112,7 @@ class SpecificExercise extends StatelessWidget {
                                     Column(
                                       children: [
                                         MyText(
-                                          text: snapshot.data?.docs[index].data()['weight'],
+                                          text: '${snapshot.data?.docs[index].data()['weight']}',
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -105,7 +122,7 @@ class SpecificExercise extends StatelessWidget {
                                     Column(
                                       children: [
                                         MyText(
-                                          text: snapshot.data?.docs[index].data()['reps'],
+                                          text: '${snapshot.data?.docs[index].data()['reps']}',
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
                                         ),

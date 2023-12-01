@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,6 +54,9 @@ class ExercisesCubit extends Cubit<ExercisesStates>
    required context,
 })async
  {
+   double? reps = double.tryParse(recModel.reps);
+   double? weight = double.tryParse(recModel.weight);
+
    emit(SetNewRecordLoadingState());
    FirebaseFirestore.instance
        .collection(recModel.muscleName)
@@ -60,8 +64,8 @@ class ExercisesCubit extends Cubit<ExercisesStates>
        .collection('records')
        .add(
        {
-         'weight' : recModel.weight,
-         'reps' : recModel.reps,
+         'weight' : weight,
+         'reps' : reps,
          'dateTime' : Jiffy.now().yMMMd,
          'uId' : recModel.uId,
        },
@@ -179,6 +183,10 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 })async
   {
     emit(SetRecordForCustomExerciseLoadingState());
+
+    double? reps = double.tryParse(setCustomExerciseRecModel.reps);
+    double? weight = double.tryParse(setCustomExerciseRecModel.weight);
+
     await FirebaseFirestore.instance
         .collection('users')
         .doc(setCustomExerciseRecModel.uId)
@@ -187,8 +195,8 @@ class ExercisesCubit extends Cubit<ExercisesStates>
         .collection('records')
         .add(
         {
-          'reps' : setCustomExerciseRecModel.reps,
-          'weight' : setCustomExerciseRecModel.weight,
+          'reps' : reps,
+          'weight' : weight,
           'dateTime' : Jiffy.now().yMMM,
         },
     ).then((value)

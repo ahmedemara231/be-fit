@@ -1,4 +1,4 @@
-import 'package:be_fit/view/log/log.dart';
+import 'package:be_fit/view/log/chart_screen.dart';
 import 'package:be_fit/view/plans/plans.dart';
 import 'package:be_fit/view/profile/profile.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'exercises/bodyMuscles.dart';
+import 'log/Log.dart';
 
 class BottomNavBar extends StatelessWidget {
     BottomNavBar({super.key});
@@ -15,7 +16,7 @@ class BottomNavBar extends StatelessWidget {
    [
      BodyMuscles(),
      const Plans(),
-     const Log(),
+     // const Log(),
      const Profile(),
   ];
   @override
