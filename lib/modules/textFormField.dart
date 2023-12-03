@@ -11,10 +11,12 @@ class TFF extends StatelessWidget {
   bool obscureText;
   var border;
   var enabledBorder;
+  TextInputType? keyboardType;
   TextEditingController controller;
   void Function(String)? onChanged;
   void Function()? onPressed;
   void Function(String)? onFieldSubmitted;
+  String? Function(String?)? validator;
 
   TFF({super.key,
     required this.obscureText,
@@ -26,19 +28,22 @@ class TFF extends StatelessWidget {
     this.prefixIcon,
     this.prefixIconColor,
     this.suffixIcon,
+    this.keyboardType,
     this.onPressed,
     this.onChanged,
     this.onFieldSubmitted,
     this.border,
     this.enabledBorder,
+    this.validator,
    });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
       obscureText: obscureText,
       controller: controller,
-      validator: (value)
+      validator: validator?? (value)
       {
         if(value!.isEmpty)
           {

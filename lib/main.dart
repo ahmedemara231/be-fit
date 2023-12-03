@@ -6,6 +6,8 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:be_fit/view_model/log/cubit.dart';
 import 'package:be_fit/view_model/log/states.dart';
+import 'package:be_fit/view_model/plans/cubit.dart';
+import 'package:be_fit/view_model/plans/states.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +39,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => LogCubit(LogInitialState()),
+        ),
+        BlocProvider(
+          create: (context) => PlansCubit(PlansInitialState()),
         ),
       ],
       child: MaterialApp(
