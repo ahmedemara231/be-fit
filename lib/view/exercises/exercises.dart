@@ -1,5 +1,5 @@
 import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/view/exercises/specificExercise.dart';
+import 'package:be_fit/view/exercises/specificExercise/specificExercise.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
@@ -80,6 +80,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                   docs: ExercisesCubit.getInstance(context).exercises[index].docs,
                                   name: ExercisesCubit.getInstance(context).exercises[index].name,
                                   image: ExercisesCubit.getInstance(context).exercises[index].image,
+                                  videoUrl: ExercisesCubit.getInstance(context).exercises[index].video,
                                   isCustom: ExercisesCubit.getInstance(context).exercises[index].isCustom,
                                 ),
                               ),
@@ -142,6 +143,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => SpecificExercise(
+                                        videoUrl: ExercisesCubit.getInstance(context).customExercises[index].video,
                                         image: ExercisesCubit.getInstance(context).customExercises[index].image,
                                         name: ExercisesCubit.getInstance(context).customExercises[index].name,
                                         docs: ExercisesCubit.getInstance(context).customExercises[index].docs,

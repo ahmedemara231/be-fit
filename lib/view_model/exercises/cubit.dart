@@ -34,6 +34,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       value.docs.forEach((element) {
         exercises.add(
             Exercises(
+                video: element.data()['video']??'',
                 name: element.data()['name'],
                 image: element.data()['image'],
                 docs: element.data()['docs'],
@@ -161,6 +162,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       value.docs.forEach((element) {
         customExercises.add(
           CustomExercises(
+            video: element.data()['video']?? '',
             name: element.data()['name'],
             image: element.data()['image'],
             docs: element.data()['description'],

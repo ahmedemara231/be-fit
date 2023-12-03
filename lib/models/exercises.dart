@@ -4,6 +4,7 @@ class Exercises
   String name;
   String docs;
   String id;
+  String video;
   bool isCustom;
 
   Exercises({
@@ -12,6 +13,7 @@ class Exercises
     required this.docs,
     required this.id,
     required this.isCustom,
+    required this.video,
 });
 }
 
@@ -23,5 +25,6 @@ class CustomExercises extends Exercises
     required super.docs,
     required super.id,
     required super.isCustom,
+    required super.video,
   });
 }
