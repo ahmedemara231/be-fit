@@ -169,52 +169,83 @@ class _ChooseExercisesState extends State<ChooseExercises> {
           //     ),
           //   ],
           // ),
-          ListView.separated(
-              itemBuilder: (context, index) => Card(
-                color: Colors.red[400],
-                child: ExpansionTile(
-                  title: MyText(text: muscles[index]),
-                  children: List.generate(
-                      PlansCubit.getInstance(context).musclesForPlan[index].length,
-                          (i) => ListTile(
-                            leading: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.network(PlansCubit.getInstance(context).musclesForPlan[index][i].image),
-                            ),
-                            title: MyText(
-                                text: PlansCubit.getInstance(context).musclesForPlan[index][i].name,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            trailing: Checkbox(
-                              // onChanged: (value) {},
-                              value: PlansCubit.getInstance(context).musclesCheckBoxes[index][i],
-                              onChanged: (value)
-                              {
-                                PlansCubit.getInstance(context).changeCheckBoxValue(
-                                    value!,
-                                    index,
-                                    i,
-                                );
-                                if(value == true)
-                                {
-                                  PlansCubit.getInstance(context).addToPlanExercises(
-                                    PlansCubit.getInstance(context).musclesForPlan[index][i],
-                                  );
-                                }
-                                else{
-                                  PlansCubit.getInstance(context).removeFromPlanExercises(
-                                    PlansCubit.getInstance(context).musclesForPlan[index][i],
-                                  );
-                                }
-                              },
-                            ),
-                          ),
+          Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                    itemBuilder: (context, index) => Card(
+                      color: Colors.red[400],
+                      child: ExpansionTile(
+                        title: MyText(text: muscles[index]),
+                        children: List.generate(
+                            PlansCubit.getInstance(context).musclesForPlan[index].length,
+                                (i) => ListTile(
+                                  leading: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.network(PlansCubit.getInstance(context).musclesForPlan[index][i].image),
+                                  ),
+                                  title: MyText(
+                                      text: PlansCubit.getInstance(context).musclesForPlan[index][i].name,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  trailing: Checkbox(
+                                    // onChanged: (value) {},
+                                    value: PlansCubit.getInstance(context).musclesCheckBoxes[index][i],
+                                    onChanged: (value)
+                                    {
+                                      PlansCubit.getInstance(context).changeCheckBoxValue(
+                                          value!,
+                                          index,
+                                          i,
+                                      );
+                                      if(value == true)
+                                      {
+                                        PlansCubit.getInstance(context).addToPlanExercises(
+                                          PlansCubit.getInstance(context).musclesForPlan[index][i],
+                                        );
+                                      }
+                                      else{
+                                        PlansCubit.getInstance(context).removeFromPlanExercises(
+                                          PlansCubit.getInstance(context).musclesForPlan[index][i],
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
+                    separatorBuilder: (context, index) => const SizedBox(height: 16,),
+                    itemCount: PlansCubit.getInstance(context).musclesForPlan.length
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red[400]
+                  ),
+                  onPressed: PlansCubit.getInstance(context).planExercises.isEmpty?
+                      null : ()
+                  {
+                    PlansCubit.getInstance(context).putExerciseList(
+                        index: widget.day,
+                        exercises: PlansCubit.getInstance(context).planExercises
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
+                    child: MyText(
+                      text: 'Save',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
               ),
-              separatorBuilder: (context, index) => const SizedBox(height: 16,),
-              itemCount: PlansCubit.getInstance(context).musclesForPlan.length
+            ],
           ),
         );
       },

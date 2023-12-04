@@ -52,7 +52,7 @@ class PlansCubit extends Cubit<PlansStates>
   List<List<Exercises>> musclesForPlan = [];
   List<List<bool?>> musclesCheckBoxes = [];
 
-  Future<void> getMuscles()async
+  Future<void> getMuscles()async // for ui
   {
     chestExercisesForPlan = [];
     chestCheckBoxes= [];
@@ -138,12 +138,7 @@ class PlansCubit extends Cubit<PlansStates>
 
   }
 
-  void changeCheckBoxValue(bool? newValue, int index, int i)
-  {
-    musclesCheckBoxes[index][i] = newValue;
-    print(musclesCheckBoxes);
-    emit(ChangeCheckBoxValue());
-  }
+
 
 
 
@@ -153,8 +148,7 @@ class PlansCubit extends Cubit<PlansStates>
 
 
   // كريت عدد من الlist على حسب عدد الايام
-  // هتخش اليوم الاول بالlist 1 وهكذا
-
+  // بتجيب planExercises list تملاها وبعدين تحطها ف الday list بتاعتها
   Map<String,List<Exercises>> lists = {};
   void makeListForEachDay(int? numberOfDays)
   {
@@ -179,6 +173,13 @@ class PlansCubit extends Cubit<PlansStates>
     planExercises.remove(exercise);
     print(planExercises);
     emit(RemoveFromExercisePlanList());
+  }
+
+  void changeCheckBoxValue(bool? newValue, int index, int i)
+  {
+    musclesCheckBoxes[index][i] = newValue;
+    print(musclesCheckBoxes);
+    emit(ChangeCheckBoxValue());
   }
 
   void putExerciseList({
