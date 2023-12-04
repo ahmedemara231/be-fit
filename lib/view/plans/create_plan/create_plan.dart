@@ -1,7 +1,7 @@
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/modules/textFormField.dart';
-import 'package:be_fit/view/plans/complete_creating_plan.dart';
+import 'package:be_fit/view/plans/create_plan/continue_planning.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -69,21 +69,11 @@ class CreatePlan extends StatelessWidget {
                         ),
                       );
                     }
-                    // await PlansCubit.getInstance(context).createNewPlan(
-                    //     workoutName: workOutNameCont.text,
-                    //     numberOfDays: daysNumberCont.text,
-                    //     uId: '',
-                    // ).then((value)
-                    // {
-                    //   workOutNameCont.clear();
-                    //   daysNumberCont.clear();
-                    //   Navigator.pop(context);
-                    // });
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
                     child: MyText(
-                      text: 'Save',
+                      text: 'Make a Plan',
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
                       fontSize: 20,

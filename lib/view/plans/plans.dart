@@ -17,7 +17,7 @@ class _PlansState extends State<Plans> {
 
   @override
   void initState() {
-    PlansCubit.getInstance(context).getAllPlans();
+    // PlansCubit.getInstance(context).getAllPlans();
     super.initState();
   }
   @override
@@ -57,27 +57,7 @@ class _PlansState extends State<Plans> {
                   child: CircularProgressIndicator(),
                 ),
               if(state is! GetAllPlansLoadingState)
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListView.separated(
-                      itemBuilder: (context, index) => InkWell(
-                        onTap: () {},
-                        child: ListTile(
-                          title: MyText(
-                            text: PlansCubit.getInstance(context).plans[index]['workoutName'],
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
-                          ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                        ),
-                      ),
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 16,
-                      ),
-                      itemCount: PlansCubit.getInstance(context).plans.length),
-                  ),
-                )
+               MyText(text: '')
             ],
           ),
         );
