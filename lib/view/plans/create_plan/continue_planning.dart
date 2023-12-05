@@ -1,7 +1,10 @@
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view/bottomNavBar.dart';
 import 'package:be_fit/view/plans/create_plan/ChooseFromExercises.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
+import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'choose_exercises.dart';
 
@@ -27,77 +30,97 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.separated(
-              itemBuilder: (context, index) => Column(
-                children: [
-                  Card(
-                    color: Colors.red[400],
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        leading: MyText(
-                          text: 'Day ${index + 1}',
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+    return BlocBuilder<PlansCubit,PlansStates>(
+      builder: (context, state)
+      {
+        return Scaffold(
+          appBar: AppBar(),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      Card(
+                        color: Colors.red[400],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                              leading: MyText(
+                                text: 'Day ${index + 1}',
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              trailing: IconButton(
+                                onPressed: ()
+                                {
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => ChooseFromExercises(
+                                  //         day: index + 1,
+                                  //       ),
+                                  //     ),
+                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ChooseExercises(
+                                        day: index + 1,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.add),
+                              )
+                          ),
                         ),
-                        trailing: IconButton(
-                            onPressed: ()
-                            {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) => ChooseFromExercises(
-                              //         day: index + 1,
-                              //       ),
-                              //     ),
-                              // );
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ChooseExercises(
-                                    day: index + 1,
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.add),
-                        )
                       ),
+                    ],
+                  ),
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 16,
+                  ),
+                  itemCount: widget.daysNumber!,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red[400]
+                  ),
+                  onPressed: state is CreateNewPlanLoadingState?
+                  null : () async
+                  {
+                    await PlansCubit.getInstance(context).createNewPlan(
+                      daysNumber: widget.daysNumber,
+                      name: widget.name,
+                    ).then((value)
+                    {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomNavBar(),
+                          ), (route) => false,
+                      );
+                    });
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
+                    child: MyText(
+                      text: 'Create Plan',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20,
                     ),
                   ),
-                ],
-              ),
-              separatorBuilder: (context, index) => const SizedBox(
-                  height: 16,
-                ),
-              itemCount: widget.daysNumber!,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[400]
-              ),
-              onPressed: () async {},
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
-                child: MyText(
-                  text: 'Create Plan',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

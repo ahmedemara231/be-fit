@@ -190,13 +190,15 @@ class PlansCubit extends Cubit<PlansStates>
     lists['list$index'] = exercises;
     planExercises = [];
     print(lists);
+    emit(PutExercisesInList());
   }
-  
+
   Future<void> createNewPlan({
-    required double daysNumber,
+    required int? daysNumber,
     required String name,
 })async
   {
+    emit(CreateNewPlanLoadingState());
     await FirebaseFirestore.instance
         .collection('users')
         .doc('gBWhBoVwrGNldxxAKbKk')
@@ -208,29 +210,40 @@ class PlansCubit extends Cubit<PlansStates>
         },
     ).then((value)
     {
+      List<String> listsKeys = lists.keys.toList();
       print('half made');
 
-      for(int i = 1; i < daysNumber; i++)
+      for(int index = 0; index <= ( daysNumber! - 1 ); index++)
         {
+          print(index);
+
           FirebaseFirestore.instance
-              .collection('user')
+              .collection('users')
               .doc('gBWhBoVwrGNldxxAKbKk')
               .collection('plans')
-              .doc(value.id)
-              .collection('day$i')
-              .add(
-              {
-                'docs' : lists['list$i']?[0].docs,
-                'image' : lists['list$i']?[0].image,
-                'name' :  lists['list$i']?[0].name,
-                'video' : lists['list$i']?[0].video,
-              },
-          ).then((value)
-          {
-            print('added');
+              .doc(value.id)    // list1
+              .collection(listsKeys[index]);// على حسب عدد الايام هيتفتح collections
+
+          lists[listsKeys[index]]!.forEach((element) {
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc('gBWhBoVwrGNldxxAKbKk')
+                .collection('plans')
+                .doc(value.id)
+                .collection(listsKeys[index])
+                .add(
+                {
+                  'name' : element.name,
+                  'image' : element.image,
+                  'docs' : element.docs,
+                },
+            );
           });
         }
+      emit(CreateNewPlanSuccessState());
+    }).catchError((error)
+    {
+      emit(CreateNewPlanErrorState());
     });
   }
-
 }
