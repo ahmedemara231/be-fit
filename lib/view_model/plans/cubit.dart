@@ -140,13 +140,6 @@ class PlansCubit extends Cubit<PlansStates>
 
 
 
-
-
-
-
-
-
-
   // كريت عدد من الlist على حسب عدد الايام
   // بتجيب planExercises list تملاها وبعدين تحطها ف الday list بتاعتها
   Map<String,List<Exercises>> lists = {};
@@ -246,4 +239,83 @@ class PlansCubit extends Cubit<PlansStates>
       emit(CreateNewPlanErrorState());
     });
   }
+
+  Map<String,List<Exercises>> plan = {};
+  Map<String,dynamic> allPlans = {};
+  List<int> days = [1,2,3,4,5,6];
+
+  Future<void> getAllPlans()async
+  {
+    plan = {};
+    allPlans = {};
+
+    CollectionReference plansCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc('gBWhBoVwrGNldxxAKbKk')
+        .collection('plans');
+
+    plansCollection
+        .get()
+        .then((value)
+    {
+      for(int index = 0; index <= (value.docs.length - 1); index++)
+        {
+          print(value.docs[index].id);
+          for(int i = 1; i <= days.length; i++)
+          {       // plan1
+            value.docs[index].reference.collection('list$i').get()
+                .then((value)
+            {
+              plan['list$i'] = [];
+              value.docs.forEach((element) {
+                plan['list$i']?.add(Exercises(name: element.data()['name'], image: element.data()['image'], docs: element.data()['docs'], id: element.id, isCustom: false, video: ''));
+                print(plan);
+              });
+              allPlans['plan$index'] = plan;
+            });
+          }
+        }
+
+    });
+  }
+  // Map<String,List<Exercises>> allPlans = {};
+  // List<int> days = [1,2,3,4,5,6];
+  // Future<void> getAllPlans()async
+  // {
+  //   allPlans = {};
+  //   CollectionReference plansCollection = FirebaseFirestore.instance
+  //   .collection('users')
+  //   .doc('gBWhBoVwrGNldxxAKbKk')
+  //   .collection('plans');
+  //
+  //   plansCollection
+  //   .get()
+  //   .then((value)
+  //   {
+  //      //  هجيب كل ال plans منهم هعمل عليهم loop
+  //     value.docs.forEach((element) {
+  //       for(int i = 1; i <= days.length; i++)
+  //         {
+  //           element.reference.collection('list$i')
+  //               .get()
+  //               .then((value)
+  //           {
+  //             allPlans['list$i'] = [];
+  //             value.docs.forEach((element) {
+  //               allPlans['list$i']?.add(
+  //                   Exercises(
+  //                       name: element.data()['name'],
+  //                       image: element.data()['image'],
+  //                       docs: element.data()['docs'],
+  //                       id: element.id,
+  //                       isCustom: false,
+  //                       video: '',
+  //                   ),
+  //               );
+  //             });
+  //           });
+  //         }
+  //     });
+  //   });
+  // }
 }

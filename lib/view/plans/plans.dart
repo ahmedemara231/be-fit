@@ -17,7 +17,7 @@ class _PlansState extends State<Plans> {
 
   @override
   void initState() {
-    // PlansCubit.getInstance(context).getAllPlans();
+    PlansCubit.getInstance(context).getAllPlans();
     super.initState();
   }
   @override
@@ -56,8 +56,7 @@ class _PlansState extends State<Plans> {
                 const Center(
                   child: CircularProgressIndicator(),
                 ),
-              if(state is! GetAllPlansLoadingState)
-               MyText(text: '')
+              MyText(text: '${PlansCubit.getInstance(context).allPlans}',fontSize: 20,maxLines: 20,),
             ],
           ),
         );
