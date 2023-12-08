@@ -30,4 +30,11 @@ class CreateNewPlanSuccessState extends PlansStates{}
 
 class CreateNewPlanErrorState extends PlansStates{}
 
+class GetAllPlans2LoadingState extends PlansStates {}
+
+class GetAllPlans2SuccessState extends PlansStates {}
+
+class GetAllPlans2ErrorState extends PlansStates {}
+
+
 

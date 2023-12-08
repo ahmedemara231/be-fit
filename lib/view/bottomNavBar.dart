@@ -12,7 +12,7 @@ class BottomNavBar extends StatelessWidget {
   final List<Widget> mainScreens =
    [
      BodyMuscles(),
-     const Plans(),
+     Plans(),
      const Profile(),
   ];
   @override

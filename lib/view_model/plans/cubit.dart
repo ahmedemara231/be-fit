@@ -248,74 +248,59 @@ class PlansCubit extends Cubit<PlansStates>
   {
     plan = {};
     allPlans = {};
-
+    emit(GetAllPlans2LoadingState());
     CollectionReference plansCollection = FirebaseFirestore.instance
         .collection('users')
         .doc('gBWhBoVwrGNldxxAKbKk')
         .collection('plans');
 
-    plansCollection
+    await plansCollection
         .get()
         .then((value)
     {
       for(int index = 0; index <= (value.docs.length - 1); index++)
         {
-          print(value.docs[index].id);
-          for(int i = 1; i <= days.length; i++)
-          {       // plan1
-            value.docs[index].reference.collection('list$i').get()
-                .then((value)
+          if(index == 0)
             {
-              plan['list$i'] = [];
-              value.docs.forEach((element) {
-                plan['list$i']?.add(Exercises(name: element.data()['name'], image: element.data()['image'], docs: element.data()['docs'], id: element.id, isCustom: false, video: ''));
-                print(plan);
-              });
-              allPlans['plan$index'] = plan;
-            });
+              print(value.docs[index].id);
+              for(int i = 1; i <= days.length; i++)
+              {       // plan1
+                value.docs[index].reference.collection('list$i').get()
+                    .then((value)
+                {
+                  plan['list$i'] = [];
+                  value.docs.forEach((element) {
+                    plan['list$i']?.add(Exercises(name: element.data()['name'], image: element.data()['image'], docs: element.data()['docs'], id: element.id, isCustom: false, video: ''));
+                    // print(plan);
+                  });
+                });
+              }
+              Future.delayed(const Duration(seconds: 2),() {
+                finishPlansForCurrentUser(index);
+              },);
+              emit(GetAllPlans2SuccessState());
+            }
+          else{
+            return;
           }
-        }
 
+        }
+    }).catchError((error)
+    {
+      emit(GetAllPlans2ErrorState());
     });
   }
-  // Map<String,List<Exercises>> allPlans = {};
-  // List<int> days = [1,2,3,4,5,6];
-  // Future<void> getAllPlans()async
-  // {
-  //   allPlans = {};
-  //   CollectionReference plansCollection = FirebaseFirestore.instance
-  //   .collection('users')
-  //   .doc('gBWhBoVwrGNldxxAKbKk')
-  //   .collection('plans');
-  //
-  //   plansCollection
-  //   .get()
-  //   .then((value)
-  //   {
-  //      //  هجيب كل ال plans منهم هعمل عليهم loop
-  //     value.docs.forEach((element) {
-  //       for(int i = 1; i <= days.length; i++)
-  //         {
-  //           element.reference.collection('list$i')
-  //               .get()
-  //               .then((value)
-  //           {
-  //             allPlans['list$i'] = [];
-  //             value.docs.forEach((element) {
-  //               allPlans['list$i']?.add(
-  //                   Exercises(
-  //                       name: element.data()['name'],
-  //                       image: element.data()['image'],
-  //                       docs: element.data()['docs'],
-  //                       id: element.id,
-  //                       isCustom: false,
-  //                       video: '',
-  //                   ),
-  //               );
-  //             });
-  //           });
-  //         }
-  //     });
-  //   });
-  // }
+  void finishPlansForCurrentUser(int index)
+  {
+    allPlans['plan$index'] = plan;
+    plan = {};
+    print(allPlans);
+  }
+
+  List<String> allKeys()
+  {
+    List<String> allKeys = allPlans.keys.toList();
+    print('alllll : $allKeys');
+    return allKeys;
+  }
 }
