@@ -1,5 +1,6 @@
 import 'package:be_fit/models/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view/plans/every_day_exercises.dart';
 import 'package:flutter/material.dart';
 
 class PlanDetails extends StatefulWidget {
@@ -59,12 +60,19 @@ class _PlanDetailsState extends State<PlanDetails> {
       appBar: AppBar(
         title: MyText(text: widget.planName),
       ),
-      // body: MyText(text: '${widget.plan['list2']?[0].name}'),
       body: ListView.separated(
           itemBuilder: (context, index) => InkWell(
             onTap: ()
             {
               print(widget.plan['list${index+1}']);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DayExercises(
+                      dayExercises: widget.plan['list${index+1}']!,
+                    ),
+                  ),
+              );
             },
             child: Card(
               color: Colors.red,

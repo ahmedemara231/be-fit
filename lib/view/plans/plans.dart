@@ -4,7 +4,6 @@ import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'create_plan/create_plan.dart';
 
 class Plans extends StatefulWidget {
