@@ -30,27 +30,9 @@ class _PlanDetailsState extends State<PlanDetails> {
         widget.plan.remove(key);
       }
     });
-
-    // for(int i = 1; i <= widget.plan.length; i++)
-    // {
-    //   if(widget.plan['list$i']!.isNotEmpty)
-    //   {
-    //     print('still $i');
-    //     widget.plan['list$i'];
-    //   }
-    //   else{
-    //     print('remove $i');
-    //     widget.plan.remove('list$i');
-    //   }
-    // }
     print(widget.plan);
 
     planLists = widget.plan.keys.toList();
-    planLists.sort((a, b) {
-      var aNum = int.parse(a.substring(4)); // Extract the number from the string
-      var bNum = int.parse(b.substring(4)); // Extract the number from the string
-      return aNum.compareTo(bNum); // Compare the extracted numbers
-    });
     print(planLists);
     super.initState();
   }
@@ -70,6 +52,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                   MaterialPageRoute(
                     builder: (context) => DayExercises(
                       dayExercises: widget.plan['list${index+1}']!,
+                      dayIndex: index + 1,
                     ),
                   ),
               );

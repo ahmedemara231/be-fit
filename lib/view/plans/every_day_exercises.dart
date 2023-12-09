@@ -1,19 +1,22 @@
 import 'package:be_fit/modules/myText.dart';
 import 'package:flutter/material.dart';
-
 import '../../models/exercises.dart';
 import 'exercise_details.dart';
 
 class DayExercises extends StatelessWidget {
+  int dayIndex;
   List<Exercises> dayExercises = [];
   DayExercises({super.key,
     required this.dayExercises,
+    required this.dayIndex,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: MyText(text: 'Day$dayIndex exercises'),
+      ),
       body: ListView.separated(
           itemBuilder: (context, index) => InkWell(
             onTap: ()

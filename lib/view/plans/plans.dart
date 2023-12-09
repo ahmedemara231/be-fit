@@ -62,7 +62,6 @@ class _PlansState extends State<Plans> {
                   child: CircularProgressIndicator(),
                 ),
               if(state is! GetAllPlansLoadingState)
-                // MyText(text: '${PlansCubit.getInstance(context).allPlans}',maxLines: 20,fontSize: 25,)
                 Expanded(
                   child: ListView.separated(
                       itemBuilder: (context, index) => InkWell(
@@ -79,8 +78,9 @@ class _PlansState extends State<Plans> {
                           );
                         },
                         child: Card(
+                          color: Colors.red[400],
                           child: ListTile(
-                            title: MyText(text: PlansCubit.getInstance(context).allKeys()[index]),
+                            title: MyText(text: PlansCubit.getInstance(context).allKeys()[index],fontSize: 20,fontWeight: FontWeight.w500,),
                             trailing: const Icon(Icons.arrow_forward_ios),
                           ),
                         ),

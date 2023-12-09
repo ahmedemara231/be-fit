@@ -243,11 +243,11 @@ class PlansCubit extends Cubit<PlansStates>
   Map<String,List<Exercises>> plan = {};
   Map<String,dynamic> allPlans = {};
   List<int> days = [1,2,3,4,5,6];
-
   Future<void> getAllPlans()async
   {
     plan = {};
     allPlans = {};
+
     emit(GetAllPlans2LoadingState());
     CollectionReference plansCollection = FirebaseFirestore.instance
         .collection('users')
@@ -256,35 +256,27 @@ class PlansCubit extends Cubit<PlansStates>
 
     await plansCollection
         .get()
-        .then((value)
+        .then((value)async
     {
       for(int index = 0; index <= (value.docs.length - 1); index++)
         {
-          if(index == 0)
+          plan = {};
+          print(value.docs[index].id);
+          for(int i = 1; i <= days.length; i++)
+          {       // plan1
+            await value.docs[index].reference.collection('list$i').get()
+                .then((value)
             {
-              print(value.docs[index].id);
-              for(int i = 1; i <= days.length; i++)
-              {       // plan1
-                value.docs[index].reference.collection('list$i').get()
-                    .then((value)
-                {
-                  plan['list$i'] = [];
-                  value.docs.forEach((element) {
-                    plan['list$i']?.add(Exercises(name: element.data()['name'], image: element.data()['image'], docs: element.data()['docs'], id: element.id, isCustom: false, video: ''));
-                    // print(plan);
-                  });
-                });
-              }
-              Future.delayed(const Duration(seconds: 2),() {
-                finishPlansForCurrentUser(index);
-              },);
-              emit(GetAllPlans2SuccessState());
-            }
-          else{
-            return;
-          }
-
+              plan['list$i'] = [];
+              value.docs.forEach((element) {
+                plan['list$i']?.add(Exercises(name: element.data()['name'], image: element.data()['image'], docs: element.data()['docs'], id: element.id, isCustom: false, video: ''));
+              });
+            });
+          } // plan is ready to join allPlans
+         finishPlansForCurrentUser(index);
         }
+
+      emit(GetAllPlans2SuccessState());
     }).catchError((error)
     {
       emit(GetAllPlans2ErrorState());
@@ -293,7 +285,6 @@ class PlansCubit extends Cubit<PlansStates>
   void finishPlansForCurrentUser(int index)
   {
     allPlans['plan$index'] = plan;
-    plan = {};
     print(allPlans);
   }
 

@@ -1,5 +1,3 @@
-import 'package:be_fit/view_model/plans/cubit.dart';
-
 class PlansStates {}
 
 class PlansInitialState extends PlansStates {}
