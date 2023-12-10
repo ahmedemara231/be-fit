@@ -1,7 +1,6 @@
 
 import 'package:be_fit/modules/otp_tff.dart';
 import 'package:be_fit/modules/snackBar.dart';
-import 'package:be_fit/view/exercises/specificExercise/exercise_video.dart';
 import 'package:be_fit/view/log/Log.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -90,56 +89,59 @@ class SpecificExercise extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       height: MediaQuery.of(context).size.height/4,
-                      child: Column(
-                        children: [
-                          const RecordsModel(),
-                          Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    const Spacer(),
-                                    SizedBox(
-                                      width: 100,
-                                      child: Column(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            const RecordsModel(),
+                            Expanded(
+                              child: ListView.builder(
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      const Spacer(),
+                                      SizedBox(
+                                        width: 100,
+                                        child: Column(
+                                          children: [
+                                            MyText(
+                                              text: snapshot.data?.docs[index].data()['dateTime'],
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Column(
                                         children: [
                                           MyText(
-                                            text: snapshot.data?.docs[index].data()['dateTime'],
+                                            text: '${snapshot.data?.docs[index].data()['weight']}',
                                             fontSize: 25,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    Column(
-                                      children: [
-                                        MyText(
-                                          text: '${snapshot.data?.docs[index].data()['weight']}',
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    Column(
-                                      children: [
-                                        MyText(
-                                          text: '${snapshot.data?.docs[index].data()['reps']}',
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                  ],
+                                      const Spacer(),
+                                      Column(
+                                        children: [
+                                          MyText(
+                                            text: '${snapshot.data?.docs[index].data()['reps']}',
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                    ],
+                                  ),
                                 ),
+                                itemCount: snapshot.data?.docs.length,
                               ),
-                              itemCount: snapshot.data?.docs.length,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   }

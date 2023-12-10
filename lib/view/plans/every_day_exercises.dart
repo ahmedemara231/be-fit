@@ -33,7 +33,7 @@ class DayExercises extends StatelessWidget {
             child: Card(
               child: ListTile(
                 leading: Image.network(dayExercises[index].image),
-                title: MyText(text: dayExercises[index].name),
+                title: MyText(text: dayExercises[index].name,fontSize: 18,fontWeight: FontWeight.w500,),
                 trailing: const Icon(Icons.arrow_forward_ios),
               ),
             ),

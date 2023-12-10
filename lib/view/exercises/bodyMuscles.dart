@@ -18,14 +18,15 @@ class _BodyMusclesState extends State<BodyMuscles> {
   void initState() {
     exerciseModel =
     [
-      // ExerciseModel(imageUrl: 'aps', text: 'Aps',numberOfExercises: 20),
-      ExerciseModel(imageUrl: 'back', text: 'Back',numberOfExercises: 20),
-      ExerciseModel(imageUrl: 'chest', text: 'chest',numberOfExercises: 20),
+      ExerciseModel(imageUrl: 'aps', text: 'Aps',numberOfExercises: 2),
+      ExerciseModel(imageUrl: 'back', text: 'Back',numberOfExercises: 2),
+      ExerciseModel(imageUrl: 'chest', text: 'chest',numberOfExercises: 2),
+      ExerciseModel(imageUrl: 'Legs', text: 'legs',numberOfExercises: 2),
+      ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 2),
+
       // ExerciseModel(imageUrl: 'biceps', text: 'Biceps',numberOfExercises: 20),
-      // ExerciseModel(imageUrl: 'foreArm', text: 'Fore Arm',numberOfExercises: 20),
-      // ExerciseModel(imageUrl: 'Legs', text: 'Legs',numberOfExercises: 20),
-      ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 20),
       // ExerciseModel(imageUrl: 'triceps', text: 'Triceps',numberOfExercises: 20),
+      // ExerciseModel(imageUrl: 'foreArm', text: 'Fore Arm',numberOfExercises: 20),
     ];
     super.initState();
   }

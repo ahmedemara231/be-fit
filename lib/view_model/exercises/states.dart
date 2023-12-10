@@ -41,3 +41,7 @@ class SetRecordForCustomExerciseLoadingState extends ExercisesStates {}
 class SetRecordForCustomExerciseSuccessState extends ExercisesStates {}
 
 class SetRecordForCustomExerciseErrorState extends ExercisesStates {}
+
+class DeleteCustomExerciseSuccessState extends ExercisesStates{}
+
+class DeleteCustomExerciseErrorState extends ExercisesStates{}

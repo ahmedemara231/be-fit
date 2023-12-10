@@ -1,5 +1,4 @@
 import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/view/plans/plans.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -18,13 +17,6 @@ class ChooseExercises extends StatefulWidget {
 
 class _ChooseExercisesState extends State<ChooseExercises> {
 
-  List<String> muscles =
-  [
-    'chest',
-    'Back',
-    'Shoulders',
-  ];
-  
   @override
   void initState() {
     PlansCubit.getInstance(context).getMuscles();
@@ -52,7 +44,10 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                     itemBuilder: (context, index) => Card(
                       color: Colors.red[400],
                       child: ExpansionTile(
-                        title: MyText(text: muscles[index],fontSize: 20,),
+                        title: MyText(
+                          text: PlansCubit.getInstance(context).muscles[index],
+                          fontSize: 20,
+                        ),
                         children: List.generate(
                             PlansCubit.getInstance(context).musclesForPlan[index].length,
                                 (i) => ListTile(

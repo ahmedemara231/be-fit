@@ -1,6 +1,5 @@
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
-import 'package:be_fit/view/plans/create_plan/ChooseFromExercises.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';

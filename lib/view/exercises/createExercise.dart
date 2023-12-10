@@ -47,7 +47,11 @@ class CreateExercise extends StatelessWidget {
                               description: descriptionCont.text,
                           ),
                           context: context,
-                        );
+                        ).then((value)
+                        {
+                          nameCont.clear();
+                          descriptionCont.clear();
+                        });
                       }
                     }
                 },

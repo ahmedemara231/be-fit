@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
@@ -46,6 +47,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       emit(GetExercisesSuccessState());
     }).catchError((error)
     {
+      print(error.toString());
       emit(GetExercisesErrorState());
     });
   }
@@ -177,6 +179,27 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     {
       print(error.toString());
       emit(GetCustomExercisesErrorState());
+    });
+  }
+
+  Future<void> deleteCustomExercise({
+    required String uId,
+    required int index,
+})async
+  {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc('gBWhBoVwrGNldxxAKbKk')
+        .collection('customExercises')
+        .doc(customExercises[index].id)
+        .delete()
+        .then((value)
+    {
+      log('deleted');
+      customExercises.remove(customExercises[index]);
+      emit(DeleteCustomExerciseSuccessState());
+    }).catchError((error){
+      emit(DeleteCustomExerciseErrorState());
     });
   }
 

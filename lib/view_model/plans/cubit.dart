@@ -34,19 +34,27 @@ class PlansCubit extends Cubit<PlansStates>
 
   List<String> muscles =
   [
+    'Aps',
     'chest',
     'Back',
     'Shoulders',
+    'legs'
   ];
-
-  List<Exercises> chestExercisesForPlan = [];
-  List<bool?> chestCheckBoxes = [];
 
   List<Exercises> backExercisesForPlan = [];
   List<bool?> backCheckBoxes = [];
 
+  List<Exercises> chestExercisesForPlan = [];
+  List<bool?> chestCheckBoxes = [];
+
+  List<Exercises> apsExercisesForPlan = [];
+  List<bool?> apsCheckBoxes = [];
+
   List<Exercises> shouldersExercisesForPlan = [];
   List<bool?> shoulderCheckBoxes = [];
+
+  List<Exercises> legsExercisesForPlan = [];
+  List<bool?> legsCheckBoxes = [];
 
 
   List<List<Exercises>> musclesForPlan = [];
@@ -54,6 +62,9 @@ class PlansCubit extends Cubit<PlansStates>
 
   Future<void> getMuscles()async // for ui
   {
+    apsExercisesForPlan = [];
+    apsCheckBoxes = [];
+
     chestExercisesForPlan = [];
     chestCheckBoxes= [];
 
@@ -62,6 +73,9 @@ class PlansCubit extends Cubit<PlansStates>
 
     shouldersExercisesForPlan = [];
     shoulderCheckBoxes = [];
+
+    legsExercisesForPlan = [];
+    legsCheckBoxes = [];
 
     musclesForPlan = [];
     musclesCheckBoxes = [];
@@ -103,6 +117,34 @@ class PlansCubit extends Cubit<PlansStates>
                 );
                 backCheckBoxes.add(false);
               }
+            else if(muscles[i] == 'Aps')
+              {
+                apsExercisesForPlan.add(
+                  Exercises(
+                    name: element.data()['name']?? '',
+                    image: element.data()['image']?? '',
+                    docs: element.data()['docs']?? '',
+                    id: element.id?? '',
+                    isCustom: element.data()['isCustom']?? false,
+                    video: element.data()['video']?? '',
+                  ),
+                );
+                apsCheckBoxes.add(false);
+              }
+            else if(muscles[i] == 'legs')
+              {
+                legsExercisesForPlan.add(
+                  Exercises(
+                  name: element.data()['name']?? '',
+                  image: element.data()['image']?? '',
+                  docs: element.data()['docs']?? '',
+                  id: element.id?? '',
+                  isCustom: element.data()['isCustom']?? false,
+                  video: element.data()['video']?? '',
+                ),
+                );
+                legsCheckBoxes.add(false);
+              }
             else{
               shouldersExercisesForPlan.add(
                 Exercises(
@@ -123,25 +165,26 @@ class PlansCubit extends Cubit<PlansStates>
           emit(GetAllMusclesErrorState());
         });
       }
-
+    musclesForPlan.add(apsExercisesForPlan);
     musclesForPlan.add(chestExercisesForPlan);
     musclesForPlan.add(backExercisesForPlan);
     musclesForPlan.add(shouldersExercisesForPlan);
+    musclesForPlan.add(legsExercisesForPlan);
 
+    musclesCheckBoxes.add(apsCheckBoxes);
     musclesCheckBoxes.add(chestCheckBoxes);
     musclesCheckBoxes.add(backCheckBoxes);
     musclesCheckBoxes.add(shoulderCheckBoxes);
+    musclesCheckBoxes.add(legsCheckBoxes);
 
     print(musclesForPlan.length);
     print(musclesCheckBoxes.length);
     print(musclesCheckBoxes);
+    print(musclesForPlan);
 
   }
 
 
-
-  // كريت عدد من الlist على حسب عدد الايام
-  // بتجيب planExercises list تملاها وبعدين تحطها ف الday list بتاعتها
   Map<String,List<Exercises>> lists = {};
   void makeListForEachDay(int? numberOfDays)
   {
