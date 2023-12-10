@@ -43,31 +43,57 @@ class _PlanDetailsState extends State<PlanDetails> {
         title: MyText(text: widget.planName),
       ),
       body: ListView.separated(
-          itemBuilder: (context, index) => InkWell(
-            onTap: ()
-            {
-              print(widget.plan['list${index+1}']);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DayExercises(
-                      dayExercises: widget.plan['list${index+1}']!,
-                      dayIndex: index + 1,
+          itemBuilder: (context, index) => Column(
+            children: [
+              InkWell(
+                onTap: ()
+                {
+                  print(widget.plan['list${index+1}']);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DayExercises(
+                          dayExercises: widget.plan['list${index+1}']!,
+                          dayIndex: index + 1,
+                        ),
+                      ),
+                  );
+                },
+                child: Card(
+                  color: Colors.red,
+                  child: ListTile(
+                    title: MyText(
+                      text: planLists[index],
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    trailing: MyText(
+                      text: '${widget.plan['list${index+1}']?.length} exercises',
+                      fontSize: 20,
                     ),
                   ),
-              );
-            },
-            child: Card(
-              color: Colors.red,
-              child: ListTile(
-                title: MyText(
-                  // text: '${widget.plan['list${index+1}']}',
-                  text: planLists[index],
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
+              Column(
+                children: List.generate(
+                  widget.plan['list${index+1}']!.length, (i) =>  Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: Image.network(widget.plan['list${index+1}']![i].image)),
+                    ),
+                    MyText(
+                      text: widget.plan['list${index+1}']![i].name,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ],
+                ),),
+              ),
+            ],
           ),
           separatorBuilder: (context, index) => const SizedBox(height: 16,),
           itemCount: planLists.length
