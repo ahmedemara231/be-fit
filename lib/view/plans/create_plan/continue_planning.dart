@@ -53,17 +53,10 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                               trailing: IconButton(
                                 onPressed: ()
                                 {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) => ChooseFromExercises(
-                                  //         day: index + 1,
-                                  //       ),
-                                  //     ),
-                                  // );
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
+                                      maintainState: false,
                                       builder: (context) => ChooseExercises(
                                         day: index + 1,
                                       ),
@@ -74,6 +67,25 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                               )
                           ),
                         ),
+                      ),
+                      Column(
+                        children: List.generate(
+                          PlansCubit.getInstance(context).lists['list${index+1}']!.length, (i) =>  Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: Image.network(PlansCubit.getInstance(context).lists['list${index+1}']![i].image)),
+                            ),
+                            MyText(
+                              text: PlansCubit.getInstance(context).lists['list${index+1}']![i].name,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ],
+                        ),),
                       ),
                     ],
                   ),
@@ -89,7 +101,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[400]
                   ),
-                  onPressed: state is CreateNewPlanLoadingState?
+                  onPressed: state is CreateNewPlanLoadingState ?
                   null : () async
                   {
                     await PlansCubit.getInstance(context).createNewPlan(

@@ -88,9 +88,33 @@ class PlansCubit extends Cubit<PlansStates>
             .get()
             .then((value)
         {
-          value.docs.forEach((element) {
+          value.docs.forEach((element)async{
             if(muscles[i] == 'chest')
               {
+                // await FirebaseFirestore.instance
+                //     .collection('users')
+                //     .doc('gBWhBoVwrGNldxxAKbKk')
+                //     .collection('customExercises')
+                //     .where('muscle',isEqualTo: muscles[i])
+                //     .get()
+                //     .then((value)
+                // {
+                //   value.docs.forEach((element) {
+                //     chestExercisesForPlan.add(
+                //       Exercises(
+                //         name: element.data()['name'],
+                //         image: element.data()['image'],
+                //         docs: element.data()['description'],
+                //         id: element.id,
+                //         isCustom: element.data()['isCustom'],
+                //         video: element.data()['video']?? '',
+                //       ),
+                //     );
+                //
+                //     chestCheckBoxes.add(false);
+                //   });
+                // });
+
                 chestExercisesForPlan.add(
                     Exercises(
                         name: element.data()['name'],
@@ -101,6 +125,7 @@ class PlansCubit extends Cubit<PlansStates>
                         video: element.data()['video']?? '',
                     ),
                 );
+
                 chestCheckBoxes.add(false);
               }
             else if(muscles[i] == 'Back')
@@ -164,6 +189,86 @@ class PlansCubit extends Cubit<PlansStates>
         {
           emit(GetAllMusclesErrorState());
         });
+
+        // FirebaseFirestore.instance
+        // .collection('users')
+        // .doc('gBWhBoVwrGNldxxAKbKk')
+        // .collection('customExercises')
+        // .get()
+        // .then((value)
+        // {
+        //   value.docs.forEach((element) {
+        //     if(element.data()['muscle'] == 'Aps')
+        //       {
+        //         apsExercisesForPlan.add(
+        //           Exercises(
+        //             name: element.data()['name'],
+        //             image: element.data()['image'],
+        //             docs: element.data()['docs'],
+        //             id: element.id,
+        //             isCustom: element.data()['isCustom'],
+        //             video: element.data()['video']?? '',
+        //           ),
+        //         );
+        //         apsCheckBoxes.add(false);
+        //       }
+        //     else if(element.data()['muscle'] == 'chest')
+        //     {
+        //       chestExercisesForPlan.add(
+        //         Exercises(
+        //           name: element.data()['name'],
+        //           image: element.data()['image'],
+        //           docs: element.data()['docs'],
+        //           id: element.id,
+        //           isCustom: element.data()['isCustom'],
+        //           video: element.data()['video']?? '',
+        //         ),
+        //       );
+        //       chestCheckBoxes.add(false);
+        //     }
+        //     else if(element.data()['muscle'] == 'Back')
+        //     {
+        //       backExercisesForPlan.add(
+        //         Exercises(
+        //           name: element.data()['name']?? '',
+        //           image: element.data()['image']?? '',
+        //           docs: element.data()['docs']?? '',
+        //           id: element.id?? '',
+        //           isCustom: element.data()['isCustom']?? false,
+        //           video: element.data()['video']?? '',
+        //         ),
+        //       );
+        //       backCheckBoxes.add(false);
+        //     }
+        //     else if(element.data()['muscle'] == 'legs')
+        //     {
+        //       legsExercisesForPlan.add(
+        //         Exercises(
+        //           name: element.data()['name'],
+        //           image: element.data()['image'],
+        //           docs: element.data()['docs'],
+        //           id: element.id,
+        //           isCustom: element.data()['isCustom'],
+        //           video: element.data()['video']?? '',
+        //         ),
+        //       );
+        //       legsCheckBoxes.add(false);
+        //     }
+        //     else {
+        //       shouldersExercisesForPlan.add(
+        //         Exercises(
+        //           name: element.data()['name']?? '',
+        //           image: element.data()['image']?? '',
+        //           docs: element.data()['docs']?? '',
+        //           id: element.id?? '',
+        //           isCustom: element.data()['isCustom']?? false,
+        //           video: element.data()['video']?? '',
+        //         ),
+        //       );
+        //       shoulderCheckBoxes.add(false);
+        //     }
+        //   });
+        // });
       }
     musclesForPlan.add(apsExercisesForPlan);
     musclesForPlan.add(chestExercisesForPlan);
@@ -177,11 +282,8 @@ class PlansCubit extends Cubit<PlansStates>
     musclesCheckBoxes.add(shoulderCheckBoxes);
     musclesCheckBoxes.add(legsCheckBoxes);
 
-    print(musclesForPlan.length);
-    print(musclesCheckBoxes.length);
     print(musclesCheckBoxes);
     print(musclesForPlan);
-
   }
 
 

@@ -21,7 +21,6 @@ class _ChooseExercisesState extends State<ChooseExercises> {
   void initState() {
     PlansCubit.getInstance(context).getMuscles();
     PlansCubit.getInstance(context).planExercises = [];
-    print(widget.day);
     super.initState();
   }
   @override
@@ -103,6 +102,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                         index: widget.day,
                         exercises: PlansCubit.getInstance(context).planExercises
                     );
+                    Navigator.pop(context);
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),

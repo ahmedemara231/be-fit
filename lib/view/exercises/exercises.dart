@@ -2,10 +2,8 @@ import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/exercises/specificExercise/specificExercise.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
-import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'createExercise.dart';
 
 class ExercisesForMuscle extends StatefulWidget {
