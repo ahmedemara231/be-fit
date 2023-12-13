@@ -6,9 +6,12 @@ import 'package:flutter/material.dart';
 class PlanDetails extends StatefulWidget {
   Map<String,List<Exercises>> plan;
   String planName;
+  String planId;
+
   PlanDetails({super.key,
     required this.plan,
     required this.planName,
+    required this.planId,
   });
 
   @override
@@ -53,6 +56,8 @@ class _PlanDetailsState extends State<PlanDetails> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => DayExercises(
+                          planDoc: widget.planId,
+                          listIndex: index,
                           dayExercises: widget.plan['list${index+1}']!,
                           dayIndex: index + 1,
                         ),

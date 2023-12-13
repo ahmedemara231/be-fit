@@ -8,30 +8,6 @@ class PlansCubit extends Cubit<PlansStates>
   PlansCubit(super.initialState);
   static PlansCubit getInstance(context) => BlocProvider.of(context);
 
-  // List<Map<String,dynamic>> plans = [];
-  // Future<void> getAllPlans()async
-  // {
-  //   plans = [];
-  //   emit(GetAllPlansLoadingState());
-  //   await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc('gBWhBoVwrGNldxxAKbKk')
-  //       .collection('plans')
-  //       .get()
-  //       .then((value)
-  //   {
-  //     value.docs.forEach((element) {
-  //       plans.add(element.data());
-  //     });
-  //     print(plans);
-  //     emit(GetAllPlansSuccessState());
-  //   }).catchError((error)
-  //   {
-  //     emit(GetAllPlansErrorState());
-  //   });
-  // }
-
-
   List<String> muscles =
   [
     'Aps',
@@ -60,7 +36,9 @@ class PlansCubit extends Cubit<PlansStates>
   List<List<Exercises>> musclesForPlan = [];
   List<List<bool?>> musclesCheckBoxes = [];
 
-  Future<void> getMuscles()async // for ui
+  Future<void> getMuscles({
+    required int day
+})async // for ui
   {
     apsExercisesForPlan = [];
     apsCheckBoxes = [];
@@ -270,6 +248,8 @@ class PlansCubit extends Cubit<PlansStates>
         //   });
         // });
       }
+
+
     musclesForPlan.add(apsExercisesForPlan);
     musclesForPlan.add(chestExercisesForPlan);
     musclesForPlan.add(backExercisesForPlan);
@@ -282,10 +262,24 @@ class PlansCubit extends Cubit<PlansStates>
     musclesCheckBoxes.add(shoulderCheckBoxes);
     musclesCheckBoxes.add(legsCheckBoxes);
 
-    print(musclesCheckBoxes);
-    print(musclesForPlan);
-  }
+    daysCheckBox['day$day'] = List.from(musclesCheckBoxes);
+    print(daysCheckBox);
 
+    // print(musclesCheckBoxes);
+    // print(musclesForPlan);
+  }
+  Map<String,dynamic> daysCheckBox = {};
+  void newChangeCheckBoxValue({
+    required int dayIndex,
+    required int muscle,
+    required int exerciseIndex,
+    required bool value,
+})
+  {
+    daysCheckBox['day$dayIndex'][muscle][exerciseIndex] = value;
+    emit(ChangeCheckBoxValue());
+    print(daysCheckBox);
+  }
 
   Map<String,List<Exercises>> lists = {};
   void makeListForEachDay(int? numberOfDays)
@@ -299,34 +293,46 @@ class PlansCubit extends Cubit<PlansStates>
     print(lists);
   }
 
-  List<Exercises> planExercises = [];
-  void addToPlanExercises(Exercises exercise)
+  Map<String,List<Exercises>> bringingListListForEachDay = {};
+
+  void makeBringingListForEachDay({
+    required int daysNumber,
+})
   {
-    planExercises.add(exercise);
-    print(planExercises);
+    for(int i = 1; i <= daysNumber; i++)
+    {
+      bringingListListForEachDay['bList$i'] = [];
+    }
+    print(bringingListListForEachDay);
+  }
+
+  List<Exercises> planExercises = [];
+  void addToPlanExercises(int day,Exercises exercise)
+  {
+    bringingListListForEachDay['bList$day']!.add(exercise);
+    print(bringingListListForEachDay);
     emit(AddToExercisePlanList());
   }
-  void removeFromPlanExercises(Exercises exercise)
+  void removeFromPlanExercises(int day,Exercises exercise)
   {
-    planExercises.remove(exercise);
-    print(planExercises);
+    bringingListListForEachDay['bList$day']!.remove(exercise);
+    print(bringingListListForEachDay);
     emit(RemoveFromExercisePlanList());
   }
 
-  void changeCheckBoxValue(bool? newValue, int index, int i)
-  {
-    musclesCheckBoxes[index][i] = newValue;
-    print(musclesCheckBoxes);
-    emit(ChangeCheckBoxValue());
-  }
+  // void changeCheckBoxValue(bool? newValue, int index, int i)
+  // {
+  //   musclesCheckBoxes[index][i] = newValue;
+  //   print(musclesCheckBoxes);
+  //   emit(ChangeCheckBoxValue());
+  // }
 
   void putExerciseList({
     required int index,
     required List<Exercises> exercises,
 })
   {
-    lists['list$index'] = exercises;
-    planExercises = [];
+    lists['list$index'] = bringingListListForEachDay['bList$index']!;
     print(lists);
     emit(PutExercisesInList());
   }
@@ -387,11 +393,15 @@ class PlansCubit extends Cubit<PlansStates>
 
   Map<String,List<Exercises>> plan = {};
   Map<String,dynamic> allPlans = {};
+  List<String> allPlansIds = [];
   List<int> days = [1,2,3,4,5,6];
+
+  List<String> plansNames = [];
   Future<void> getAllPlans()async
   {
     plan = {};
     allPlans = {};
+    allPlansIds = [];
 
     emit(GetAllPlans2LoadingState());
     CollectionReference plansCollection = FirebaseFirestore.instance
@@ -405,6 +415,9 @@ class PlansCubit extends Cubit<PlansStates>
     {
       for(int index = 0; index <= (value.docs.length - 1); index++)
         {
+          allPlansIds.add(value.docs[index].id);
+          print('all plans ids : $allPlansIds');
+
           plan = {};
           print(value.docs[index].id);
           for(int i = 1; i <= days.length; i++)
@@ -414,29 +427,83 @@ class PlansCubit extends Cubit<PlansStates>
             {
               plan['list$i'] = [];
               value.docs.forEach((element) {
-                plan['list$i']?.add(Exercises(name: element.data()['name'], image: element.data()['image'], docs: element.data()['docs'], id: element.id, isCustom: false, video: ''));
+                plan['list$i']?.add(
+                    Exercises(
+                        name: element.data()['name'],
+                        image: element.data()['image'],
+                        docs: element.data()['docs'],
+                        id: element.id,
+                        isCustom: false,
+                        video: '',
+                    ),
+                );
               });
             });
           } // plan is ready to join allPlans
-         finishPlansForCurrentUser(index);
+         finishPlansForCurrentUser(
+             index,
+             (value.docs[index].data() as Map<String,dynamic>)['name'],
+         );
         }
-
+      plansNames = getAllKeys();
       emit(GetAllPlans2SuccessState());
     }).catchError((error)
     {
       emit(GetAllPlans2ErrorState());
     });
   }
-  void finishPlansForCurrentUser(int index)
+
+  void finishPlansForCurrentUser(int index,String planName)
   {
-    allPlans['plan$index'] = plan;
+    allPlans[planName] = plan;
     print(allPlans);
   }
 
-  List<String> allKeys()
+  List<String> getAllKeys()
   {
     List<String> allKeys = allPlans.keys.toList();
-    print('alllll : $allKeys');
+
+    print('all Keys : $allKeys');
     return allKeys;
+  }
+
+  Future<void> deletePlan(int index,{required String planName})async
+  {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc('gBWhBoVwrGNldxxAKbKk')
+        .collection('plans')
+        .doc(allPlansIds[index])
+        .delete()
+        .then((value)
+    {
+      allPlans.remove(planName);
+      allPlansIds.remove(allPlansIds[index]);
+      emit(DeletePlanSuccessState());
+    }).catchError((error)
+    {
+      emit(DeletePlanErrorState());
+    });
+  }
+
+  Future<void> deleteExerciseFromPlan({
+    required String planDoc,
+    required int listIndex,
+    required String exerciseDoc,
+})async
+  {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc('gBWhBoVwrGNldxxAKbKk')
+        .collection('plans')
+        .doc(planDoc)
+        .collection('list${listIndex + 1}')
+        .doc(exerciseDoc)
+        .delete()
+        .then((value)
+    {
+      print('deleted');
+      // المفروض امسحها من ال all plans عشان تتمسح قدام اليوزر
+    }).catchError((error){});
   }
 }

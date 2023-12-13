@@ -34,5 +34,8 @@ class GetAllPlans2SuccessState extends PlansStates {}
 
 class GetAllPlans2ErrorState extends PlansStates {}
 
+class DeletePlanSuccessState extends PlansStates{}
+
+class DeletePlanErrorState extends PlansStates{}
 
 

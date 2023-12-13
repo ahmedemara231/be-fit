@@ -25,6 +25,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
   @override
   void initState() {
     PlansCubit.getInstance(context).makeListForEachDay(widget.daysNumber);
+    PlansCubit.getInstance(context).makeBringingListForEachDay(daysNumber: widget.daysNumber!);
     super.initState();
   }
   @override

@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'create_plan/create_plan.dart';
 
 class Plans extends StatefulWidget {
-  Plans({super.key});
-  List<String> plansKeys = [];
+  const Plans({super.key});
+
   @override
   State<Plans> createState() => _PlansState();
 }
@@ -19,15 +19,10 @@ class _PlansState extends State<Plans> {
     PlansCubit.getInstance(context).getAllPlans();
     super.initState();
   }
-  @override
-  void didChangeDependencies() {
-    PlansCubit.getInstance(context).allKeys();
-    super.didChangeDependencies();
-  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PlansCubit,PlansStates>(
-      listener: (context, state) {},
+    return BlocBuilder<PlansCubit,PlansStates>(
       builder: (context, state)
       {
         return Scaffold(
@@ -40,20 +35,41 @@ class _PlansState extends State<Plans> {
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: CircleAvatar(
-                    child: IconButton(
-                      onPressed: ()
-                      {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            maintainState: false,
-                            builder: (context) => CreatePlan(),
+                  child: IconButton(
+                    onPressed: ()
+                    {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          maintainState: false,
+                          builder: (context) => CreatePlan(),
+                        ),
+                      );
+                    },
+                    icon: SizedBox(
+                      width: MediaQuery.of(context).size.width/2.2,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(20)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              MyText(
+                                text: 'Create new plan',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                              ),
+                              const SizedBox(width: 10,),
+                              const Icon(Icons.add),
+                            ],
                           ),
-                        );
-                      },
-                      icon: const Icon(Icons.add),
-                    ),
+                        ),
+                      ),
+                    )
                   ),
                 ),
               ),
@@ -65,14 +81,40 @@ class _PlansState extends State<Plans> {
                 Expanded(
                   child: ListView.separated(
                       itemBuilder: (context, index) => InkWell(
+                        onLongPress: ()
+                        {
+                          showMenu(
+                            context: context,
+                            position: RelativeRect.fromDirectional(
+                              textDirection: TextDirection.ltr,
+                              start: 50,
+                              top: 20,
+                              end: 50,
+                              bottom: 20,
+                            ),
+                            items: [
+                              PopupMenuItem(
+                                child: MyText(text: 'Delete'),
+                                onTap: () async
+                                {
+                                  await PlansCubit.getInstance(context).deletePlan(
+                                    index,
+                                    planName: PlansCubit.getInstance(context).plansNames[index],
+                                  );
+                                },
+                              )
+                            ],
+                          );
+                        },
                         onTap: ()
                         {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PlanDetails(
-                                  planName: PlansCubit.getInstance(context).allKeys()[index],
-                                  plan: PlansCubit.getInstance(context).allPlans['plan$index'],
+                                  planId: PlansCubit.getInstance(context).allPlansIds[index],
+                                  planName: PlansCubit.getInstance(context).plansNames[index],
+                                  plan: PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).plansNames[index]],
                                 ),
                               ),
                           );
@@ -80,7 +122,7 @@ class _PlansState extends State<Plans> {
                         child: Card(
                           color: Colors.red[400],
                           child: ListTile(
-                            title: MyText(text: PlansCubit.getInstance(context).allKeys()[index],fontSize: 20,fontWeight: FontWeight.w500,),
+                            title: MyText(text: PlansCubit.getInstance(context).plansNames[index],fontSize: 20,fontWeight: FontWeight.w500,),
                             trailing: const Icon(Icons.arrow_forward_ios),
                           ),
                         ),

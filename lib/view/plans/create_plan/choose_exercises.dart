@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ChooseExercises extends StatefulWidget {
 
   int day;
+  // List dayCheckBox = [];
   ChooseExercises({super.key,
     required this.day,
+    // required this.dayCheckBox,
   });
 
   @override
@@ -19,7 +21,9 @@ class _ChooseExercisesState extends State<ChooseExercises> {
 
   @override
   void initState() {
-    PlansCubit.getInstance(context).getMuscles();
+    PlansCubit.getInstance(context).getMuscles(
+      day: widget.day
+    );
     PlansCubit.getInstance(context).planExercises = [];
     super.initState();
   }
@@ -60,22 +64,25 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                     fontWeight: FontWeight.w500,
                                   ),
                                   trailing: Checkbox(
-                                    value: PlansCubit.getInstance(context).musclesCheckBoxes[index][i],
+                                    value: PlansCubit.getInstance(context).daysCheckBox['day${widget.day}'][index][i],
                                     onChanged: (value)
                                     {
-                                      PlansCubit.getInstance(context).changeCheckBoxValue(
-                                          value!,
-                                          index,
-                                          i,
+                                      PlansCubit.getInstance(context).newChangeCheckBoxValue(
+                                        value: value!,
+                                        dayIndex: widget.day,
+                                        muscle: index,
+                                        exerciseIndex: i,
                                       );
                                       if(value == true)
                                       {
                                         PlansCubit.getInstance(context).addToPlanExercises(
-                                          PlansCubit.getInstance(context).musclesForPlan[index][i],
+                                            widget.day,
+                                            PlansCubit.getInstance(context).musclesForPlan[index][i],
                                         );
                                       }
                                       else{
                                         PlansCubit.getInstance(context).removeFromPlanExercises(
+                                          widget.day,
                                           PlansCubit.getInstance(context).musclesForPlan[index][i],
                                         );
                                       }
@@ -95,7 +102,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[400]
                   ),
-                  onPressed: PlansCubit.getInstance(context).planExercises.isEmpty?
+                  onPressed: PlansCubit.getInstance(context).bringingListListForEachDay['bList${widget.day}']!.isEmpty?
                       null : ()
                   {
                     PlansCubit.getInstance(context).putExerciseList(
