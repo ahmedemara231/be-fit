@@ -7,10 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ChooseExercises extends StatefulWidget {
 
   int day;
-  // List dayCheckBox = [];
   ChooseExercises({super.key,
     required this.day,
-    // required this.dayCheckBox,
   });
 
   @override
@@ -75,8 +73,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                       );
                                       if(value == true)
                                       {
-                                        PlansCubit.getInstance(context).addToPlanExercises(
-                                            widget.day,
+                                        PlansCubit.getInstance(context).addToPlanExercises(                                           widget.day,
                                             PlansCubit.getInstance(context).musclesForPlan[index][i],
                                         );
                                       }
@@ -102,13 +99,14 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[400]
                   ),
-                  onPressed: PlansCubit.getInstance(context).bringingListListForEachDay['bList${widget.day}']!.isEmpty?
+                  onPressed:
+                  PlansCubit.getInstance(context).lists['list${widget.day}']!.isEmpty?
                       null : ()
                   {
-                    PlansCubit.getInstance(context).putExerciseList(
-                        index: widget.day,
-                        exercises: PlansCubit.getInstance(context).planExercises
-                    );
+                    // PlansCubit.getInstance(context).putExerciseList(
+                    //     index: widget.day,
+                    //     exercises: PlansCubit.getInstance(context).planExercises
+                    // );
                     Navigator.pop(context);
                   },
                   child: Padding(

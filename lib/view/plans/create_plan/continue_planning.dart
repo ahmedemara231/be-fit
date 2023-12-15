@@ -1,3 +1,4 @@
+import 'package:be_fit/models/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
@@ -25,7 +26,6 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
   @override
   void initState() {
     PlansCubit.getInstance(context).makeListForEachDay(widget.daysNumber);
-    PlansCubit.getInstance(context).makeBringingListForEachDay(daysNumber: widget.daysNumber!);
     super.initState();
   }
   @override
@@ -71,22 +71,40 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                       ),
                       Column(
                         children: List.generate(
-                          PlansCubit.getInstance(context).lists['list${index+1}']!.length, (i) =>  Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: SizedBox(
-                                  width: 80,
-                                  height: 80,
-                                  child: Image.network(PlansCubit.getInstance(context).lists['list${index+1}']![i].image)),
+                          PlansCubit.getInstance(context).lists['list${index+1}']!.length, (i)
+                        {
+                          return Dismissible(
+                            background: Container(
+                              color: Colors.red,
+                              child: const Icon(Icons.delete,color: Colors.white,),
                             ),
-                            MyText(
-                              text: PlansCubit.getInstance(context).lists['list${index+1}']![i].name,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
+                            key: ValueKey<Exercises>(PlansCubit.getInstance(context).lists['list${index+1}']![i]),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: SizedBox(
+                                      width: 80,
+                                      height: 80,
+                                      child: Image.network(PlansCubit.getInstance(context).lists['list${index+1}']![i].image)),
+                                ),
+                                MyText(
+                                  text: PlansCubit.getInstance(context).lists['list${index+1}']![i].name,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),),
+                            onDismissed: (direction)
+                            {
+                              PlansCubit.getInstance(context).removeFromPlanExercises(
+                                  index + 1,
+                                  PlansCubit.getInstance(context).lists['list${index+1}']![i],
+                              );
+                            },
+                          );
+                         }
+                        ),
                       ),
                     ],
                   ),
@@ -102,7 +120,8 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[400]
                   ),
-                  onPressed: state is CreateNewPlanLoadingState ?
+                  onPressed: state is CreateNewPlanLoadingState?
+                      // || PlansCubit.getInstance(context).lists.entries.toList().isEmpty?
                   null : () async
                   {
                     await PlansCubit.getInstance(context).createNewPlan(

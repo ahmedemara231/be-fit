@@ -293,48 +293,18 @@ class PlansCubit extends Cubit<PlansStates>
     print(lists);
   }
 
-  Map<String,List<Exercises>> bringingListListForEachDay = {};
-
-  void makeBringingListForEachDay({
-    required int daysNumber,
-})
-  {
-    for(int i = 1; i <= daysNumber; i++)
-    {
-      bringingListListForEachDay['bList$i'] = [];
-    }
-    print(bringingListListForEachDay);
-  }
-
   List<Exercises> planExercises = [];
   void addToPlanExercises(int day,Exercises exercise)
   {
-    bringingListListForEachDay['bList$day']!.add(exercise);
-    print(bringingListListForEachDay);
+    lists['list$day']!.add(exercise);
+    print(lists);
     emit(AddToExercisePlanList());
   }
   void removeFromPlanExercises(int day,Exercises exercise)
   {
-    bringingListListForEachDay['bList$day']!.remove(exercise);
-    print(bringingListListForEachDay);
-    emit(RemoveFromExercisePlanList());
-  }
-
-  // void changeCheckBoxValue(bool? newValue, int index, int i)
-  // {
-  //   musclesCheckBoxes[index][i] = newValue;
-  //   print(musclesCheckBoxes);
-  //   emit(ChangeCheckBoxValue());
-  // }
-
-  void putExerciseList({
-    required int index,
-    required List<Exercises> exercises,
-})
-  {
-    lists['list$index'] = bringingListListForEachDay['bList$index']!;
+    lists['list$day']!.remove(exercise);
     print(lists);
-    emit(PutExercisesInList());
+    emit(RemoveFromExercisePlanList());
   }
 
   Future<void> createNewPlan({
