@@ -310,7 +310,7 @@ class PlansCubit extends Cubit<PlansStates>
   Future<void> createNewPlan({
     required int? daysNumber,
     required String name,
-})async
+  })async
   {
     emit(CreateNewPlanLoadingState());
     await FirebaseFirestore.instance
@@ -318,48 +318,156 @@ class PlansCubit extends Cubit<PlansStates>
         .doc('gBWhBoVwrGNldxxAKbKk')
         .collection('plans')
         .add(
-        {
-          'daysNumber' : daysNumber,
-          'name' : name,
-        },
+      {
+        'name' : name,
+        'daysNumber' : daysNumber,
+      },
     ).then((value)
     {
       List<String> listsKeys = lists.keys.toList();
       print('half made');
 
       for(int index = 0; index <= ( daysNumber! - 1 ); index++)
-        {
-          print(index);
+      {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc('gBWhBoVwrGNldxxAKbKk')
+            .collection('plans')
+            .doc(value.id)   // البلان اللي انت لسة عاملها
+            .collection(listsKeys[index]); // على حسب عدد الايام هيتفتح collections
 
-          FirebaseFirestore.instance
+        ///////////////////////////////////////////////////////
+
+                // list1
+        lists[listsKeys[index]]!.forEach((element)async {
+
+         DocumentReference planExerciseId = FirebaseFirestore.instance
               .collection('users')
               .doc('gBWhBoVwrGNldxxAKbKk')
               .collection('plans')
-              .doc(value.id)    // list1
-              .collection(listsKeys[index]);// على حسب عدد الايام هيتفتح collections
+              .doc(value.id)
+              .collection(listsKeys[index])
+              .doc(element.id); // 1st exercise in list1 in the plan
 
-          lists[listsKeys[index]]!.forEach((element) {
-            FirebaseFirestore.instance
-                .collection('users')
-                .doc('gBWhBoVwrGNldxxAKbKk')
-                .collection('plans')
-                .doc(value.id)
-                .collection(listsKeys[index])
-                .add(
-                {
-                  'name' : element.name,
-                  'image' : element.image,
-                  'docs' : element.docs,
-                },
-            );
-          });
-        }
+         // check if this exercise has a records or not for this user
+
+         for(int i = 0; i <= (muscles.length - 1); i++)
+           {
+             var checkCollection = await FirebaseFirestore.instance
+                 .collection(muscles[i])
+                 .doc(element.id)
+                 .collection('records')
+                 .where('uId',isEqualTo: 'gBWhBoVwrGNldxxAKbKk')
+                 .get();
+
+             if(checkCollection.docs.isNotEmpty)
+             {
+               DocumentReference exerciseDoc = FirebaseFirestore.instance
+                   .collection('users')
+                   .doc('gBWhBoVwrGNldxxAKbKk')
+                   .collection('plans')
+                   .doc(value.id)
+                   .collection(listsKeys[index])
+                   .doc(planExerciseId.id);
+
+               exerciseDoc.set(
+                 {
+                   'name' : element.name,
+                   'docs' : element.docs,
+                   'image' : element.image,
+                 },
+               );
+               checkCollection.docs.forEach((element) {
+                 exerciseDoc.collection('records')
+                     .doc(element.id)
+                     .set(
+                   {
+                     'dateTime': element.data()['dateTime'],
+                     'reps': element.data()['reps'],
+                     'weight': element.data()['weight'],
+                   },
+                 );
+               });
+             }
+             else{
+               FirebaseFirestore.instance
+                   .collection('users')
+                   .doc('gBWhBoVwrGNldxxAKbKk')
+                   .collection('plans')
+                   .doc(value.id)
+                   .collection(listsKeys[index])
+                   .doc(planExerciseId.id)
+                   .set(
+                 {
+                   'name' : element.name,
+                   'docs' : element.docs,
+                   'image' : element.image,
+                 },
+               );
+             }
+           }
+        });
+      }
       emit(CreateNewPlanSuccessState());
     }).catchError((error)
     {
       emit(CreateNewPlanErrorState());
     });
   }
+
+  //   Future<void> createNewPlan({
+//     required int? daysNumber,
+//     required String name,
+// })async
+//   {
+//     emit(CreateNewPlanLoadingState());
+//     await FirebaseFirestore.instance
+//         .collection('users')
+//         .doc(''gBWhBoVwrGNldxxAKbKk'')
+//         .collection('plans')
+//         .add(
+//         {
+//           'daysNumber' : daysNumber,
+//           'name' : name,
+//         },
+//     ).then((value)
+//     {
+//       List<String> listsKeys = lists.keys.toList();
+//       print('half made');
+//
+//       for(int index = 0; index <= ( daysNumber! - 1 ); index++)
+//         {
+//           print(index);
+//
+//           FirebaseFirestore.instance
+//               .collection('users')
+//               .doc('gBWhBoVwrGNldxxAKbKk')
+//               .collection('plans')
+//               .doc(value.id)    // list1
+//               .collection(listsKeys[index]);// على حسب عدد الايام هيتفتح collections
+//
+//           lists[listsKeys[index]]!.forEach((element) {
+//             FirebaseFirestore.instance
+//                 .collection('users')
+//                 .doc('gBWhBoVwrGNldxxAKbKk')
+//                 .collection('plans')
+//                 .doc(value.id)
+//                 .collection(listsKeys[index])
+//                 .add(
+//                 {
+//                   'name' : element.name,
+//                   'image' : element.image,
+//                   'docs' : element.docs,
+//                 },
+//             );
+//           });
+//         }
+//       emit(CreateNewPlanSuccessState());
+//     }).catchError((error)
+//     {
+//       emit(CreateNewPlanErrorState());
+//     });
+//   }
 
   Map<String,List<Exercises>> plan = {};
   Map<String,dynamic> allPlans = {};

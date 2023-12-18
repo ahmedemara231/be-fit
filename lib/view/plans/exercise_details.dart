@@ -1,13 +1,21 @@
 import 'package:be_fit/models/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../modules/otp_tff.dart';
+import '../../modules/snackBar.dart';
+import '../../widgets_models/records_model.dart';
 
 class PlanExerciseDetails extends StatelessWidget {
   late Exercises exercise;
-  PlanExerciseDetails({super.key,
+  String planDoc;
+  int listIndex;
+  PlanExerciseDetails({
+    super.key,
     required this.exercise,
+    required this.planDoc,
+    required this.listIndex,
   });
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -24,6 +32,90 @@ class PlanExerciseDetails extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc('gBWhBoVwrGNldxxAKbKk')
+                  .collection('plans')
+                  .doc(planDoc)
+                  .collection('list${listIndex+1}')
+                  .doc(exercise.id)
+                  .collection('records')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    height: MediaQuery.of(context).size.height / 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          const RecordsModel(),
+                          Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (context, index) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    const Spacer(),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          MyText(
+                                            text: snapshot.data?.docs[index].data()['dateTime'],
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Column(
+                                      children: [
+                                        MyText(
+                                          text:
+                                              '${snapshot.data?.docs[index].data()['weight']}',
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    Column(
+                                      children: [
+                                        MyText(
+                                          text:
+                                              '${snapshot.data?.docs[index].data()['reps']}',
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                ),
+                              ),
+                              itemCount: snapshot.data?.docs.length,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  MySnackBar.showSnackBar(
+                      context: context, message: 'Try again latter');
+                  return MyText(text: '');
+                } else {
+                  print('idk : $snapshot');
+                  return MyText(text: '');
+                }
+              }),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -37,37 +129,27 @@ class PlanExerciseDetails extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                onPressed: ()
-                {
-                  scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height/1.2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MyText(
-                        text: exercise.docs,
-                        maxLines: 20,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ));
+                onPressed: () {
+                  scaffoldKey.currentState!
+                      .showBottomSheet((context) => SizedBox(
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height / 1.2,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyText(
+                                text: exercise.docs,
+                                maxLines: 20,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ));
                 },
                 icon: const Icon(Icons.question_mark),
               ),
               const Spacer(),
               IconButton(
-                onPressed: ()
-                {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => ExerciseVideo(
-                  //         video: videoUrl,
-                  //       ),
-                  //     ),
-                  // );
-                },
+                onPressed: () {},
                 icon: const Icon(Icons.play_arrow),
               )
             ],
@@ -76,9 +158,7 @@ class PlanExerciseDetails extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(20)
-              ),
+                  color: Colors.red, borderRadius: BorderRadius.circular(20)),
               width: double.infinity,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -88,8 +168,16 @@ class PlanExerciseDetails extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          const Icon(Icons.calendar_month,color: Colors.white,size: 55,),
-                          MyText(text: 'TODAY',color: Colors.white,fontSize: 25,),
+                          const Icon(
+                            Icons.calendar_month,
+                            color: Colors.white,
+                            size: 55,
+                          ),
+                          MyText(
+                            text: 'TODAY',
+                            color: Colors.white,
+                            fontSize: 25,
+                          ),
                         ],
                       ),
                     ),
@@ -99,32 +187,40 @@ class PlanExerciseDetails extends StatelessWidget {
                         children: [
                           const Spacer(),
                           SizedBox(
-                            width: MediaQuery.of(context).size.width/5,
+                            width: MediaQuery.of(context).size.width / 5,
                             child: OtpTff(
                               controller: weightCont,
                               hintText: 'weight',
                             ),
                           ),
-                          const Spacer(flex: 4,),
+                          const Spacer(
+                            flex: 4,
+                          ),
                           SizedBox(
-                            width: MediaQuery.of(context).size.width/5,
+                            width: MediaQuery.of(context).size.width / 5,
                             child: OtpTff(
                               controller: repsCont,
                               hintText: 'reps',
                             ),
                           ),
-                          const Spacer(flex: 4,),
+                          const Spacer(
+                            flex: 4,
+                          ),
                           InkWell(
-                            onTap: () async{},
+                            onTap: () async
+                            {
+
+                            },
                             child: Container(
                                 decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12)
-                                ),
+                                    borderRadius: BorderRadius.circular(12)),
                                 child: const Padding(
                                     padding: EdgeInsets.all(20.0),
-                                    child: Icon(Icons.add,size: 30,)
-                                )),
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 30,
+                                    ))),
                           ),
                           const Spacer(),
                         ],

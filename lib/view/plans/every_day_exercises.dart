@@ -57,6 +57,8 @@ class DayExercises extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PlanExerciseDetails(
+                      planDoc: planDoc,
+                      listIndex: listIndex,
                       exercise: dayExercises[index],
                     ),
                   ),
