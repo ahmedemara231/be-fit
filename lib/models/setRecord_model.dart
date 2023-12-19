@@ -29,3 +29,22 @@ class SetCustomExerciseRecModel
     required this.uId,
 });
 }
+
+class SetRecordForPlanExercise
+{
+  String planDoc;
+  int listIndex;
+  String exerciseDoc;
+  String reps;
+  String weight;
+  String uId;
+
+  SetRecordForPlanExercise({
+    required this.planDoc,
+    required this.listIndex,
+    required this.exerciseDoc,
+    required this.reps,
+    required this.weight,
+    required this.uId,
+  });
+}

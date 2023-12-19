@@ -1,5 +1,7 @@
 import 'package:be_fit/models/exercises.dart';
+import 'package:be_fit/models/setRecord_model.dart';
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +40,7 @@ class PlanExerciseDetails extends StatelessWidget {
                   .doc('gBWhBoVwrGNldxxAKbKk')
                   .collection('plans')
                   .doc(planDoc)
-                  .collection('list${listIndex+1}')
+                  .collection('list${listIndex + 1}')
                   .doc(exercise.id)
                   .collection('records')
                   .snapshots(),
@@ -209,7 +211,22 @@ class PlanExerciseDetails extends StatelessWidget {
                           InkWell(
                             onTap: () async
                             {
-
+                              await PlansCubit.getInstance(context).setARecordFromPlan(
+                                  planExerciseRecord: SetRecordForPlanExercise(
+                                      planDoc: planDoc,
+                                      listIndex: listIndex + 1,
+                                      exerciseDoc: exercise.id,
+                                      reps: repsCont.text,
+                                      weight: weightCont.text,
+                                      uId: 'gBWhBoVwrGNldxxAKbKk',
+                                  ),
+                                  context: context,
+                                  muscleName: exercise.muscleName!
+                              ).then((value)
+                              {
+                                weightCont.clear();
+                                repsCont.clear();
+                              });
                             },
                             child: Container(
                                 decoration: BoxDecoration(

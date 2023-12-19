@@ -103,10 +103,6 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                   PlansCubit.getInstance(context).lists['list${widget.day}']!.isEmpty?
                       null : ()
                   {
-                    // PlansCubit.getInstance(context).putExerciseList(
-                    //     index: widget.day,
-                    //     exercises: PlansCubit.getInstance(context).planExercises
-                    // );
                     Navigator.pop(context);
                   },
                   child: Padding(

@@ -1,7 +1,12 @@
 import 'package:be_fit/models/exercises.dart';
+import 'package:be_fit/models/setRecord_model.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jiffy/jiffy.dart';
+
+import '../../modules/snackBar.dart';
 
 class PlansCubit extends Cubit<PlansStates>
 {
@@ -69,30 +74,6 @@ class PlansCubit extends Cubit<PlansStates>
           value.docs.forEach((element)async{
             if(muscles[i] == 'chest')
               {
-                // await FirebaseFirestore.instance
-                //     .collection('users')
-                //     .doc('gBWhBoVwrGNldxxAKbKk')
-                //     .collection('customExercises')
-                //     .where('muscle',isEqualTo: muscles[i])
-                //     .get()
-                //     .then((value)
-                // {
-                //   value.docs.forEach((element) {
-                //     chestExercisesForPlan.add(
-                //       Exercises(
-                //         name: element.data()['name'],
-                //         image: element.data()['image'],
-                //         docs: element.data()['description'],
-                //         id: element.id,
-                //         isCustom: element.data()['isCustom'],
-                //         video: element.data()['video']?? '',
-                //       ),
-                //     );
-                //
-                //     chestCheckBoxes.add(false);
-                //   });
-                // });
-
                 chestExercisesForPlan.add(
                     Exercises(
                         name: element.data()['name'],
@@ -101,6 +82,7 @@ class PlansCubit extends Cubit<PlansStates>
                         id: element.id,
                         isCustom: element.data()['isCustom'],
                         video: element.data()['video']?? '',
+                        muscleName: muscles[i],
                     ),
                 );
 
@@ -116,6 +98,7 @@ class PlansCubit extends Cubit<PlansStates>
                   id: element.id?? '',
                   isCustom: element.data()['isCustom']?? false,
                   video: element.data()['video']?? '',
+                    muscleName: muscles[i],
                 ),
                 );
                 backCheckBoxes.add(false);
@@ -130,6 +113,7 @@ class PlansCubit extends Cubit<PlansStates>
                     id: element.id?? '',
                     isCustom: element.data()['isCustom']?? false,
                     video: element.data()['video']?? '',
+                    muscleName: muscles[i],
                   ),
                 );
                 apsCheckBoxes.add(false);
@@ -144,6 +128,7 @@ class PlansCubit extends Cubit<PlansStates>
                   id: element.id?? '',
                   isCustom: element.data()['isCustom']?? false,
                   video: element.data()['video']?? '',
+                    muscleName: muscles[i],
                 ),
                 );
                 legsCheckBoxes.add(false);
@@ -157,6 +142,7 @@ class PlansCubit extends Cubit<PlansStates>
                 id: element.id?? '',
                 isCustom: element.data()['isCustom']?? false,
                 video: element.data()['video']?? '',
+                  muscleName: muscles[i],
               ),
               );
               shoulderCheckBoxes.add(false);
@@ -167,86 +153,6 @@ class PlansCubit extends Cubit<PlansStates>
         {
           emit(GetAllMusclesErrorState());
         });
-
-        // FirebaseFirestore.instance
-        // .collection('users')
-        // .doc('gBWhBoVwrGNldxxAKbKk')
-        // .collection('customExercises')
-        // .get()
-        // .then((value)
-        // {
-        //   value.docs.forEach((element) {
-        //     if(element.data()['muscle'] == 'Aps')
-        //       {
-        //         apsExercisesForPlan.add(
-        //           Exercises(
-        //             name: element.data()['name'],
-        //             image: element.data()['image'],
-        //             docs: element.data()['docs'],
-        //             id: element.id,
-        //             isCustom: element.data()['isCustom'],
-        //             video: element.data()['video']?? '',
-        //           ),
-        //         );
-        //         apsCheckBoxes.add(false);
-        //       }
-        //     else if(element.data()['muscle'] == 'chest')
-        //     {
-        //       chestExercisesForPlan.add(
-        //         Exercises(
-        //           name: element.data()['name'],
-        //           image: element.data()['image'],
-        //           docs: element.data()['docs'],
-        //           id: element.id,
-        //           isCustom: element.data()['isCustom'],
-        //           video: element.data()['video']?? '',
-        //         ),
-        //       );
-        //       chestCheckBoxes.add(false);
-        //     }
-        //     else if(element.data()['muscle'] == 'Back')
-        //     {
-        //       backExercisesForPlan.add(
-        //         Exercises(
-        //           name: element.data()['name']?? '',
-        //           image: element.data()['image']?? '',
-        //           docs: element.data()['docs']?? '',
-        //           id: element.id?? '',
-        //           isCustom: element.data()['isCustom']?? false,
-        //           video: element.data()['video']?? '',
-        //         ),
-        //       );
-        //       backCheckBoxes.add(false);
-        //     }
-        //     else if(element.data()['muscle'] == 'legs')
-        //     {
-        //       legsExercisesForPlan.add(
-        //         Exercises(
-        //           name: element.data()['name'],
-        //           image: element.data()['image'],
-        //           docs: element.data()['docs'],
-        //           id: element.id,
-        //           isCustom: element.data()['isCustom'],
-        //           video: element.data()['video']?? '',
-        //         ),
-        //       );
-        //       legsCheckBoxes.add(false);
-        //     }
-        //     else {
-        //       shouldersExercisesForPlan.add(
-        //         Exercises(
-        //           name: element.data()['name']?? '',
-        //           image: element.data()['image']?? '',
-        //           docs: element.data()['docs']?? '',
-        //           id: element.id?? '',
-        //           isCustom: element.data()['isCustom']?? false,
-        //           video: element.data()['video']?? '',
-        //         ),
-        //       );
-        //       shoulderCheckBoxes.add(false);
-        //     }
-        //   });
-        // });
       }
 
 
@@ -268,6 +174,7 @@ class PlansCubit extends Cubit<PlansStates>
     // print(musclesCheckBoxes);
     // print(musclesForPlan);
   }
+
   Map<String,dynamic> daysCheckBox = {};
   void newChangeCheckBoxValue({
     required int dayIndex,
@@ -375,6 +282,7 @@ class PlansCubit extends Cubit<PlansStates>
                    'name' : element.name,
                    'docs' : element.docs,
                    'image' : element.image,
+                   'muscle' : element.muscleName,
                  },
                );
                checkCollection.docs.forEach((element) {
@@ -385,6 +293,7 @@ class PlansCubit extends Cubit<PlansStates>
                      'dateTime': element.data()['dateTime'],
                      'reps': element.data()['reps'],
                      'weight': element.data()['weight'],
+                     // 'muscle' : element.data()['muscleName'],
                    },
                  );
                });
@@ -402,6 +311,7 @@ class PlansCubit extends Cubit<PlansStates>
                    'name' : element.name,
                    'docs' : element.docs,
                    'image' : element.image,
+                   'muscle' : element.muscleName,
                  },
                );
              }
@@ -511,6 +421,7 @@ class PlansCubit extends Cubit<PlansStates>
                         image: element.data()['image'],
                         docs: element.data()['docs'],
                         id: element.id,
+                        muscleName: element.data()['muscle'],
                         isCustom: false,
                         video: '',
                     ),
@@ -583,5 +494,92 @@ class PlansCubit extends Cubit<PlansStates>
       print('deleted');
       // المفروض امسحها من ال all plans عشان تتمسح قدام اليوزر
     }).catchError((error){});
+  }
+
+  Future<void> setARecordFromPlan({
+    required SetRecordForPlanExercise planExerciseRecord,
+    required context,
+    required String muscleName,
+})async
+  {
+    double? reps = double.tryParse(planExerciseRecord.reps);
+    double? weight = double.tryParse(planExerciseRecord.weight);
+
+    // edit exercise in main list
+     await FirebaseFirestore.instance
+        .collection('users')
+        .doc(planExerciseRecord.uId)
+        .collection('plans')
+        .doc(planExerciseRecord.planDoc)
+        .collection('list${planExerciseRecord.listIndex}')
+        .doc(planExerciseRecord.exerciseDoc)
+        .collection('records')
+        .add(
+        {
+          'weight' : weight,
+          'reps' : reps,
+          'dateTime' : Jiffy.now().yMMMd,
+        },
+    ).then((firstPublish)async
+    {
+      // edit exercise in muscle collection
+
+      await FirebaseFirestore.instance
+      .collection(muscleName)
+      .doc(planExerciseRecord.exerciseDoc)
+      .collection('records')
+      .doc(firstPublish.id)
+      .set(
+          {
+            'weight' : weight,
+            'reps' : reps,
+            'dateTime' : Jiffy.now().yMMMd,
+            'uId' : planExerciseRecord.uId,
+          },
+      ).then((secondPublish)async
+      {
+        await FirebaseFirestore.instance
+        .collection('users')
+        .doc('gBWhBoVwrGNldxxAKbKk')
+        .collection('plans')
+        .get()
+        .then((value)
+        {
+          List<int> days = [1,2,3,4,5,6];
+          value.docs.forEach((element) async {
+            for(int i = 1; i <= days.length; i++)
+              {                               // plan 1
+                QuerySnapshot planList = await element.reference
+                    .collection('list$i')
+                    .get();
+                if(planList.docs.isNotEmpty)
+                  {
+                    element.reference
+                        .collection('list$i')
+                        .doc(planExerciseRecord.exerciseDoc)
+                        .collection('records')
+                        .doc(firstPublish.id)
+                    .set(
+                      {
+                        'weight' : weight,
+                        'reps' : reps,
+                        'dateTime' : Jiffy.now().yMMMd,
+                        'uId' : planExerciseRecord.uId,
+                      },
+                    );
+                  }
+                else{
+                  return;
+                }
+              }
+          });
+        });
+        MySnackBar.showSnackBar(
+            context: context,
+            message: 'Saved to records',
+            color: Colors.green
+        );
+      });
+    });
   }
 }

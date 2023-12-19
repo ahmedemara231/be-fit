@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,7 +52,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       emit(GetExercisesErrorState());
     });
   }
-  
+
  Future<void> setRecord({
    required SetRecModel recModel,
    required context,

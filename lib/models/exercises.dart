@@ -4,6 +4,7 @@ class Exercises
   String name;
   String docs;
   String id;
+  String? muscleName;
   String video;
   bool isCustom;
 
@@ -12,6 +13,7 @@ class Exercises
     required this.image,
     required this.docs,
     required this.id,
+    this.muscleName,
     required this.isCustom,
     required this.video,
 });
