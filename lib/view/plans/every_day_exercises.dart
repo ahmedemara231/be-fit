@@ -1,4 +1,5 @@
 import 'package:be_fit/modules/myText.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../models/exercises.dart';
 import '../../view_model/plans/cubit.dart';
@@ -21,7 +22,7 @@ class DayExercises extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: MyText(text: 'Day$dayIndex exercises'),
+        title: MyText(text: 'Day$dayIndex exercises',),
       ),
       body: ListView.separated(
           itemBuilder: (context, index) => InkWell(

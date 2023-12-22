@@ -480,19 +480,33 @@ class PlansCubit extends Cubit<PlansStates>
                 .get();
             if(planList.docs.isNotEmpty)
             {
-              element.reference
-                  .collection('list$i')
-                  .doc(planExerciseRecord.exerciseDoc)
-                  .collection('records')
-                  .doc(firstPublish.id)
-                  .set(
+              await element.reference
+                  .collection('list$i').doc(planExerciseRecord.exerciseDoc)
+                  .get().then((value)
+              {
+                if(value.exists)
                 {
-                  'weight' : weight,
-                  'reps' : reps,
-                  'dateTime' : Jiffy.now().yMMMd,
-                  'uId' : planExerciseRecord.uId,
-                },
-              );
+                  print(1);
+                  element.reference
+                      .collection('list$i')
+                      .doc(planExerciseRecord.exerciseDoc)
+                      .collection('records')
+                      .doc(firstPublish.id)
+                      .set(
+                    {
+                      'weight' : weight,
+                      'reps' : reps,
+                      'dateTime' : Jiffy.now().yMMMd,
+                      'uId' : planExerciseRecord.uId,
+                    },
+                  );
+                }
+                else{
+                  print(0);
+                  return;
+                }
+              });
+
             }
             else{
               return;

@@ -88,18 +88,29 @@ class ExercisesCubit extends Cubit<ExercisesStates>
                  .collection('list$i').get();
              if(checkCollection.docs.isNotEmpty)
                {
-                 element.reference
-                     .collection('list$i')
-                     .doc(recModel.exerciseId)
-                     .collection('records')
-                     .doc(recordId.id)
-                     .set(
+                 await element.reference
+                     .collection('list$i').doc(recModel.exerciseId)
+                     .get().then((value)
+                 {
+                   if(value.exists)
                    {
-                     'weight' : weight,
-                     'reps' : reps,
-                     'dateTime' : Jiffy.now().yMMMd,
-                   },
-                 );
+                     element.reference
+                         .collection('list$i')
+                         .doc(recModel.exerciseId)
+                         .collection('records')
+                         .doc(recordId.id)
+                         .set(
+                       {
+                         'weight' : weight,
+                         'reps' : reps,
+                         'dateTime' : Jiffy.now().yMMMd,
+                       },
+                     );
+                   }
+                   else{
+                     return;
+                   }
+                 });
                }
              else{
                return;
