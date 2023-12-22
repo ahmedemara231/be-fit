@@ -1,20 +1,16 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jiffy/jiffy.dart';
-
 import '../../models/add_custom_exercise.dart';
 import '../../models/exercises.dart';
 import '../../models/setRecord_model.dart';
-
 
 class ExercisesCubit extends Cubit<ExercisesStates>
 {
@@ -74,10 +70,10 @@ class ExercisesCubit extends Cubit<ExercisesStates>
          'dateTime' : Jiffy.now().yMMMd,
          'uId' : recModel.uId,
        },
-   ).then((recordId)
+   ).then((recordId)async
    {
      // set a record for exercise in plans
-     FirebaseFirestore.instance
+     await FirebaseFirestore.instance
      .collection('users')
      .doc('gBWhBoVwrGNldxxAKbKk')
      .collection('plans')
@@ -88,7 +84,8 @@ class ExercisesCubit extends Cubit<ExercisesStates>
          List<int> lists = [1,2,3,4,5,6];
          for(int i = 1; i < lists.length; i++)
            {
-             QuerySnapshot checkCollection = await element.reference.collection('list$i').get();
+             QuerySnapshot checkCollection = await element.reference
+                 .collection('list$i').get();
              if(checkCollection.docs.isNotEmpty)
                {
                  element.reference
@@ -102,20 +99,18 @@ class ExercisesCubit extends Cubit<ExercisesStates>
                      'reps' : reps,
                      'dateTime' : Jiffy.now().yMMMd,
                    },
-                 ).then((value)
-                 {
-                   MySnackBar.showSnackBar(
-                       context: context,
-                       message: 'Saved to records',
-                       color: Colors.green
-                   );
-                 });
+                 );
                }
              else{
                return;
              }
            }
        });
+       MySnackBar.showSnackBar(
+           context: context,
+           message: 'Saved to records',
+           color: Colors.green
+       );
      });
      emit(SetNewRecordSuccessState());
    }).catchError((error)

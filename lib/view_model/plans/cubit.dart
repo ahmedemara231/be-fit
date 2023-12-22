@@ -325,60 +325,6 @@ class PlansCubit extends Cubit<PlansStates>
     });
   }
 
-  //   Future<void> createNewPlan({
-//     required int? daysNumber,
-//     required String name,
-// })async
-//   {
-//     emit(CreateNewPlanLoadingState());
-//     await FirebaseFirestore.instance
-//         .collection('users')
-//         .doc(''gBWhBoVwrGNldxxAKbKk'')
-//         .collection('plans')
-//         .add(
-//         {
-//           'daysNumber' : daysNumber,
-//           'name' : name,
-//         },
-//     ).then((value)
-//     {
-//       List<String> listsKeys = lists.keys.toList();
-//       print('half made');
-//
-//       for(int index = 0; index <= ( daysNumber! - 1 ); index++)
-//         {
-//           print(index);
-//
-//           FirebaseFirestore.instance
-//               .collection('users')
-//               .doc('gBWhBoVwrGNldxxAKbKk')
-//               .collection('plans')
-//               .doc(value.id)    // list1
-//               .collection(listsKeys[index]);// على حسب عدد الايام هيتفتح collections
-//
-//           lists[listsKeys[index]]!.forEach((element) {
-//             FirebaseFirestore.instance
-//                 .collection('users')
-//                 .doc('gBWhBoVwrGNldxxAKbKk')
-//                 .collection('plans')
-//                 .doc(value.id)
-//                 .collection(listsKeys[index])
-//                 .add(
-//                 {
-//                   'name' : element.name,
-//                   'image' : element.image,
-//                   'docs' : element.docs,
-//                 },
-//             );
-//           });
-//         }
-//       emit(CreateNewPlanSuccessState());
-//     }).catchError((error)
-//     {
-//       emit(CreateNewPlanErrorState());
-//     });
-//   }
-
   Map<String,List<Exercises>> plan = {};
   Map<String,dynamic> allPlans = {};
   List<String> allPlansIds = [];
@@ -505,81 +451,60 @@ class PlansCubit extends Cubit<PlansStates>
     double? reps = double.tryParse(planExerciseRecord.reps);
     double? weight = double.tryParse(planExerciseRecord.weight);
 
-    // edit exercise in main list
-     await FirebaseFirestore.instance
-        .collection('users')
-        .doc(planExerciseRecord.uId)
-        .collection('plans')
-        .doc(planExerciseRecord.planDoc)
-        .collection('list${planExerciseRecord.listIndex}')
+    await FirebaseFirestore.instance
+        .collection(muscleName)
         .doc(planExerciseRecord.exerciseDoc)
         .collection('records')
         .add(
-        {
-          'weight' : weight,
-          'reps' : reps,
-          'dateTime' : Jiffy.now().yMMMd,
-        },
+      {
+        'weight' : weight,
+        'reps' : reps,
+        'dateTime' : Jiffy.now().yMMMd,
+        'uId' : planExerciseRecord.uId,
+      },
     ).then((firstPublish)async
     {
-      // edit exercise in muscle collection
-
       await FirebaseFirestore.instance
-      .collection(muscleName)
-      .doc(planExerciseRecord.exerciseDoc)
-      .collection('records')
-      .doc(firstPublish.id)
-      .set(
-          {
-            'weight' : weight,
-            'reps' : reps,
-            'dateTime' : Jiffy.now().yMMMd,
-            'uId' : planExerciseRecord.uId,
-          },
-      ).then((secondPublish)async
+          .collection('users')
+          .doc('gBWhBoVwrGNldxxAKbKk')
+          .collection('plans')
+          .get()
+          .then((value)
       {
-        await FirebaseFirestore.instance
-        .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
-        .collection('plans')
-        .get()
-        .then((value)
-        {
-          List<int> days = [1,2,3,4,5,6];
-          value.docs.forEach((element) async {
-            for(int i = 1; i <= days.length; i++)
-              {                               // plan 1
-                QuerySnapshot planList = await element.reference
-                    .collection('list$i')
-                    .get();
-                if(planList.docs.isNotEmpty)
-                  {
-                    element.reference
-                        .collection('list$i')
-                        .doc(planExerciseRecord.exerciseDoc)
-                        .collection('records')
-                        .doc(firstPublish.id)
-                    .set(
-                      {
-                        'weight' : weight,
-                        'reps' : reps,
-                        'dateTime' : Jiffy.now().yMMMd,
-                        'uId' : planExerciseRecord.uId,
-                      },
-                    );
-                  }
-                else{
-                  return;
-                }
-              }
-          });
+        List<int> days = [1,2,3,4,5,6];
+        value.docs.forEach((element) async {
+          for(int i = 1; i <= days.length; i++)
+          {                               // plan 1
+            QuerySnapshot planList = await element.reference
+                .collection('list$i')
+                .get();
+            if(planList.docs.isNotEmpty)
+            {
+              element.reference
+                  .collection('list$i')
+                  .doc(planExerciseRecord.exerciseDoc)
+                  .collection('records')
+                  .doc(firstPublish.id)
+                  .set(
+                {
+                  'weight' : weight,
+                  'reps' : reps,
+                  'dateTime' : Jiffy.now().yMMMd,
+                  'uId' : planExerciseRecord.uId,
+                },
+              );
+            }
+            else{
+              return;
+            }
+          }
         });
-        MySnackBar.showSnackBar(
-            context: context,
-            message: 'Saved to records',
-            color: Colors.green
-        );
       });
+      MySnackBar.showSnackBar(
+          context: context,
+          message: 'Saved to records',
+          color: Colors.green
+      );
     });
   }
 }
