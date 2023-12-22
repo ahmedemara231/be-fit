@@ -58,11 +58,12 @@ class ExercisesCubit extends Cubit<ExercisesStates>
    required context,
 })async
  {
+   // set a record for exercise
    double? reps = double.tryParse(recModel.reps);
    double? weight = double.tryParse(recModel.weight);
 
    emit(SetNewRecordLoadingState());
-   FirebaseFirestore.instance
+   await FirebaseFirestore.instance
        .collection(recModel.muscleName)
        .doc(recModel.exerciseId)
        .collection('records')
@@ -73,13 +74,49 @@ class ExercisesCubit extends Cubit<ExercisesStates>
          'dateTime' : Jiffy.now().yMMMd,
          'uId' : recModel.uId,
        },
-   ).then((value)
+   ).then((recordId)
    {
-     MySnackBar.showSnackBar(
-         context: context,
-         message: 'Saved to records',
-         color: Colors.green
-     );
+     // set a record for exercise in plans
+     FirebaseFirestore.instance
+     .collection('users')
+     .doc('gBWhBoVwrGNldxxAKbKk')
+     .collection('plans')
+     .get()
+     .then((value)
+     {
+       value.docs.forEach((element) async{
+         List<int> lists = [1,2,3,4,5,6];
+         for(int i = 1; i < lists.length; i++)
+           {
+             QuerySnapshot checkCollection = await element.reference.collection('list$i').get();
+             if(checkCollection.docs.isNotEmpty)
+               {
+                 element.reference
+                     .collection('list$i')
+                     .doc(recModel.exerciseId)
+                     .collection('records')
+                     .doc(recordId.id)
+                     .set(
+                   {
+                     'weight' : weight,
+                     'reps' : reps,
+                     'dateTime' : Jiffy.now().yMMMd,
+                   },
+                 ).then((value)
+                 {
+                   MySnackBar.showSnackBar(
+                       context: context,
+                       message: 'Saved to records',
+                       color: Colors.green
+                   );
+                 });
+               }
+             else{
+               return;
+             }
+           }
+       });
+     });
      emit(SetNewRecordSuccessState());
    }).catchError((error)
    {
