@@ -40,10 +40,13 @@ dependencies:
   fl_chart: ^0.20.1
   image_picker: ^1.0.4
   video_player: ^2.7.1
+  shared_preferences: ^2.2.2
+
   firebase_core: ^2.16.0
   firebase_auth: ^4.1.2
   cloud_firestore: ^4.1.0
   firebase_storage: ^11.5.3
+  firebase_messaging: ^14.7.9
 
 dev_dependencies:
   flutter_test:

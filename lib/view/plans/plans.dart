@@ -58,10 +58,12 @@ class _PlansState extends State<Plans> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              MyText(
-                                text: 'Create new plan',
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
+                              Expanded(
+                                child: MyText(
+                                  text: 'Create new plan',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                ),
                               ),
                               const SizedBox(width: 10,),
                               const Icon(Icons.add),
