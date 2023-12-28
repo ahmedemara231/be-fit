@@ -10,11 +10,30 @@ class CacheHelper
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  static Future<void> setData({
+  static Future<void> handleUserData({
     required List<String> userData
 })async
   {
-    bool result = await sharedPreferences.setStringList('userData', userData);
-    print(result);
+    await sharedPreferences.setStringList('userData', userData)
+        .then((value)
+    {
+      getUserData();
+      return value;
+    });
+  }
+
+  static late String uId;
+  static late String userName;
+  static void getUserData()
+  {
+    uId = sharedPreferences.getStringList('userData')![0];
+    userName = sharedPreferences.getStringList('userData')![1];
+    print(uId);
+    print(userName);
+  }
+
+  static void kill()
+  {
+    sharedPreferences.setStringList('userData', []);
   }
 }

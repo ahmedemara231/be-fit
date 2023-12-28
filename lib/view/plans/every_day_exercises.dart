@@ -1,4 +1,5 @@
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../models/exercises.dart';
@@ -43,6 +44,7 @@ class DayExercises extends StatelessWidget {
                     onTap: () async
                     {
                       await PlansCubit.getInstance(context).deleteExerciseFromPlan(
+                        uId: CacheHelper.uId,
                         planDoc: planDoc,
                         listIndex: listIndex,
                         exerciseDoc:dayExercises[index].id,

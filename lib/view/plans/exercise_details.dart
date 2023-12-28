@@ -1,6 +1,7 @@
 import 'package:be_fit/models/exercises.dart';
 import 'package:be_fit/models/setRecord_model.dart';
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class PlanExerciseDetails extends StatelessWidget {
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('users')
-                  .doc('gBWhBoVwrGNldxxAKbKk')
+                  .doc(CacheHelper.uId)
                   .collection('plans')
                   .doc(planDoc)
                   .collection('list${listIndex + 1}')
@@ -218,7 +219,7 @@ class PlanExerciseDetails extends StatelessWidget {
                                       exerciseDoc: exercise.id,
                                       reps: repsCont.text,
                                       weight: weightCont.text,
-                                      uId: 'gBWhBoVwrGNldxxAKbKk',
+                                      uId: CacheHelper.uId,
                                   ),
                                   context: context,
                                   muscleName: exercise.muscleName!

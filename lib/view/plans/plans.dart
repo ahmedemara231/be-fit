@@ -1,5 +1,6 @@
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/plans/plan_details.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class Plans extends StatefulWidget {
 class _PlansState extends State<Plans> {
   @override
   void initState() {
-    PlansCubit.getInstance(context).getAllPlans();
+    PlansCubit.getInstance(context).getAllPlans(CacheHelper.uId);
     super.initState();
   }
 
@@ -79,9 +80,13 @@ class _PlansState extends State<Plans> {
                 const Center(
                   child: CircularProgressIndicator(),
                 ),
-              if(state is! GetAllPlansLoadingState)
+              if(state is! GetAllPlans2LoadingState)
                 Expanded(
-                  child: ListView.separated(
+                  child: PlansCubit.getInstance(context).allPlans.isEmpty?
+                  Center(
+                    child: MyText(text: 'No Plans Yet',fontSize: 20,fontWeight: FontWeight.w500,),
+                  ):
+                  ListView.separated(
                       itemBuilder: (context, index) => InkWell(
                         onLongPress: ()
                         {
@@ -100,7 +105,8 @@ class _PlansState extends State<Plans> {
                                 onTap: () async
                                 {
                                   await PlansCubit.getInstance(context).deletePlan(
-                                    index,
+                                    index : index,
+                                    uId: CacheHelper.uId,
                                     planName: PlansCubit.getInstance(context).plansNames[index],
                                   );
                                 },

@@ -38,7 +38,7 @@ class LoginCubit extends Cubit<LoginStates>
             id: value.id,
           );
           print(user);
-          await CacheHelper.setData(
+          await CacheHelper.handleUserData(
               userData:
               [
                 user.id!,

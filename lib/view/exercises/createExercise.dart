@@ -1,6 +1,7 @@
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/modules/textFormField.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class CreateExercise extends StatelessWidget {
                       else{
                         await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
                           addCustomExerciseModel: AddCustomExerciseModel(
-                              uId: 'gBWhBoVwrGNldxxAKbKk',
+                              uId: CacheHelper.uId,
                               muscle: muscleName,
                               name: nameCont.text,
                               description: descriptionCont.text,
@@ -51,6 +52,7 @@ class CreateExercise extends StatelessWidget {
                         {
                           nameCont.clear();
                           descriptionCont.clear();
+                          Navigator.pop(context);
                         });
                       }
                     }

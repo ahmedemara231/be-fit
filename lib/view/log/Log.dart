@@ -1,5 +1,6 @@
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/log/chart_screen.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/log/cubit.dart';
 import 'package:be_fit/view_model/log/states.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _LogState extends State<Log> {
       {
         LogCubit.getInstance(context).sendRecordsToMakeChartForSpeExer(
           exerciseId: widget.exerciseId,
+          uId: CacheHelper.uId
         );
       }
     else{

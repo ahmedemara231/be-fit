@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
-
 import '../../modules/snackBar.dart';
 
 class PlansCubit extends Cubit<PlansStates>
@@ -217,12 +216,13 @@ class PlansCubit extends Cubit<PlansStates>
   Future<void> createNewPlan({
     required int? daysNumber,
     required String name,
+    required String uId,
   })async
   {
     emit(CreateNewPlanLoadingState());
     await FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(uId)
         .collection('plans')
         .add(
       {
@@ -238,7 +238,7 @@ class PlansCubit extends Cubit<PlansStates>
       {
         FirebaseFirestore.instance
             .collection('users')
-            .doc('gBWhBoVwrGNldxxAKbKk')
+            .doc(uId)
             .collection('plans')
             .doc(value.id)   // البلان اللي انت لسة عاملها
             .collection(listsKeys[index]); // على حسب عدد الايام هيتفتح collections
@@ -250,7 +250,7 @@ class PlansCubit extends Cubit<PlansStates>
 
          DocumentReference planExerciseId = FirebaseFirestore.instance
               .collection('users')
-              .doc('gBWhBoVwrGNldxxAKbKk')
+              .doc(uId)
               .collection('plans')
               .doc(value.id)
               .collection(listsKeys[index])
@@ -264,14 +264,14 @@ class PlansCubit extends Cubit<PlansStates>
                  .collection(muscles[i])
                  .doc(element.id)
                  .collection('records')
-                 .where('uId',isEqualTo: 'gBWhBoVwrGNldxxAKbKk')
+                 .where('uId',isEqualTo: uId)
                  .get();
 
              if(checkCollection.docs.isNotEmpty)
              {
                DocumentReference exerciseDoc = FirebaseFirestore.instance
                    .collection('users')
-                   .doc('gBWhBoVwrGNldxxAKbKk')
+                   .doc(uId)
                    .collection('plans')
                    .doc(value.id)
                    .collection(listsKeys[index])
@@ -293,7 +293,6 @@ class PlansCubit extends Cubit<PlansStates>
                      'dateTime': element.data()['dateTime'],
                      'reps': element.data()['reps'],
                      'weight': element.data()['weight'],
-                     // 'muscle' : element.data()['muscleName'],
                    },
                  );
                });
@@ -301,7 +300,7 @@ class PlansCubit extends Cubit<PlansStates>
              else{
                FirebaseFirestore.instance
                    .collection('users')
-                   .doc('gBWhBoVwrGNldxxAKbKk')
+                   .doc(uId)
                    .collection('plans')
                    .doc(value.id)
                    .collection(listsKeys[index])
@@ -331,7 +330,7 @@ class PlansCubit extends Cubit<PlansStates>
   List<int> days = [1,2,3,4,5,6];
 
   List<String> plansNames = [];
-  Future<void> getAllPlans()async
+  Future<void> getAllPlans(String uId)async
   {
     plan = {};
     allPlans = {};
@@ -340,7 +339,7 @@ class PlansCubit extends Cubit<PlansStates>
     emit(GetAllPlans2LoadingState());
     CollectionReference plansCollection = FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(uId)
         .collection('plans');
 
     await plansCollection
@@ -402,11 +401,15 @@ class PlansCubit extends Cubit<PlansStates>
     return allKeys;
   }
 
-  Future<void> deletePlan(int index,{required String planName})async
+  Future<void> deletePlan({
+    required int index,
+    required String uId,
+    required String planName,
+  })async
   {
     await FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(uId)
         .collection('plans')
         .doc(allPlansIds[index])
         .delete()
@@ -425,11 +428,12 @@ class PlansCubit extends Cubit<PlansStates>
     required String planDoc,
     required int listIndex,
     required String exerciseDoc,
+    required String uId,
 })async
   {
     await FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(uId)
         .collection('plans')
         .doc(planDoc)
         .collection('list${listIndex + 1}')
@@ -466,7 +470,7 @@ class PlansCubit extends Cubit<PlansStates>
     {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc('gBWhBoVwrGNldxxAKbKk')
+          .doc(planExerciseRecord.uId)
           .collection('plans')
           .get()
           .then((value)

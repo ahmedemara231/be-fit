@@ -2,6 +2,7 @@
 import 'package:be_fit/modules/otp_tff.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view/log/Log.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -77,8 +78,8 @@ class SpecificExercise extends StatelessWidget {
             children: [
               StreamBuilder(
                 stream: isCustom == false?
-                FirebaseFirestore.instance.collection(muscleName).doc(id).collection('records').where('uId',isEqualTo: 'gBWhBoVwrGNldxxAKbKk').orderBy('dateTime').snapshots() :
-                FirebaseFirestore.instance.collection('users').doc('gBWhBoVwrGNldxxAKbKk').collection('customExercises').doc(id).collection('records').orderBy('dateTime').snapshots(),
+                FirebaseFirestore.instance.collection(muscleName).doc(id).collection('records').where('uId',isEqualTo: CacheHelper.uId).orderBy('dateTime').snapshots() :
+                FirebaseFirestore.instance.collection('users').doc(CacheHelper.uId).collection('customExercises').doc(id).collection('records').orderBy('dateTime').snapshots(),
                 builder: (context, snapshot)
                 {
                   if(snapshot.hasData)
@@ -259,7 +260,7 @@ class SpecificExercise extends StatelessWidget {
                                               exerciseId: id,
                                               weight: weightCont.text,
                                               reps: repsCont.text,
-                                              uId: 'gBWhBoVwrGNldxxAKbKk',
+                                              uId: CacheHelper.uId,
                                           ),
                                           context: context,
                                         ).then((value)
@@ -274,7 +275,7 @@ class SpecificExercise extends StatelessWidget {
                                             index: index!,
                                             reps: repsCont.text,
                                             weight: weightCont.text,
-                                            uId: 'gBWhBoVwrGNldxxAKbKk',
+                                            uId: CacheHelper.uId,
                                         ),
                                       ).then((value)
                                       {

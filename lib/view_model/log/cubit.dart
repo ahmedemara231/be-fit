@@ -11,13 +11,14 @@ class LogCubit extends Cubit<LogStates>
   List<Records> recordsRepsForSpecExercise = [];
   Future<void> sendRecordsToMakeChartForSpeExer({
     required String exerciseId,
+    required String uId,
 })async
   {
     recordsRepsForSpecExercise = [];
     emit(GetRecordsRepsForSpecificExerciseLoadingState());
     await FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(uId)
         .collection('customExercises')
         .doc(exerciseId)
         .collection('records')
@@ -71,56 +72,4 @@ class LogCubit extends Cubit<LogStates>
       emit(GetRepsForExerciseErrorState());
     });
   }
-  // List<Map<String,dynamic>> allRecords = [];
-  // Future<void> getAllRecords()async
-  // {
-  //   await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc('gBWhBoVwrGNldxxAKbKk')
-  //       .collection('customExercises')
-  //       .get()
-  //       .then((value)
-  //   {
-  //     value.docs.forEach((element) {
-  //       element
-  //           .reference
-  //           .collection('records')
-  //           .get()
-  //           .then((value)
-  //       {
-  //         value.docs.forEach((element) {
-  //           allRecords.add(element.data());
-  //         });
-  //       });
-  //     });
-  //   });
-  //
-  // }
-  // // get all reps in records for specific exercise
-  // List<double> repsForExercise = [];
-  // Future<void> getReps()async
-  // {
-  //   repsForExercise = [];
-  //   emit(GetRepsForSpecificExerciseLoadingState());
-  //   await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc('gBWhBoVwrGNldxxAKbKk')
-  //       .collection('customExercises')
-  //       .doc('ZgMKTtqJrkH1iQwy7Qv8')
-  //       .collection('records')
-  //       .get()
-  //       .then((value)
-  //   {
-  //     value.docs.forEach((element) {
-  //       repsForExercise.add(element.data()['reps']);
-  //     });
-  //     print(repsForExercise);
-  //     emit(GetRepsForSpecificExerciseSuccessState());
-  //   }).catchError((error)
-  //   {
-  //     print(error.toString());
-  //     emit(GetRepsForSpecificExerciseErrorState());
-  //   });
-  //
-  // }
 }

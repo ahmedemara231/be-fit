@@ -75,7 +75,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
      // set a record for exercise in plans
      await FirebaseFirestore.instance
      .collection('users')
-     .doc('gBWhBoVwrGNldxxAKbKk')
+     .doc(recModel.uId)
      .collection('plans')
      .get()
      .then((value)
@@ -199,7 +199,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     emit(GetCustomExercisesLoadingState());
     await FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(uId)
         .collection('customExercises')
         .where('muscle',isEqualTo: muscle)
         .get()
@@ -233,7 +233,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   {
     await FirebaseFirestore.instance
         .collection('users')
-        .doc('gBWhBoVwrGNldxxAKbKk')
+        .doc(uId)
         .collection('customExercises')
         .doc(customExercises[index].id)
         .delete()

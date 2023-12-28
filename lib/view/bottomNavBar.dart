@@ -2,23 +2,35 @@ import 'package:be_fit/view/plans/plans.dart';
 import 'package:be_fit/view/profile/profile.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'exercises/bodyMuscles.dart';
 
-class BottomNavBar extends StatelessWidget {
-    BottomNavBar({super.key});
+class BottomNavBar extends StatefulWidget {
+    const BottomNavBar({super.key});
 
+  @override
+  State<BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> mainScreens =
-   [
+   const [
      BodyMuscles(),
      Plans(),
-     const Profile(),
+     Profile(),
   ];
+
+  @override
+  void initState() {
+    CacheHelper.getUserData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BottomNavCubit,BottomNavState>(
-      builder: (context, state) 
+      builder: (context, state)
       {
         return Scaffold(
           bottomNavigationBar: BottomNavigationBar(

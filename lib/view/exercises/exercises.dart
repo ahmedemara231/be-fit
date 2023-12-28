@@ -1,5 +1,6 @@
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/exercises/specificExercise/specificExercise.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
         muscleName: widget.muscleName,
     );
     ExercisesCubit.getInstance(context).getCustomExercises(
-        uId: '',
+        uId: CacheHelper.uId,
         muscle: widget.muscleName,
     );
     super.initState();
@@ -107,12 +108,41 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                     ),
                     // Custom Exercises
                     if(ExercisesCubit.getInstance(context).customExercises.isEmpty)
-                      Center(
-                        child: MyText(
-                          text: 'No Custom Exercises yet',
-                          fontSize: 22,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.red,
+                                child: IconButton(
+                                  onPressed: ()
+                                  {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CreateExercise(
+                                          muscleName: widget.muscleName,
+                                        ),
+                                        // maintainState: false,
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: MyText(
+                              text: 'No Custom Exercises yet',
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     if(ExercisesCubit.getInstance(context).customExercises.isNotEmpty)
                       Column(
@@ -180,7 +210,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                             onTap: () async
                                             {
                                               await ExercisesCubit.getInstance(context).deleteCustomExercise(
-                                                  uId: 'uId',
+                                                  uId: CacheHelper.uId,
                                                   index: index,
                                               );
                                             },

@@ -1,6 +1,7 @@
 import 'package:be_fit/models/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +126,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                   null : () async
                   {
                     await PlansCubit.getInstance(context).createNewPlan(
+                      uId: CacheHelper.uId,
                       daysNumber: widget.daysNumber,
                       name: widget.name,
                     ).then((value)
@@ -132,7 +134,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BottomNavBar(),
+                            builder: (context) => const BottomNavBar(),
                           ), (route) => false,
                       );
                     });
