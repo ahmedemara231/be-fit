@@ -18,13 +18,14 @@ class LoginCubit extends Cubit<LoginStates>
     required context,
 })async
   {
+    emit(LoginLoadingState());
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: user.email!,
           password: user.password!,
-      ).then((value)
+      ).then((value)async
       {
-        FirebaseFirestore.instance
+        await FirebaseFirestore.instance
         .collection('users')
         .doc(value.user?.uid)
         .get()
@@ -43,10 +44,14 @@ class LoginCubit extends Cubit<LoginStates>
                 user.id!,
                 user.name!,
               ],
-          );
+          ).then((value)
+          {
+            emit(LoginSuccessState());
+          });
         });
       });
     } on FirebaseAuthException catch (e) {
+      emit(LoginErrorState());
       if (e.code == 'user-not-found') {
         MySnackBar.showSnackBar(
             context: context,
@@ -69,4 +74,18 @@ class LoginCubit extends Cubit<LoginStates>
       }
     }
   }
+
+  Future<void> forgotPassword(String email,context)async
+  {
+    await FirebaseAuth.instance
+        .sendPasswordResetEmail(email: email).then((value)
+    {
+      MySnackBar.showSnackBar(
+          context: context,
+          message: 'Check your email',
+          color: Colors.green
+      );
+    });
+  }
+
 }

@@ -29,7 +29,7 @@ class ExerciseModel extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: MyText(
-              text: '$numberOfExercises Exercises'?? '' ,
+              text: '$numberOfExercises Exercises',
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.white,

@@ -1,6 +1,7 @@
 import 'package:be_fit/models/user.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/textFormField.dart';
+import 'package:be_fit/view/auth/forgot_password/forgot_password.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,10 @@ class Login extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                ElevatedButton(
+                if(state is LoginLoadingState)
+                  const CircularProgressIndicator(),
+                if(state is! LoginLoadingState)
+                  ElevatedButton(
                     onPressed: () async
                     {
                       if(formKey.currentState!.validate())
@@ -67,6 +71,19 @@ class Login extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 40.0,vertical: 10),
                       child: MyText(text: 'Login',color: Colors.white,fontSize: 18,),
                     )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextButton(
+                      onPressed: ()
+                      {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPassword(),
+                          ),
+                        );
+                      }, child: MyText(text: 'forget password?')),
+                ),
                 TextButton(
                     onPressed: ()
                     {

@@ -57,31 +57,28 @@ class SignUpCubit extends Cubit<SignUpStates>
         }
       });
     } on FirebaseAuthException catch (e) {
+      emit(SignUpErrorState());
       if (e.code == 'weak-password') {
         MySnackBar.showSnackBar(
             context: context,
             message: 'The password provided is too weak.',
             color: Colors.red
         );
-        emit(SignUpErrorState());
       } else if (e.code == 'email-already-in-use') {
         MySnackBar.showSnackBar(
             context: context,
             message: 'The account already exists for that email.',
             color: Colors.red
         );
-        emit(SignUpErrorState());
       }
       else{
         MySnackBar.showSnackBar(
           context: context,
           message: 'Please try again later',
         );
-        emit(SignUpErrorState());
       }
     } catch (e) {
       print(e);
-      emit(SignUpErrorState());
     }
   }
 }

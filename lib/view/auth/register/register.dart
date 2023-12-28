@@ -1,13 +1,13 @@
 import 'package:be_fit/models/user.dart';
+import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../modules/myText.dart';
 import '../../../modules/textFormField.dart';
 
 class SignUp extends StatefulWidget {
-  SignUp({super.key});
+  const SignUp({super.key});
 
   @override
   State<SignUp> createState() => _SignUpState();
@@ -97,6 +97,22 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                 ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                      onPressed: ()async
+                      {
+                        await SignUpCubit.getInstance(context).signUp(
+                            user: Trainee(
+                              name: nameCont.text,
+                              email: emailCont.text,
+                              phone: phoneCont.text,
+                              password: passCont.text,
+                            ),
+                            context: context
+                        );
+                      }, child: MyText(text: 'Sign Up')),
+                )
               ],
             ),
           ),
