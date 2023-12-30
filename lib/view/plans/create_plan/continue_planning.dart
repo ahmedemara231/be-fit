@@ -1,4 +1,4 @@
-import 'package:be_fit/models/exercises.dart';
+import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';

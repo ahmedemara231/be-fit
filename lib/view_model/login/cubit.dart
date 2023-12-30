@@ -1,5 +1,6 @@
-import 'package:be_fit/models/user.dart';
+import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/modules/snackBar.dart';
+import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -87,5 +88,4 @@ class LoginCubit extends Cubit<LoginStates>
       );
     });
   }
-
 }

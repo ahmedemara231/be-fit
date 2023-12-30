@@ -1,4 +1,4 @@
-import 'package:be_fit/models/records_model.dart';
+import 'package:be_fit/models/data_types/records_model.dart';
 import 'package:be_fit/view/log/titles.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';

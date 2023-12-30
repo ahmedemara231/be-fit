@@ -1,17 +1,18 @@
-import 'package:be_fit/models/exercises.dart';
-import 'package:be_fit/models/setRecord_model.dart';
+import 'package:be_fit/models/data_types/exercises.dart';
+import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../modules/otp_tff.dart';
-import '../../modules/snackBar.dart';
-import '../../widgets_models/records_model.dart';
+import '../../../modules/otp_tff.dart';
+import '../../../modules/snackBar.dart';
+import '../../../widgets_models/records_model.dart';
+import '../../log/Log.dart';
 
 class PlanExerciseDetails extends StatelessWidget {
-  late Exercises exercise;
+  Exercises exercise;
   String planDoc;
   int listIndex;
   PlanExerciseDetails({
@@ -32,6 +33,23 @@ class PlanExerciseDetails extends StatelessWidget {
       key: scaffoldKey,
       appBar: AppBar(
         title: MyText(text: exercise.name),
+        actions: [
+          TextButton(
+              onPressed: ()
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Log(
+                      exerciseId: exercise.id,
+                      muscleName: exercise.muscleName!,
+                      isCustom: exercise.isCustom,
+                    ),
+                  ),
+                );
+              },
+              child: MyText(text: 'Statistics',fontSize: 18,fontWeight: FontWeight.w500,))
+        ],
       ),
       body: ListView(
         children: [

@@ -1,4 +1,4 @@
-import 'package:be_fit/models/records_model.dart';
+import 'package:be_fit/models/data_types/records_model.dart';
 import 'package:be_fit/view_model/log/cubit.dart';
 import 'package:be_fit/view_model/log/states.dart';
 import 'package:flutter/material.dart';

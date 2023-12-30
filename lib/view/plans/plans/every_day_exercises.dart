@@ -2,8 +2,8 @@ import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../models/exercises.dart';
-import '../../view_model/plans/cubit.dart';
+import '../../../models/data_types/exercises.dart';
+import '../../../view_model/plans/cubit.dart';
 import 'exercise_details.dart';
 
 class DayExercises extends StatelessWidget {

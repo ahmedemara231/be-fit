@@ -32,8 +32,9 @@ class CacheHelper
     print(userName);
   }
 
-  static void kill()
+  static Future<void> kill()async
   {
-    sharedPreferences.setStringList('userData', []);
+    bool logOut = await sharedPreferences.setStringList('userData', []);
+    print(logOut);
   }
 }

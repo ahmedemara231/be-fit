@@ -1,4 +1,4 @@
-import 'package:be_fit/models/records_model.dart';
+import 'package:be_fit/models/data_types/records_model.dart';
 import 'package:be_fit/view_model/log/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -14,6 +14,8 @@ import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
+import 'package:be_fit/view_model/setting/cubit.dart';
+import 'package:be_fit/view_model/setting/states.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,6 +59,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => SignUpCubit(SignUpInitialState()),
+        ),
+        BlocProvider(
+          create: (context) => SettingCubit(SettingInitialState()),
         ),
       ],
       child: MaterialApp(

@@ -1,11 +1,11 @@
 import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/view/plans/plan_details.dart';
+import 'package:be_fit/view/plans/plans/plan_details.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'create_plan/create_plan.dart';
+import '../create_plan/create_plan.dart';
 
 class Plans extends StatefulWidget {
   const Plans({super.key});

@@ -1,6 +1,6 @@
-import 'package:be_fit/models/exercises.dart';
+import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/view/plans/every_day_exercises.dart';
+import 'package:be_fit/view/plans/plans/every_day_exercises.dart';
 import 'package:flutter/material.dart';
 
 class PlanDetails extends StatefulWidget {
@@ -17,24 +17,13 @@ class PlanDetails extends StatefulWidget {
   @override
   State<PlanDetails> createState() => _PlanDetailsState();
 }
-late List<String> planLists;
 class _PlanDetailsState extends State<PlanDetails> {
+
+  late List<String> planLists;
+
   @override
   void initState() {
     print('plan is : ${widget.plan}');
-
-    widget.plan.forEach((key, value) {
-      if(value.isNotEmpty)
-        {
-          print('still $key');
-        }
-      else{
-        print('remove $key');
-        widget.plan.remove(key);
-      }
-    });
-    print(widget.plan);
-
     planLists = widget.plan.keys.toList();
     print(planLists);
     super.initState();
@@ -51,7 +40,6 @@ class _PlanDetailsState extends State<PlanDetails> {
               InkWell(
                 onTap: ()
                 {
-                  print(widget.plan['list${index+1}']);
                   Navigator.push(
                       context,
                       MaterialPageRoute(

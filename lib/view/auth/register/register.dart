@@ -1,4 +1,4 @@
-import 'package:be_fit/models/user.dart';
+import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';

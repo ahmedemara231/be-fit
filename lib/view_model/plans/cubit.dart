@@ -1,5 +1,5 @@
-import 'package:be_fit/models/exercises.dart';
-import 'package:be_fit/models/setRecord_model.dart';
+import 'package:be_fit/models/data_types/exercises.dart';
+import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -383,13 +383,17 @@ class PlansCubit extends Cubit<PlansStates>
       emit(GetAllPlans2SuccessState());
     }).catchError((error)
     {
+      print(error.toString());
       emit(GetAllPlans2ErrorState());
     });
   }
 
   void finishPlansForCurrentUser(int index,String planName)
   {
+    plan.removeWhere((key, value) => value.isEmpty);
+
     allPlans[planName] = plan;
+
     print(allPlans);
   }
 

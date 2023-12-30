@@ -160,6 +160,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
+                                    maintainState: false,
                                     builder: (context) => CreateExercise(
                                       muscleName: widget.muscleName,
                                     ),

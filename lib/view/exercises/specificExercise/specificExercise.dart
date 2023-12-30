@@ -7,7 +7,7 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../models/setRecord_model.dart';
+import '../../../models/data_types/setRecord_model.dart';
 import '../../../modules/myText.dart';
 import '../../../view_model/exercises/states.dart';
 import '../../../widgets_models/records_model.dart';

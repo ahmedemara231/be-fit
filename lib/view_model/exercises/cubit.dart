@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jiffy/jiffy.dart';
-import '../../models/add_custom_exercise.dart';
-import '../../models/exercises.dart';
-import '../../models/setRecord_model.dart';
+import '../../models/data_types/add_custom_exercise.dart';
+import '../../models/data_types/exercises.dart';
+import '../../models/data_types/setRecord_model.dart';
 
 class ExercisesCubit extends Cubit<ExercisesStates>
 {

@@ -1,5 +1,5 @@
-import 'package:be_fit/view/plans/plans.dart';
-import 'package:be_fit/view/profile/profile.dart';
+import 'package:be_fit/view/plans/plans/plans.dart';
+import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -16,10 +16,10 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> mainScreens =
-   const [
-     BodyMuscles(),
-     Plans(),
-     Profile(),
+  [
+     const BodyMuscles(),
+     const Plans(),
+     Setting(),
   ];
 
   @override
