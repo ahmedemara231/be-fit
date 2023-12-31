@@ -38,4 +38,8 @@ class DeletePlanSuccessState extends PlansStates{}
 
 class DeletePlanErrorState extends PlansStates{}
 
+class DeleteExerciseFromPlanSuccessState extends PlansStates{}
+
+class DeleteExerciseFromPlanErrorState extends PlansStates{}
+
 

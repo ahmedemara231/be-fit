@@ -245,10 +245,10 @@ class PlansCubit extends Cubit<PlansStates>
 
         ///////////////////////////////////////////////////////
 
-                // list1
+        // list1
         lists[listsKeys[index]]!.forEach((element)async {
 
-         DocumentReference planExerciseId = FirebaseFirestore.instance
+          DocumentReference planExerciseId = FirebaseFirestore.instance
               .collection('users')
               .doc(uId)
               .collection('plans')
@@ -256,65 +256,65 @@ class PlansCubit extends Cubit<PlansStates>
               .collection(listsKeys[index])
               .doc(element.id); // 1st exercise in list1 in the plan
 
-         // check if this exercise has a records or not for this user
+          // check if this exercise has a records or not for this user
 
-         for(int i = 0; i <= (muscles.length - 1); i++)
-           {
-             var checkCollection = await FirebaseFirestore.instance
-                 .collection(muscles[i])
-                 .doc(element.id)
-                 .collection('records')
-                 .where('uId',isEqualTo: uId)
-                 .get();
+          for(int i = 0; i <= (muscles.length - 1); i++)
+          {
+            var checkCollection = await FirebaseFirestore.instance
+                .collection(muscles[i])
+                .doc(element.id)
+                .collection('records')
+                .where('uId',isEqualTo: uId)
+                .get();
 
-             if(checkCollection.docs.isNotEmpty)
-             {
-               DocumentReference exerciseDoc = FirebaseFirestore.instance
-                   .collection('users')
-                   .doc(uId)
-                   .collection('plans')
-                   .doc(value.id)
-                   .collection(listsKeys[index])
-                   .doc(planExerciseId.id);
+            if(checkCollection.docs.isNotEmpty)
+            {
+              DocumentReference exerciseDoc = FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(uId)
+                  .collection('plans')
+                  .doc(value.id)
+                  .collection(listsKeys[index])
+                  .doc(planExerciseId.id);
 
-               exerciseDoc.set(
-                 {
-                   'name' : element.name,
-                   'docs' : element.docs,
-                   'image' : element.image,
-                   'muscle' : element.muscleName,
-                 },
-               );
-               checkCollection.docs.forEach((element) {
-                 exerciseDoc.collection('records')
-                     .doc(element.id)
-                     .set(
-                   {
-                     'dateTime': element.data()['dateTime'],
-                     'reps': element.data()['reps'],
-                     'weight': element.data()['weight'],
-                   },
-                 );
-               });
-             }
-             else{
-               FirebaseFirestore.instance
-                   .collection('users')
-                   .doc(uId)
-                   .collection('plans')
-                   .doc(value.id)
-                   .collection(listsKeys[index])
-                   .doc(planExerciseId.id)
-                   .set(
-                 {
-                   'name' : element.name,
-                   'docs' : element.docs,
-                   'image' : element.image,
-                   'muscle' : element.muscleName,
-                 },
-               );
-             }
-           }
+              exerciseDoc.set(
+                {
+                  'name' : element.name,
+                  'docs' : element.docs,
+                  'image' : element.image,
+                  'muscle' : element.muscleName,
+                },
+              );
+              checkCollection.docs.forEach((element) {
+                exerciseDoc.collection('records')
+                    .doc(element.id)
+                    .set(
+                  {
+                    'dateTime': element.data()['dateTime'],
+                    'reps': element.data()['reps'],
+                    'weight': element.data()['weight'],
+                  },
+                );
+              });
+            }
+            else{
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(uId)
+                  .collection('plans')
+                  .doc(value.id)
+                  .collection(listsKeys[index])
+                  .doc(planExerciseId.id)
+                  .set(
+                {
+                  'name' : element.name,
+                  'docs' : element.docs,
+                  'image' : element.image,
+                  'muscle' : element.muscleName,
+                },
+              );
+            }
+          }
         });
       }
       emit(CreateNewPlanSuccessState());
@@ -431,7 +431,9 @@ class PlansCubit extends Cubit<PlansStates>
   Future<void> deleteExerciseFromPlan({
     required String planDoc,
     required int listIndex,
+    required int exerciseIndex,
     required String exerciseDoc,
+    required String planName,
     required String uId,
 })async
   {
@@ -440,14 +442,19 @@ class PlansCubit extends Cubit<PlansStates>
         .doc(uId)
         .collection('plans')
         .doc(planDoc)
-        .collection('list${listIndex + 1}')
+        .collection('list$listIndex')
         .doc(exerciseDoc)
         .delete()
         .then((value)
     {
       print('deleted');
-      // المفروض امسحها من ال all plans عشان تتمسح قدام اليوزر
-    }).catchError((error){});
+      (allPlans[planName]['list$listIndex'] as List).removeAt(exerciseIndex);
+      emit(DeleteExerciseFromPlanSuccessState());
+    }).catchError((error)
+    {
+      print(error.toString());
+      emit(DeleteExerciseFromPlanErrorState());
+    });
   }
 
   Future<void> setARecordFromPlan({

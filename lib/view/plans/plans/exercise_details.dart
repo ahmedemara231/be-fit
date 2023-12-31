@@ -1,25 +1,25 @@
-import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import '../../../models/data_types/exercises.dart';
 import '../../../modules/otp_tff.dart';
 import '../../../modules/snackBar.dart';
 import '../../../widgets_models/records_model.dart';
 import '../../log/Log.dart';
 
 class PlanExerciseDetails extends StatelessWidget {
-  Exercises exercise;
+
   String planDoc;
   int listIndex;
-  PlanExerciseDetails({
-    super.key,
-    required this.exercise,
+  Exercises exercise;
+
+  PlanExerciseDetails({super.key,
     required this.planDoc,
     required this.listIndex,
+    required this.exercise,
   });
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -59,7 +59,7 @@ class PlanExerciseDetails extends StatelessWidget {
                   .doc(CacheHelper.uId)
                   .collection('plans')
                   .doc(planDoc)
-                  .collection('list${listIndex + 1}')
+                  .collection('list$listIndex')
                   .doc(exercise.id)
                   .collection('records')
                   .snapshots(),

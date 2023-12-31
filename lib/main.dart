@@ -1,6 +1,4 @@
 import 'package:be_fit/view/auth/login/login.dart';
-import 'package:be_fit/view/auth/register/register.dart';
-import 'package:be_fit/view/auth/register/register.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
 import 'package:be_fit/view_model/bloc_observer.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
@@ -21,7 +19,6 @@ import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'firebase_options.dart';
 
 void main() async{
@@ -68,7 +65,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: CacheHelper.sharedPreferences.getStringList('userData')!.isEmpty?
         Login() :
-        BottomNavBar(),
+        const BottomNavBar(),
       ),
     );
   }

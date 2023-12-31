@@ -120,9 +120,8 @@ class _PlansState extends State<Plans> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PlanDetails(
-                                  planId: PlansCubit.getInstance(context).allPlansIds[index],
                                   planName: PlansCubit.getInstance(context).plansNames[index],
-                                  plan: PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).plansNames[index]],
+                                  planDoc: PlansCubit.getInstance(context).allPlansIds[index],
                                 ),
                               ),
                           );
