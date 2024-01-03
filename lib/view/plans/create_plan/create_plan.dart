@@ -12,6 +12,8 @@ class CreatePlan extends StatelessWidget {
 
   final workOutNameCont = TextEditingController();
   final daysNumberCont = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlansCubit,PlansStates>(
@@ -23,64 +25,70 @@ class CreatePlan extends StatelessWidget {
           ),
           body: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                TFF(
-                  obscureText: false,
-                  controller: workOutNameCont,
-                  hintText: 'Workout Name',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                const SizedBox(height: 16,),
-                TFF(
-                  keyboardType: TextInputType.number,
-                  obscureText: false,
-                  controller: daysNumberCont,
-                  hintText: 'Days Number',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red[400]
-                  ),
-                  onPressed: ()async
-                  {
-                    int? numberOfDays = int.tryParse(daysNumberCont.text);
-                    if(numberOfDays! > 6 || daysNumberCont.text.isEmpty)
-                      {
-                        MySnackBar.showSnackBar(
-                            context: context,
-                            message: 'Days shouldn\'t be more than 6',
-                        );
-                      }
-                    else{
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ContinuePlanning(
-                            name: workOutNameCont.text,
-                            daysNumber: numberOfDays,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
-                    child: MyText(
-                      text: 'Make a Plan',
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  TFF(
+                    obscureText: false,
+                    controller: workOutNameCont,
+                    hintText: 'Workout Name',
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 16,),
+                  TFF(
+                    keyboardType: TextInputType.number,
+                    obscureText: false,
+                    controller: daysNumberCont,
+                    hintText: 'Days Number',
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  const Spacer(),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red[400]
+                    ),
+                    onPressed: ()async
+                    {
+                      if(formKey.currentState!.validate())
+                        {
+                          int? numberOfDays = int.tryParse(daysNumberCont.text);
+                          if(numberOfDays! > 6)
+                          {
+                            MySnackBar.showSnackBar(
+                              context: context,
+                              message: 'Days shouldn\'t be more than 6',
+                            );
+                          }
+                          else{
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ContinuePlanning(
+                                  name: workOutNameCont.text,
+                                  daysNumber: numberOfDays,
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
+                      child: MyText(
+                        text: 'Make a Plan',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -19,10 +19,12 @@ class _ChooseExercisesState extends State<ChooseExercises> {
 
   @override
   void initState() {
-    PlansCubit.getInstance(context).getMuscles(
-      day: widget.day
-    );
-    PlansCubit.getInstance(context).planExercises = [];
+    PlansCubit.getInstance(context).initializingDaysCheckBox(widget.day);
+    print('--------------');
+    print(widget.day);
+    print(PlansCubit.getInstance(context).musclesCheckBoxes);
+    print(PlansCubit.getInstance(context).daysCheckBox['day${widget.day}']);
+    print('--------------');
     super.initState();
   }
   @override
@@ -62,7 +64,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                     fontWeight: FontWeight.w500,
                                   ),
                                   trailing: Checkbox(
-                                    value: PlansCubit.getInstance(context).daysCheckBox['day${widget.day}'][index][i],
+                                    value: PlansCubit.getInstance(context).daysCheckBox['day${widget.day}']?[index][i],
                                     onChanged: (value)
                                     {
                                       PlansCubit.getInstance(context).newChangeCheckBoxValue(
@@ -71,6 +73,9 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                         muscle: index,
                                         exerciseIndex: i,
                                       );
+
+                                      print('musclesCheckBox : ${PlansCubit.getInstance(context).musclesCheckBoxes}');
+
                                       if(value == true)
                                       {
                                         PlansCubit.getInstance(context).addToPlanExercises(                                           widget.day,

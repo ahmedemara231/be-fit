@@ -6,7 +6,6 @@ import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'choose_exercises.dart';
 
 class ContinuePlanning extends StatefulWidget {
@@ -121,8 +120,8 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[400]
                   ),
-                  onPressed: state is CreateNewPlanLoadingState?
-                      // || PlansCubit.getInstance(context).lists.entries.toList().isEmpty?
+                  onPressed: state is CreateNewPlanLoadingState? ||
+                  PlansCubit.getInstance(context).lists.entries.every((element) => element.value.isEmpty)?
                   null : () async
                   {
                     await PlansCubit.getInstance(context).createNewPlan(

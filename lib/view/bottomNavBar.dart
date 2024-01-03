@@ -25,6 +25,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     CacheHelper.getUserData();
+    BottomNavCubit.getInstance(context).getAllPlans(uId: CacheHelper.uId, context: context);
     super.initState();
   }
   @override
@@ -72,7 +73,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   label: 'Profile'),
             ],
           ),
-          body: mainScreens[BottomNavCubit.getInstance(context).currentIndex],
+          body: state is FetchAllDataLoadingState?
+          const Center(child: CircularProgressIndicator(),) :
+          mainScreens[BottomNavCubit.getInstance(context).currentIndex],
         );
       },
     );

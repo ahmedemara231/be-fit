@@ -7,19 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../create_plan/create_plan.dart';
 
-class Plans extends StatefulWidget {
+class Plans extends StatelessWidget {
   const Plans({super.key});
-
-  @override
-  State<Plans> createState() => _PlansState();
-}
-
-class _PlansState extends State<Plans> {
-  @override
-  void initState() {
-    PlansCubit.getInstance(context).getAllPlans(CacheHelper.uId);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +96,7 @@ class _PlansState extends State<Plans> {
                                   await PlansCubit.getInstance(context).deletePlan(
                                     index : index,
                                     uId: CacheHelper.uId,
-                                    planName: PlansCubit.getInstance(context).plansNames[index],
+                                    planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
                                   );
                                 },
                               )
@@ -120,7 +109,7 @@ class _PlansState extends State<Plans> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PlanDetails(
-                                  planName: PlansCubit.getInstance(context).plansNames[index],
+                                  planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
                                   planDoc: PlansCubit.getInstance(context).allPlansIds[index],
                                 ),
                               ),
@@ -129,7 +118,7 @@ class _PlansState extends State<Plans> {
                         child: Card(
                           color: Colors.red[400],
                           child: ListTile(
-                            title: MyText(text: PlansCubit.getInstance(context).plansNames[index],fontSize: 20,fontWeight: FontWeight.w500,),
+                            title: MyText(text: PlansCubit.getInstance(context).allPlans.keys.toList()[index],fontSize: 20,fontWeight: FontWeight.w500,),
                             trailing: const Icon(Icons.arrow_forward_ios),
                           ),
                         ),
