@@ -1,5 +1,6 @@
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
@@ -26,6 +27,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
   @override
   void initState() {
     PlansCubit.getInstance(context).makeListForEachDay(widget.daysNumber);
+    PlansCubit.getInstance(context).initializingDaysCheckBox(widget.daysNumber!);
     super.initState();
   }
   @override

@@ -1,31 +1,32 @@
+import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChooseExercises extends StatefulWidget {
+class ChooseExercises extends StatelessWidget {
 
   int day;
   ChooseExercises({super.key,
     required this.day,
   });
 
-  @override
-  State<ChooseExercises> createState() => _ChooseExercisesState();
-}
 
-class _ChooseExercisesState extends State<ChooseExercises> {
-
-  @override
-  void initState() {
-    PlansCubit.getInstance(context).initializingDaysCheckBox(widget.day);
-    print('--------------');
-    print(widget.day);
-    print(PlansCubit.getInstance(context).musclesCheckBoxes);
-    print(PlansCubit.getInstance(context).daysCheckBox['day${widget.day}']);
-    print('--------------');
-    super.initState();
+  Map<String,List<Exercises>> musclesPlan =
+  {
+    'aps' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
+    'chest' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
+    'back' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
+    'Shoulders' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
+    'legs' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
+  };
+  List<String> keys = [];
+  void loop()
+  {
+    musclesPlan.forEach((key, value) {
+      keys.add(key);
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,11 @@ class _ChooseExercisesState extends State<ChooseExercises> {
         return Scaffold(
           appBar: AppBar(
             title: MyText(text: 'Choose your exercises',fontWeight: FontWeight.w500),
+            actions: [
+              IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add)),
+            ],
           ),
           body: state is GetAllPlansLoadingState?
           const Center(
@@ -48,44 +54,45 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                       color: Colors.red[400],
                       child: ExpansionTile(
                         title: MyText(
-                          text: PlansCubit.getInstance(context).muscles[index],
+                          text: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
                           fontSize: 20,
                         ),
                         children: List.generate(
-                            PlansCubit.getInstance(context).musclesForPlan[index].length,
-                                (i) => ListTile(
+                            PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]!.length,
+                                (i) =>
+                                    ListTile(
                                   leading: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Image.network(PlansCubit.getInstance(context).musclesForPlan[index][i].image),
+                                    child: Image.network(
+                                        PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].image
+                                    ),
                                   ),
                                   title: MyText(
-                                      text: PlansCubit.getInstance(context).musclesForPlan[index][i].name,
+                                      text: PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].name,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   trailing: Checkbox(
-                                    value: PlansCubit.getInstance(context).daysCheckBox['day${widget.day}']?[index][i],
+                                    value: PlansCubit.getInstance(context).muscleExercisesCheckBox[PlansCubit.getInstance(context).muscleExercisesCheckBox.keys.toList()[index]]?[i],
                                     onChanged: (value)
                                     {
                                       PlansCubit.getInstance(context).newChangeCheckBoxValue(
                                         value: value!,
-                                        dayIndex: widget.day,
-                                        muscle: index,
+                                        dayIndex: day,
+                                        muscle: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
                                         exerciseIndex: i,
                                       );
-
-                                      print('musclesCheckBox : ${PlansCubit.getInstance(context).musclesCheckBoxes}');
-
                                       if(value == true)
                                       {
-                                        PlansCubit.getInstance(context).addToPlanExercises(                                           widget.day,
-                                            PlansCubit.getInstance(context).musclesForPlan[index][i],
+                                        PlansCubit.getInstance(context).addToPlanExercises(
+                                            day,
+                                            PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
                                         );
                                       }
                                       else{
                                         PlansCubit.getInstance(context).removeFromPlanExercises(
-                                          widget.day,
-                                          PlansCubit.getInstance(context).musclesForPlan[index][i],
+                                            day,
+                                            PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
                                         );
                                       }
                                     },
@@ -95,7 +102,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                       ),
                     ),
                     separatorBuilder: (context, index) => const SizedBox(height: 16,),
-                    itemCount: PlansCubit.getInstance(context).musclesForPlan.length
+                    itemCount: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList().length
                 ),
               ),
               Padding(
@@ -105,7 +112,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                       backgroundColor: Colors.red[400]
                   ),
                   onPressed:
-                  PlansCubit.getInstance(context).lists['list${widget.day}']!.isEmpty?
+                  PlansCubit.getInstance(context).lists['list$day']!.isEmpty?
                       null : ()
                   {
                     Navigator.pop(context);

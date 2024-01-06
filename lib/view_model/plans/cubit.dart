@@ -21,45 +21,20 @@ class PlansCubit extends Cubit<PlansStates>
     'legs'
   ];
 
+  Map<String, List<Exercises>> musclesAndItsExercises = {};
+  Map<String, List<bool>> muscleExercisesCheckBox = {};
 
-  List<Exercises> backExercisesForPlan = [];
-  List<bool?> backCheckBoxes = [];
+  // for ui
+  Future<void> getMuscles()async
+  {
+    musclesAndItsExercises = {};
+    muscleExercisesCheckBox = {};
 
-  List<Exercises> chestExercisesForPlan = [];
-  List<bool?> chestCheckBoxes = [];
-
-  List<Exercises> apsExercisesForPlan = [];
-  List<bool?> apsCheckBoxes = [];
-
-  List<Exercises> shouldersExercisesForPlan = [];
-  List<bool?> shoulderCheckBoxes = [];
-
-  List<Exercises> legsExercisesForPlan = [];
-  List<bool?> legsCheckBoxes = [];
-
-
-  List<List<Exercises>> musclesForPlan = [];
-  List<List<bool?>> musclesCheckBoxes = [];
-
-  Future<void> getMuscles()async // for ui
-   {
-    apsExercisesForPlan = [];
-    apsCheckBoxes = [];
-
-    chestExercisesForPlan = [];
-    chestCheckBoxes= [];
-
-    backExercisesForPlan = [];
-    backCheckBoxes = [];
-
-    shouldersExercisesForPlan = [];
-    shoulderCheckBoxes = [];
-
-    legsExercisesForPlan = [];
-    legsCheckBoxes = [];
-
-    musclesForPlan = [];
-    musclesCheckBoxes = [];
+    for(int i = 0; i <= (muscles.length - 1); i++)
+      {
+        musclesAndItsExercises[muscles[i]] = [];
+        muscleExercisesCheckBox[muscles[i]] = [];
+      }
 
     emit(GetAllMusclesLoadingState());
     for(int i = 0; i < muscles.length; i++)
@@ -72,127 +47,101 @@ class PlansCubit extends Cubit<PlansStates>
         value.docs.forEach((element)async{
           if(muscles[i] == 'chest')
           {
-            chestExercisesForPlan.add(
-              Exercises(
-                name: element.data()['name'],
-                image: element.data()['image'],
-                docs: element.data()['docs'],
-                id: element.id,
-                isCustom: element.data()['isCustom'],
-                video: element.data()['video']?? '',
-                muscleName: muscles[i],
-              ),
-            );
-
-            chestCheckBoxes.add(false);
+            muscleExercisesCheckBox['chest']?.add(false);
+            musclesAndItsExercises['chest']?.add( Exercises(
+              name: element.data()['name'],
+              image: element.data()['image'],
+              docs: element.data()['docs'],
+              id: element.id,
+              isCustom: element.data()['isCustom'],
+              video: element.data()['video']?? '',
+              muscleName: muscles[i],
+            ),);
           }
           else if(muscles[i] == 'Back')
           {
-            backExercisesForPlan.add(
-              Exercises(
-                name: element.data()['name']?? '',
-                image: element.data()['image']?? '',
-                docs: element.data()['docs']?? '',
-                id: element.id?? '',
-                isCustom: element.data()['isCustom']?? false,
-                video: element.data()['video']?? '',
-                muscleName: muscles[i],
-              ),
-            );
-            backCheckBoxes.add(false);
+            muscleExercisesCheckBox['Back']?.add(false);
+            musclesAndItsExercises['Back']?.add( Exercises(
+              name: element.data()['name'],
+              image: element.data()['image'],
+              docs: element.data()['docs'],
+              id: element.id,
+              isCustom: element.data()['isCustom'],
+              video: element.data()['video']?? '',
+              muscleName: muscles[i],
+            ),);
           }
           else if(muscles[i] == 'Aps')
           {
-            apsExercisesForPlan.add(
-              Exercises(
-                name: element.data()['name']?? '',
-                image: element.data()['image']?? '',
-                docs: element.data()['docs']?? '',
-                id: element.id?? '',
-                isCustom: element.data()['isCustom']?? false,
-                video: element.data()['video']?? '',
-                muscleName: muscles[i],
-              ),
-            );
-            apsCheckBoxes.add(false);
+            muscleExercisesCheckBox['Aps']?.add(false);
+            musclesAndItsExercises['Aps']?.add( Exercises(
+              name: element.data()['name'],
+              image: element.data()['image'],
+              docs: element.data()['docs'],
+              id: element.id,
+              isCustom: element.data()['isCustom'],
+              video: element.data()['video']?? '',
+              muscleName: muscles[i],
+            ),);
           }
           else if(muscles[i] == 'legs')
           {
-            legsExercisesForPlan.add(
-              Exercises(
-                name: element.data()['name']?? '',
-                image: element.data()['image']?? '',
-                docs: element.data()['docs']?? '',
-                id: element.id?? '',
-                isCustom: element.data()['isCustom']?? false,
-                video: element.data()['video']?? '',
-                muscleName: muscles[i],
-              ),
-            );
-            legsCheckBoxes.add(false);
+            muscleExercisesCheckBox['legs']?.add(false);
+            musclesAndItsExercises['legs']?.add( Exercises(
+              name: element.data()['name'],
+              image: element.data()['image'],
+              docs: element.data()['docs'],
+              id: element.id,
+              isCustom: element.data()['isCustom'],
+              video: element.data()['video']?? '',
+              muscleName: muscles[i],
+            ),);
           }
           else{
-            shouldersExercisesForPlan.add(
-              Exercises(
-                name: element.data()['name']?? '',
-                image: element.data()['image']?? '',
-                docs: element.data()['docs']?? '',
-                id: element.id?? '',
-                isCustom: element.data()['isCustom']?? false,
-                video: element.data()['video']?? '',
-                muscleName: muscles[i],
-              ),
-            );
-            shoulderCheckBoxes.add(false);
+            muscleExercisesCheckBox['Shoulders']?.add(false);
+            musclesAndItsExercises['Shoulders']?.add( Exercises(
+              name: element.data()['name'],
+              image: element.data()['image'],
+              docs: element.data()['docs'],
+              id: element.id,
+              isCustom: element.data()['isCustom'],
+              video: element.data()['video']?? '',
+              muscleName: muscles[i],
+            ),);
           }
         });
-        emit(GetAllMusclesSuccessState());
       }).catchError((error)
       {
         emit(GetAllMusclesErrorState());
       });
+
+      emit(GetAllMusclesSuccessState());
     }
 
-
-    musclesForPlan.add(apsExercisesForPlan);
-    musclesForPlan.add(chestExercisesForPlan);
-    musclesForPlan.add(backExercisesForPlan);
-    musclesForPlan.add(shouldersExercisesForPlan);
-    musclesForPlan.add(legsExercisesForPlan);
-
-    musclesCheckBoxes.add(apsCheckBoxes);
-    musclesCheckBoxes.add(chestCheckBoxes);
-    musclesCheckBoxes.add(backCheckBoxes);
-    musclesCheckBoxes.add(shoulderCheckBoxes);
-    musclesCheckBoxes.add(legsCheckBoxes);
-
-    // muscleCheckBox =
-    // {
-    //    'day1' : [ [t,t], [t,t],[t,t],[t,t],[t,t] ]
-    // };
-
-    // daysCheckBox['day$day'] = List.from(musclesCheckBoxes);
-    // print(daysCheckBox);
-    // print(musclesCheckBoxes);
-    // print(musclesForPlan);
+    print(musclesAndItsExercises);
+    print(muscleExercisesCheckBox);
   }
 
+       // day ,    musclesCheckBox
+  Map<String,Map<String, List<bool>>> dayCheckBox = {};
   void initializingDaysCheckBox(int day)
   {
-    daysCheckBox['day$day'] = List.from(musclesCheckBoxes);
+    for(int i = 1; i <= day; day--)
+      {
+        dayCheckBox['day$day'] = Map.from(muscleExercisesCheckBox);
+      }
+    print(dayCheckBox);
   }
 
-  Map<String,List<List<bool?>>> daysCheckBox = {};
   void newChangeCheckBoxValue({
     required int dayIndex,
-    required int muscle,
+    required String muscle,
     required int exerciseIndex,
     required bool value,
 })
   {
-    daysCheckBox['day$dayIndex']?[muscle][exerciseIndex] = value;
+    dayCheckBox['day$dayIndex']?[muscle]?[exerciseIndex] = value;
     emit(ChangeCheckBoxValue());
-    print(daysCheckBox);
   }
 
   Map<String,List<Exercises>> lists = {};
