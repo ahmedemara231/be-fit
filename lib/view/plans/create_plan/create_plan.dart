@@ -2,6 +2,7 @@ import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/modules/textFormField.dart';
 import 'package:be_fit/view/plans/create_plan/continue_planning.dart';
+import 'package:be_fit/view/plans/create_plan/number_selector.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ class CreatePlan extends StatelessWidget {
    CreatePlan({super.key});
 
   final workOutNameCont = TextEditingController();
-  final daysNumberCont = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -38,13 +38,30 @@ class CreatePlan extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16,),
-                  TFF(
-                    keyboardType: TextInputType.number,
-                    obscureText: false,
-                    controller: daysNumberCont,
-                    hintText: 'Days Number',
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 28),
+                    child: Row(
+                      children: [
+                        MyText(text: 'Training Days',fontSize: 18,fontWeight: FontWeight.w500,),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.grey[200],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyText(
+                                text: '${PlansCubit.getInstance(context).currentIndex}',
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        const NumberSelection(),
+                      ],
                     ),
                   ),
                   const Spacer(),
@@ -56,12 +73,11 @@ class CreatePlan extends StatelessWidget {
                     {
                       if(formKey.currentState!.validate())
                         {
-                          int? numberOfDays = int.tryParse(daysNumberCont.text);
-                          if(numberOfDays! > 6)
+                          if(PlansCubit.getInstance(context).currentIndex == 0)
                           {
                             MySnackBar.showSnackBar(
                               context: context,
-                              message: 'Days shouldn\'t be more than 6',
+                              message: 'Days must be more than 0',
                             );
                           }
                           else{
@@ -70,7 +86,7 @@ class CreatePlan extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => ContinuePlanning(
                                   name: workOutNameCont.text,
-                                  daysNumber: numberOfDays,
+                                  daysNumber: PlansCubit.getInstance(context).currentIndex,
                                 ),
                               ),
                             );

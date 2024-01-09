@@ -42,7 +42,7 @@ class CreateExercise extends StatelessWidget {
                       else{
                         await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
                           addCustomExerciseModel: AddCustomExerciseModel(
-                              uId: CacheHelper.uId,
+                              uId: CacheHelper.instance.uId,
                               muscle: muscleName,
                               name: nameCont.text,
                               description: descriptionCont.text,

@@ -127,7 +127,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                   null : () async
                   {
                     await PlansCubit.getInstance(context).createNewPlan(
-                      uId: CacheHelper.uId,
+                      uId: CacheHelper.instance.uId,
                       daysNumber: widget.daysNumber,
                       name: widget.name,
                     ).then((value)

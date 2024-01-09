@@ -1,4 +1,5 @@
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +11,27 @@ class SettingCubit extends Cubit<SettingStates>
   SettingCubit(super.initialState);
   static SettingCubit getInstance(context) => BlocProvider.of(context);
 
-  void changeDarkMode() {}
-  void contacting() {}
+  bool darkMode = false;
+  Future<void> changeAppTheme(bool newMode)async
+  {
+    darkMode = newMode;
+    await CacheHelper.instance.setAppTheme(darkMode);
+    emit(ChangeAppThemeSuccessState());
+  }
+
+  void contacting(context)
+  {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Contacting(),
+        ),
+    );
+  }
+
   void reportProblem() {}
   void tips() {}
+
   Future<void> logout(context) async
   {
     showDialog(
@@ -32,7 +50,7 @@ class SettingCubit extends Cubit<SettingStates>
               onPressed: () async
               {
                 Navigator.pop(context);
-                await CacheHelper.kill().then((value)
+                await CacheHelper.instance.kill().then((value)
                 {
                   Navigator.pushAndRemoveUntil(
                     context,

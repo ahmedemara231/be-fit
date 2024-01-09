@@ -56,7 +56,7 @@ class PlanExerciseDetails extends StatelessWidget {
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('users')
-                  .doc(CacheHelper.uId)
+                  .doc(CacheHelper.instance.uId)
                   .collection('plans')
                   .doc(planDoc)
                   .collection('list$listIndex')
@@ -237,7 +237,7 @@ class PlanExerciseDetails extends StatelessWidget {
                                       exerciseDoc: exercise.id,
                                       reps: repsCont.text,
                                       weight: weightCont.text,
-                                      uId: CacheHelper.uId,
+                                      uId: CacheHelper.instance.uId,
                                   ),
                                   context: context,
                                   muscleName: exercise.muscleName!

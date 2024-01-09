@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
+import 'package:be_fit/view/plans/create_plan/number_selector.dart';
 import 'package:be_fit/view_model/bloc_observer.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
@@ -26,7 +27,7 @@ import 'firebase_options.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  CacheHelper.initCache();
+  CacheHelper.instance.initCache();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -69,11 +70,19 @@ class MyApp extends StatelessWidget {
           create: (context) => SettingCubit(SettingInitialState()),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: CacheHelper.sharedPreferences.getStringList('userData')!.isEmpty?
-        Login() :
-        const BottomNavBar(),
+      child: BlocBuilder<SettingCubit,SettingStates>(
+        builder: (context, state)
+        {
+          return MaterialApp(
+            theme: CacheHelper.instance.sharedPreferences.getBool('appTheme') == false?
+            ThemeData.light():
+            ThemeData.dark(),
+            debugShowCheckedModeBanner: false,
+            home: CacheHelper.instance.sharedPreferences.getStringList('userData')!.isEmpty?
+            Login() :
+            const BottomNavBar(),
+          );
+        },
       ),
     );
   }

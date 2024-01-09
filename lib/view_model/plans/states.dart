@@ -22,6 +22,8 @@ class RemoveFromExercisePlanList extends PlansStates {}
 
 class PutExercisesInList extends PlansStates{}
 
+class ChangeDaysNumber extends PlansStates{}
+
 class CreateNewPlanLoadingState extends PlansStates{}
 
 class CreateNewPlanSuccessState extends PlansStates{}

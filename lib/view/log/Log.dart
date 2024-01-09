@@ -29,7 +29,7 @@ class _LogState extends State<Log> {
       {
         LogCubit.getInstance(context).sendRecordsToMakeChartForSpeExer(
           exerciseId: widget.exerciseId,
-          uId: CacheHelper.uId
+          uId: CacheHelper.instance.uId
         );
       }
     else{
@@ -50,11 +50,11 @@ class _LogState extends State<Log> {
           appBar: AppBar(
             title: MyText(text: 'Statistics'),
           ),
-          body: ChartScreen(
-            records: widget.isCustom?
-                LogCubit.getInstance(context).recordsRepsForSpecExercise :
-                LogCubit.getInstance(context).recordsRepsForExercise,
-          ),
+          // body: ChartScreen(
+          //   records: widget.isCustom?
+          //       LogCubit.getInstance(context).recordsRepsForSpecExercise :
+          //       LogCubit.getInstance(context).recordsRepsForExercise,
+          // ),
         );
       },
     );

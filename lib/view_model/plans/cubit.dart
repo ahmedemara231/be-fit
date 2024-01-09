@@ -169,6 +169,14 @@ class PlansCubit extends Cubit<PlansStates>
     emit(RemoveFromExercisePlanList());
   }
 
+  int currentIndex = 1;
+
+  void changeDaysNumber(int newValue)
+  {
+    currentIndex = newValue;
+    emit(ChangeDaysNumber());
+  }
+
   Future<void> createNewPlan({
     required int? daysNumber,
     required String name,

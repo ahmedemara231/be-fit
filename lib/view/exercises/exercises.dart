@@ -28,7 +28,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
         muscleName: widget.muscleName,
     );
     ExercisesCubit.getInstance(context).getCustomExercises(
-        uId: CacheHelper.uId,
+        uId: CacheHelper.instance.uId,
         muscle: widget.muscleName,
     );
     super.initState();
@@ -211,7 +211,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                             onTap: () async
                                             {
                                               await ExercisesCubit.getInstance(context).deleteCustomExercise(
-                                                  uId: CacheHelper.uId,
+                                                  uId: CacheHelper.instance.uId,
                                                   index: index,
                                               );
                                             },

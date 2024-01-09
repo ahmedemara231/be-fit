@@ -1,5 +1,7 @@
 
 import 'package:be_fit/view/exercises/exercises.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
+import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
 import '../../modules/myText.dart';
 import '../../widgets_models/exercise_model.dart';

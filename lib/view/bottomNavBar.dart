@@ -24,8 +24,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   void initState() {
-    CacheHelper.getUserData();
-    BottomNavCubit.getInstance(context).getAllPlans(uId: CacheHelper.uId, context: context);
+    CacheHelper.instance.getUserData();
+    BottomNavCubit.getInstance(context).getAllPlans(uId: CacheHelper.instance.uId, context: context);
     super.initState();
   }
   @override

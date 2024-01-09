@@ -78,8 +78,8 @@ class SpecificExercise extends StatelessWidget {
             children: [
               StreamBuilder(
                 stream: isCustom == false?
-                FirebaseFirestore.instance.collection(muscleName).doc(id).collection('records').where('uId',isEqualTo: CacheHelper.uId).orderBy('dateTime').snapshots() :
-                FirebaseFirestore.instance.collection('users').doc(CacheHelper.uId).collection('customExercises').doc(id).collection('records').orderBy('dateTime').snapshots(),
+                FirebaseFirestore.instance.collection(muscleName).doc(id).collection('records').where('uId',isEqualTo: CacheHelper.instance.uId).orderBy('dateTime').snapshots() :
+                FirebaseFirestore.instance.collection('users').doc(CacheHelper.instance.uId).collection('customExercises').doc(id).collection('records').orderBy('dateTime').snapshots(),
                 builder: (context, snapshot)
                 {
                   if(snapshot.hasData)
@@ -260,7 +260,7 @@ class SpecificExercise extends StatelessWidget {
                                               exerciseId: id,
                                               weight: weightCont.text,
                                               reps: repsCont.text,
-                                              uId: CacheHelper.uId,
+                                              uId: CacheHelper.instance.uId,
                                           ),
                                           context: context,
                                         ).then((value)
@@ -275,7 +275,7 @@ class SpecificExercise extends StatelessWidget {
                                             index: index!,
                                             reps: repsCont.text,
                                             weight: weightCont.text,
-                                            uId: CacheHelper.uId,
+                                            uId: CacheHelper.instance.uId,
                                         ),
                                       ).then((value)
                                       {
