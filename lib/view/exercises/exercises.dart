@@ -56,7 +56,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                 tabs:
                 [
                   MyText(text: 'Default'),
-                  MyText(text: 'Custom'),
+                  MyText(text: 'Custom (${ExercisesCubit.getInstance(context).customExercises.length})'),
                 ],
               ),
             ),

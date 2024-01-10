@@ -1,5 +1,6 @@
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
+import 'package:be_fit/modules/toast.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -177,7 +178,7 @@ class PlansCubit extends Cubit<PlansStates>
     emit(ChangeDaysNumber());
   }
 
-  Future<void> createNewPlan({
+  Future<void> createNewPlan(context,{
     required int? daysNumber,
     required String name,
     required String uId,
@@ -281,6 +282,8 @@ class PlansCubit extends Cubit<PlansStates>
           }
         });
       }
+
+      MyToast.showToast(context, msg: 'Plan is Ready');
       emit(CreateNewPlanSuccessState());
     }).catchError((error)
     {
@@ -493,11 +496,7 @@ class PlansCubit extends Cubit<PlansStates>
           }
         });
       });
-      MySnackBar.showSnackBar(
-          context: context,
-          message: 'Saved to records',
-          color: Colors.green
-      );
+      MyToast.showToast(context, msg: 'Record added');
     });
   }
 }

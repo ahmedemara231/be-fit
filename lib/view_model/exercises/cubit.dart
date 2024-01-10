@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:be_fit/modules/snackBar.dart';
+import 'package:be_fit/modules/toast.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -117,11 +118,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
              }
            }
        });
-       MySnackBar.showSnackBar(
-           context: context,
-           message: 'Saved to records',
-           color: Colors.green
-       );
+       MyToast.showToast(context, msg: 'Record added');
      });
      emit(SetNewRecordSuccessState());
    }).catchError((error)
@@ -158,8 +155,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
        .putFile(selectedExerciseImage!)
        .then((value)
    {
-     print('done');
-     value.ref.getDownloadURL().then((value)
+     value.ref.getDownloadURL().then((imageUrl)
      {
        FirebaseFirestore.instance
            .collection('users')
@@ -169,16 +165,23 @@ class ExercisesCubit extends Cubit<ExercisesStates>
            {
              'muscle' : addCustomExerciseModel.muscle,
              'name' : addCustomExerciseModel.name,
-             'image' : value,
+             'image' : imageUrl,
              'description' : addCustomExerciseModel.description,
              'isCustom' : true,
            }).then((value)
        {
-         MySnackBar.showSnackBar(
-           context: context,
-           message: 'Created Successfully',
-           color: Colors.green,
+         customExercises.add(
+             CustomExercises(
+                 name: addCustomExerciseModel.name,
+                 image: imageUrl,
+                 docs: addCustomExerciseModel.description,
+                 id: value.id,
+                 isCustom: true,
+                 video: '',
+             ),
          );
+         MyToast.showToast(context, msg: 'New Exercise is Ready');
+         Navigator.pop(context);
          selectedExerciseImage = null;
          emit(CreateCustomExerciseSuccessState());
        }).catchError((error)
@@ -247,7 +250,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     });
   }
 
-  Future<void> setRecordForCustomExercise({
+  Future<void> setRecordForCustomExercise(context,{
     required SetCustomExerciseRecModel setCustomExerciseRecModel,
 })async
   {
@@ -271,7 +274,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     ).then((value)
     {
       emit(SetRecordForCustomExerciseSuccessState());
-      print('added');
+      MyToast.showToast(context, msg: 'Record added');
     }).catchError((error)
     {
       emit(SetRecordForCustomExerciseErrorState());

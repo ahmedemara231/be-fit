@@ -3,6 +3,7 @@ import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../modules/toast.dart';
 import '../../view/auth/login/login.dart';
 import '../cache_helper/shared_prefs.dart';
 

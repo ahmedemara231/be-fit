@@ -45,7 +45,8 @@ android {
         applicationId "com.example.be_fit"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        // minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -67,4 +68,7 @@ flutter {
 
 dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
+//    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0'
+//    FirebaseApp.initializeApp(/context=/ this);
+//    FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance(); firebaseAppCheck.installAppCheckProviderFactory( SafetyNetAppCheckProviderFactory.getInstance());
 }

@@ -27,6 +27,16 @@ class CreateExercise extends StatelessWidget {
           appBar: AppBar(
             title: MyText(text: 'Add Exercise'),
             actions: [
+              CircleAvatar(
+                radius: 40,
+                child: IconButton(
+                  onPressed: ()
+                  {
+                    ExercisesCubit.getInstance(context).selectedExerciseImage == null;
+                  },
+                  icon: const Icon(Icons.close),
+                ),
+              ),
               TextButton(
                 onPressed: () async
                 {
@@ -83,10 +93,16 @@ class CreateExercise extends StatelessWidget {
                       color: Colors.red,
                       size: 80,
                     ):
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width/1.2,
-                      height: MediaQuery.of(context).size.height/2,
-                        child: Image.file(ExercisesCubit.getInstance(context).selectedExerciseImage!)),
+                    Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width/1.2,
+                          height: MediaQuery.of(context).size.height/2,
+                            child: Image.file(ExercisesCubit.getInstance(context).selectedExerciseImage!)),
+
+                      ],
+                    ),
                   ),
                   TFF(
                     obscureText: false,

@@ -271,6 +271,7 @@ class SpecificExercise extends StatelessWidget {
                                       }
                                     else{
                                       ExercisesCubit.getInstance(context).setRecordForCustomExercise(
+                                        context,
                                         setCustomExerciseRecModel: SetCustomExerciseRecModel(
                                             index: index!,
                                             reps: repsCont.text,

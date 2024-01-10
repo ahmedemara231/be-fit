@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^2.2.2
   flutter_svg: ^2.0.0
   wheel_slider: ^1.2.1
+  fluttertoast: ^8.0.2
 
   firebase_core: ^2.16.0
   firebase_auth: ^4.1.2

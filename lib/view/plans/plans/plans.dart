@@ -1,4 +1,5 @@
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/modules/toast.dart';
 import 'package:be_fit/view/plans/plans/plan_details.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
