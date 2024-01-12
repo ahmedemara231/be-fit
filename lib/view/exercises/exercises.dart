@@ -1,3 +1,4 @@
+import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/exercises/specificExercise/specificExercise.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -75,13 +76,15 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SpecificExercise(
-                                  muscleName: widget.muscleName,
-                                  id: ExercisesCubit.getInstance(context).exercises[index].id,
-                                  docs: ExercisesCubit.getInstance(context).exercises[index].docs,
-                                  name: ExercisesCubit.getInstance(context).exercises[index].name,
-                                  image: ExercisesCubit.getInstance(context).exercises[index].image,
-                                  videoUrl: ExercisesCubit.getInstance(context).exercises[index].video,
-                                  isCustom: ExercisesCubit.getInstance(context).exercises[index].isCustom,
+                                  exercise: Exercises(
+                                    name: ExercisesCubit.getInstance(context).exercises[index].name,
+                                    docs: ExercisesCubit.getInstance(context).exercises[index].docs,
+                                    id: ExercisesCubit.getInstance(context).exercises[index].id,
+                                    image: ExercisesCubit.getInstance(context).exercises[index].image,
+                                    isCustom: ExercisesCubit.getInstance(context).exercises[index].isCustom,
+                                    video: ExercisesCubit.getInstance(context).exercises[index].video,
+                                    muscleName: widget.muscleName,
+                                  ),
                                 ),
                               ),
                             );
@@ -182,13 +185,15 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => SpecificExercise(
-                                      videoUrl: ExercisesCubit.getInstance(context).customExercises[index].video,
-                                      image: ExercisesCubit.getInstance(context).customExercises[index].image,
-                                      name: ExercisesCubit.getInstance(context).customExercises[index].name,
-                                      docs: ExercisesCubit.getInstance(context).customExercises[index].docs,
-                                      id: ExercisesCubit.getInstance(context).customExercises[index].id,
-                                      muscleName: widget.muscleName,
-                                      isCustom: ExercisesCubit.getInstance(context).customExercises[index].isCustom,
+                                      exercise: Exercises(
+                                        name: ExercisesCubit.getInstance(context).customExercises[index].name,
+                                        docs: ExercisesCubit.getInstance(context).customExercises[index].docs,
+                                        id: ExercisesCubit.getInstance(context).customExercises[index].id,
+                                        image: ExercisesCubit.getInstance(context).customExercises[index].image,
+                                        isCustom: ExercisesCubit.getInstance(context).customExercises[index].isCustom,
+                                        video: ExercisesCubit.getInstance(context).customExercises[index].video,
+                                        muscleName: widget.muscleName,
+                                      ),
                                       index: index,
                                     ),
                                   ),

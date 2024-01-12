@@ -55,7 +55,7 @@ class PlansCubit extends Cubit<PlansStates>
               docs: element.data()['docs'],
               id: element.id,
               isCustom: element.data()['isCustom'],
-              video: element.data()['video']?? '',
+              video: element.data()['video'],
               muscleName: muscles[i],
             ),);
           }
@@ -68,7 +68,7 @@ class PlansCubit extends Cubit<PlansStates>
               docs: element.data()['docs'],
               id: element.id,
               isCustom: element.data()['isCustom'],
-              video: element.data()['video']?? '',
+              video: element.data()['video'],
               muscleName: muscles[i],
             ),);
           }
@@ -81,7 +81,7 @@ class PlansCubit extends Cubit<PlansStates>
               docs: element.data()['docs'],
               id: element.id,
               isCustom: element.data()['isCustom'],
-              video: element.data()['video']?? '',
+              video: element.data()['video'],
               muscleName: muscles[i],
             ),);
           }
@@ -94,7 +94,7 @@ class PlansCubit extends Cubit<PlansStates>
               docs: element.data()['docs'],
               id: element.id,
               isCustom: element.data()['isCustom'],
-              video: element.data()['video']?? '',
+              video: element.data()['video'],
               muscleName: muscles[i],
             ),);
           }
@@ -106,7 +106,7 @@ class PlansCubit extends Cubit<PlansStates>
               docs: element.data()['docs'],
               id: element.id,
               isCustom: element.data()['isCustom'],
-              video: element.data()['video']?? '',
+              video: element.data()['video'],
               muscleName: muscles[i],
             ),);
           }
@@ -248,6 +248,7 @@ class PlansCubit extends Cubit<PlansStates>
                   'docs' : element.docs,
                   'image' : element.image,
                   'muscle' : element.muscleName,
+                  'video' : element.video,
                 },
               );
               checkCollection.docs.forEach((element) {
@@ -276,6 +277,7 @@ class PlansCubit extends Cubit<PlansStates>
                   'docs' : element.docs,
                   'image' : element.image,
                   'muscle' : element.muscleName,
+                  'video' : element.video,
                 },
               );
             }
@@ -335,7 +337,7 @@ class PlansCubit extends Cubit<PlansStates>
                         id: element.id,
                         muscleName: element.data()['muscle'],
                         isCustom: false,
-                        video: '',
+                        video: element.data()['video'],
                     ),
                 );
               });

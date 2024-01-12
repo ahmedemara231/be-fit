@@ -1,4 +1,5 @@
 
+import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/otp_tff.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view/log/Log.dart';
@@ -11,28 +12,17 @@ import '../../../models/data_types/setRecord_model.dart';
 import '../../../modules/myText.dart';
 import '../../../view_model/exercises/states.dart';
 import '../../../widgets_models/records_model.dart';
+import 'exercise_video.dart';
 
 class SpecificExercise extends StatelessWidget {
 
-  String name;
-  String image;
-  String docs;
-  String id;
-  bool isCustom;
-  int? index;
-  String videoUrl;
 
-  String muscleName;
+Exercises exercise;
+  int? index;
 
   SpecificExercise({super.key,
-    required this.image,
-    required this.name,
-    required this.docs,
-    required this.id,
-    required this.muscleName,
-    required this.isCustom,
+    required this.exercise,
     this.index,
-    required this.videoUrl,
   });
 
   final weightCont = TextEditingController();
@@ -51,7 +41,7 @@ class SpecificExercise extends StatelessWidget {
         return Scaffold(
           key: scaffoldKey,
           appBar: AppBar(
-            title: MyText(text: name,fontWeight: FontWeight.w500,),
+            title: MyText(text: exercise.name,fontWeight: FontWeight.w500,),
             actions: [
               TextButton(
                   onPressed: () 
@@ -60,9 +50,9 @@ class SpecificExercise extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => Log(
-                            exerciseId: id,
-                            muscleName: muscleName,
-                            isCustom: isCustom,
+                            exerciseId: exercise.id,
+                            muscleName: exercise.muscleName!,
+                            isCustom: exercise.isCustom,
                           ),
                         ),
                     );
@@ -77,9 +67,9 @@ class SpecificExercise extends StatelessWidget {
           ListView(
             children: [
               StreamBuilder(
-                stream: isCustom == false?
-                FirebaseFirestore.instance.collection(muscleName).doc(id).collection('records').where('uId',isEqualTo: CacheHelper.instance.uId).orderBy('dateTime').snapshots() :
-                FirebaseFirestore.instance.collection('users').doc(CacheHelper.instance.uId).collection('customExercises').doc(id).collection('records').orderBy('dateTime').snapshots(),
+                stream: exercise.isCustom == false?
+                FirebaseFirestore.instance.collection(exercise.muscleName!).doc(exercise.id).collection('records').where('uId',isEqualTo: CacheHelper.instance.uId).orderBy('dateTime').snapshots() :
+                FirebaseFirestore.instance.collection('users').doc(CacheHelper.instance.uId).collection('customExercises').doc(exercise.id).collection('records').orderBy('dateTime').snapshots(),
                 builder: (context, snapshot)
                 {
                   if(snapshot.hasData)
@@ -162,7 +152,7 @@ class SpecificExercise extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: Image.network(
-                    image,
+                    exercise.image,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -178,7 +168,7 @@ class SpecificExercise extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: MyText(
-                            text: docs,
+                            text: exercise.docs,
                             maxLines: 20,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
@@ -189,17 +179,21 @@ class SpecificExercise extends StatelessWidget {
                     icon: const Icon(Icons.question_mark),
                   ),
                   const Spacer(),
-                  IconButton(
+                  if(exercise.isCustom == false)
+                    IconButton(
                     onPressed: ()
                     {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => ExerciseVideo(
-                      //         video: videoUrl,
-                      //       ),
-                      //     ),
-                      // );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ExerciseVideo(
+                              exerciseName: exercise.name,
+                              url: exercise.video.isEmpty?
+                              'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
+                              exercise.video,
+                            ),
+                          ),
+                      );
                     },
                     icon: const Icon(Icons.play_arrow),
                   )
@@ -252,12 +246,12 @@ class SpecificExercise extends StatelessWidget {
                                 {
                                   if(formKey.currentState!.validate())
                                   {
-                                    if(isCustom == false)
+                                    if(exercise.isCustom == false)
                                       {
                                         await ExercisesCubit.getInstance(context).setRecord(
                                           recModel: SetRecModel(
-                                              muscleName: muscleName,
-                                              exerciseId: id,
+                                              muscleName: exercise.muscleName!,
+                                              exerciseId: exercise.id,
                                               weight: weightCont.text,
                                               reps: repsCont.text,
                                               uId: CacheHelper.instance.uId,

@@ -8,9 +8,10 @@ import '../../../models/data_types/exercises.dart';
 import '../../../modules/otp_tff.dart';
 import '../../../modules/snackBar.dart';
 import '../../../widgets_models/records_model.dart';
+import '../../exercises/specificExercise/exercise_video.dart';
 import '../../log/Log.dart';
 
-class PlanExerciseDetails extends StatelessWidget {
+class PlanExerciseDetails extends StatefulWidget {
 
   String planDoc;
   int listIndex;
@@ -22,17 +23,31 @@ class PlanExerciseDetails extends StatelessWidget {
     required this.exercise,
   });
 
+  @override
+  State<PlanExerciseDetails> createState() => _PlanExerciseDetailsState();
+}
+
+class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
   final formKey = GlobalKey<FormState>();
+
   final weightCont = TextEditingController();
+
   final repsCont = TextEditingController();
 
+  @override
+  void initState() {
+    print('video : ${widget.exercise.video}');
+    print('name : ${widget.exercise.name}');
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: MyText(text: exercise.name),
+        title: MyText(text: widget.exercise.name),
         actions: [
           TextButton(
               onPressed: ()
@@ -41,9 +56,9 @@ class PlanExerciseDetails extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => Log(
-                      exerciseId: exercise.id,
-                      muscleName: exercise.muscleName!,
-                      isCustom: exercise.isCustom,
+                      exerciseId: widget.exercise.id,
+                      muscleName: widget.exercise.muscleName!,
+                      isCustom: widget.exercise.isCustom,
                     ),
                   ),
                 );
@@ -58,9 +73,9 @@ class PlanExerciseDetails extends StatelessWidget {
                   .collection('users')
                   .doc(CacheHelper.instance.uId)
                   .collection('plans')
-                  .doc(planDoc)
-                  .collection('list$listIndex')
-                  .doc(exercise.id)
+                  .doc(widget.planDoc)
+                  .collection('list${widget.listIndex}')
+                  .doc(widget.exercise.id)
                   .collection('records')
                   .snapshots(),
               builder: (context, snapshot) {
@@ -142,7 +157,7 @@ class PlanExerciseDetails extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               child: Image.network(
-                exercise.image,
+                widget.exercise.image,
                 fit: BoxFit.contain,
               ),
             ),
@@ -158,7 +173,7 @@ class PlanExerciseDetails extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: MyText(
-                                text: exercise.docs,
+                                text: widget.exercise.docs,
                                 maxLines: 20,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
@@ -170,7 +185,20 @@ class PlanExerciseDetails extends StatelessWidget {
               ),
               const Spacer(),
               IconButton(
-                onPressed: () {},
+                onPressed: ()
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ExerciseVideo(
+                        exerciseName: widget.exercise.name,
+                        url: widget.exercise.video.isEmpty?
+                        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
+                        widget.exercise.video,
+                      ),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.play_arrow),
               )
             ],
@@ -232,15 +260,15 @@ class PlanExerciseDetails extends StatelessWidget {
                             {
                               await PlansCubit.getInstance(context).setARecordFromPlan(
                                   planExerciseRecord: SetRecordForPlanExercise(
-                                      planDoc: planDoc,
-                                      listIndex: listIndex + 1,
-                                      exerciseDoc: exercise.id,
+                                      planDoc: widget.planDoc,
+                                      listIndex: widget.listIndex + 1,
+                                      exerciseDoc: widget.exercise.id,
                                       reps: repsCont.text,
                                       weight: weightCont.text,
                                       uId: CacheHelper.instance.uId,
                                   ),
                                   context: context,
-                                  muscleName: exercise.muscleName!
+                                  muscleName: widget.exercise.muscleName!
                               ).then((value)
                               {
                                 weightCont.clear();
