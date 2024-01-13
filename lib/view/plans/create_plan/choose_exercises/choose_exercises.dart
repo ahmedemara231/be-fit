@@ -1,5 +1,7 @@
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/modules/textFormField.dart';
+import 'package:be_fit/view/plans/create_plan/choose_exercises/reps_sets.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -21,19 +23,19 @@ class ChooseExercises extends StatelessWidget {
     'Shoulders' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
     'legs' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
   };
-  List<String> keys = [];
-  void loop()
-  {
-    musclesPlan.forEach((key, value) {
-      keys.add(key);
-    });
-  }
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  final formKey = GlobalKey<FormState>();
+  final repsCont = TextEditingController();
+  final setsCont = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlansCubit,PlansStates>(
       builder: (context, state)
       {
         return Scaffold(
+          key: scaffoldKey,
           appBar: AppBar(
             title: MyText(text: 'Choose your exercises',fontWeight: FontWeight.w500),
             actions: [
@@ -76,25 +78,52 @@ class ChooseExercises extends StatelessWidget {
                                     value: PlansCubit.getInstance(context).muscleExercisesCheckBox[PlansCubit.getInstance(context).muscleExercisesCheckBox.keys.toList()[index]]?[i],
                                     onChanged: (value)
                                     {
-                                      PlansCubit.getInstance(context).newChangeCheckBoxValue(
-                                        value: value!,
-                                        dayIndex: day,
-                                        muscle: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
-                                        exerciseIndex: i,
-                                      );
-                                      if(value == true)
-                                      {
-                                        PlansCubit.getInstance(context).addToPlanExercises(
-                                            day,
-                                            PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
-                                        );
-                                      }
-                                      else{
-                                        PlansCubit.getInstance(context).removeFromPlanExercises(
-                                            day,
-                                            PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
-                                        );
-                                      }
+                                      scaffoldKey.currentState?.showBottomSheet((context) => Form(
+                                        key: formKey,
+                                        child: SizedBox(
+                                          width: double.infinity,
+                                          height: MediaQuery.of(context).size.height/4,
+                                          child: RepsAnaSets(
+                                            repsCont: repsCont,
+                                            setsCont: setsCont,
+                                            cancelButtonAction: ()
+                                            {
+                                              Navigator.pop(context);
+                                            },
+                                            conformButtonAction: ()
+                                            {
+                                              if(formKey.currentState!.validate())
+                                                {
+                                                  PlansCubit.getInstance(context).newChangeCheckBoxValue(
+                                                    value: value!,
+                                                    dayIndex: day,
+                                                    muscle: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
+                                                    exerciseIndex: i,
+                                                  );
+                                                  if(value == true)
+                                                  {
+                                                    PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].reps = repsCont.text;
+                                                    PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].sets = setsCont.text;
+
+                                                    PlansCubit.getInstance(context).addToPlanExercises(
+                                                        day,
+                                                        PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
+                                                    );
+                                                  }
+                                                  else{
+                                                    PlansCubit.getInstance(context).removeFromPlanExercises(
+                                                        day,
+                                                        PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
+                                                    );
+                                                  }
+                                                }
+                                              Navigator.pop(context);
+                                              repsCont.text = '';
+                                              setsCont.text = '';
+                                            },
+                                          )
+                                        ),
+                                      ));
                                     },
                                   ),
                                 ),

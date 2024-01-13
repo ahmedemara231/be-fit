@@ -7,7 +7,7 @@ import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'choose_exercises.dart';
+import 'choose_exercises/choose_exercises.dart';
 
 class ContinuePlanning extends StatefulWidget {
   String name;
@@ -81,21 +81,24 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                               child: const Icon(Icons.delete,color: Colors.white,),
                             ),
                             key: ValueKey<Exercises>(PlansCubit.getInstance(context).lists['list${index+1}']![i]),
-                            child: Row(
-                              children: [
-                                Padding(
+                            child: ListTile(
+                                leading: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: SizedBox(
                                       width: 80,
                                       height: 80,
                                       child: Image.network(PlansCubit.getInstance(context).lists['list${index+1}']![i].image)),
                                 ),
-                                MyText(
+                               subtitle: MyText(
                                   text: PlansCubit.getInstance(context).lists['list${index+1}']![i].name,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 ),
-                              ],
+                              trailing: MyText(
+                                text: '${PlansCubit.getInstance(context).lists['list${index+1}']![i].reps!} X ${PlansCubit.getInstance(context).lists['list${index+1}']![i].sets!}',
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
                             ),
                             onDismissed: (direction)
                             {

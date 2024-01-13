@@ -72,21 +72,24 @@ class _PlanDetailsState extends State<PlanDetails> {
                   ),
                   Column(
                     children: List.generate(
-                      PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']!.length, (i) =>  Row(
-                      children: [
-                        Padding(
+                      PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']!.length, (i) =>  ListTile(
+                        leading: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: SizedBox(
                               width: 80,
                               height: 80,
                               child: Image.network(PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].image)),
                         ),
-                        MyText(
+                        subtitle: MyText(
                           text: PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].name,
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                         ),
-                      ],
+                      trailing: MyText(
+                          text: '${PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].reps} X ${PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].sets}',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500
+                      ),
                     ),),
                   ),
                 ],

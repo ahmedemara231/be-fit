@@ -249,6 +249,8 @@ class PlansCubit extends Cubit<PlansStates>
                   'image' : element.image,
                   'muscle' : element.muscleName,
                   'video' : element.video,
+                  'sets' : element.sets,
+                  'reps' : element.reps,
                 },
               );
               checkCollection.docs.forEach((element) {
@@ -278,6 +280,8 @@ class PlansCubit extends Cubit<PlansStates>
                   'image' : element.image,
                   'muscle' : element.muscleName,
                   'video' : element.video,
+                  'sets' : element.sets,
+                  'reps' : element.reps,
                 },
               );
             }
@@ -331,13 +335,15 @@ class PlansCubit extends Cubit<PlansStates>
               value.docs.forEach((element) {
                 plan['list$i']?.add(
                     Exercises(
-                        name: element.data()['name'],
-                        image: element.data()['image'],
-                        docs: element.data()['docs'],
-                        id: element.id,
-                        muscleName: element.data()['muscle'],
-                        isCustom: false,
-                        video: element.data()['video'],
+                      name: element.data()['name'],
+                      image: element.data()['image'],
+                      docs: element.data()['docs'],
+                      id: element.id,
+                      muscleName: element.data()['muscle'],
+                      isCustom: false,
+                      video: element.data()['video'],
+                      reps: element.data()['reps'],
+                      sets: element.data()['sets'],
                     ),
                 );
               });

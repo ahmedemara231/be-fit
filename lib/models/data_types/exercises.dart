@@ -7,6 +7,8 @@ class Exercises
   String? muscleName;
   String video;
   bool isCustom;
+  String? reps;
+  String? sets;
 
   Exercises({
     required this.name,
@@ -16,6 +18,8 @@ class Exercises
     this.muscleName,
     required this.isCustom,
     required this.video,
+    this.reps,
+    this.sets,
 });
 }
 
