@@ -1,6 +1,5 @@
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/modules/textFormField.dart';
 import 'package:be_fit/view/plans/create_plan/choose_exercises/reps_sets.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
@@ -78,29 +77,23 @@ class ChooseExercises extends StatelessWidget {
                                     value: PlansCubit.getInstance(context).muscleExercisesCheckBox[PlansCubit.getInstance(context).muscleExercisesCheckBox.keys.toList()[index]]?[i],
                                     onChanged: (value)
                                     {
-                                      scaffoldKey.currentState?.showBottomSheet((context) => Form(
-                                        key: formKey,
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          height: MediaQuery.of(context).size.height/4,
-                                          child: RepsAnaSets(
-                                            repsCont: repsCont,
-                                            setsCont: setsCont,
-                                            cancelButtonAction: ()
-                                            {
-                                              Navigator.pop(context);
-                                            },
-                                            conformButtonAction: ()
-                                            {
-                                              if(formKey.currentState!.validate())
+                                      if(value == true)
+                                      {
+                                        scaffoldKey.currentState?.showBottomSheet((context) => Form(
+                                          key: formKey,
+                                          child: SizedBox(
+                                              width: double.infinity,
+                                              height: MediaQuery.of(context).size.height/4,
+                                              child: RepsAnaSets(
+                                                repsCont: repsCont,
+                                                setsCont: setsCont,
+                                                cancelButtonAction: ()
                                                 {
-                                                  PlansCubit.getInstance(context).newChangeCheckBoxValue(
-                                                    value: value!,
-                                                    dayIndex: day,
-                                                    muscle: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
-                                                    exerciseIndex: i,
-                                                  );
-                                                  if(value == true)
+                                                  Navigator.pop(context);
+                                                },
+                                                conformButtonAction: ()
+                                                {
+                                                  if(formKey.currentState!.validate())
                                                   {
                                                     PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].reps = repsCont.text;
                                                     PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].sets = setsCont.text;
@@ -109,21 +102,36 @@ class ChooseExercises extends StatelessWidget {
                                                         day,
                                                         PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
                                                     );
-                                                  }
-                                                  else{
-                                                    PlansCubit.getInstance(context).removeFromPlanExercises(
-                                                        day,
-                                                        PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
+
+                                                    PlansCubit.getInstance(context).newChangeCheckBoxValue(
+                                                      value: value!,
+                                                      dayIndex: day,
+                                                      muscle: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
+                                                      exerciseIndex: i,
                                                     );
+
+                                                    Navigator.pop(context);
+                                                    repsCont.text = '';
+                                                    setsCont.text = '';
                                                   }
-                                                }
-                                              Navigator.pop(context);
-                                              repsCont.text = '';
-                                              setsCont.text = '';
-                                            },
-                                          )
-                                        ),
-                                      ));
+                                                },
+                                              )
+                                          ),
+                                        ));
+                                      }
+                                      else{
+                                        PlansCubit.getInstance(context).removeFromPlanExercises(
+                                            day,
+                                            PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
+                                        );
+
+                                        PlansCubit.getInstance(context).newChangeCheckBoxValue(
+                                          value: value!,
+                                          dayIndex: day,
+                                          muscle: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
+                                          exerciseIndex: i,
+                                        );
+                                      }
                                     },
                                   ),
                                 ),

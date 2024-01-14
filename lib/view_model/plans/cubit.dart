@@ -163,6 +163,7 @@ class PlansCubit extends Cubit<PlansStates>
     print(lists);
     emit(AddToExercisePlanList());
   }
+
   void removeFromPlanExercises(int day,Exercises exercise)
   {
     lists['list$day']!.remove(exercise);

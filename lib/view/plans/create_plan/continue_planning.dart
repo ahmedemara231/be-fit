@@ -106,6 +106,9 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                   index + 1,
                                   PlansCubit.getInstance(context).lists['list${index+1}']![i],
                               );
+
+                              // PlansCubit.getInstance(context).removeFromDismissList(index, i);
+
                             },
                           );
                          }
