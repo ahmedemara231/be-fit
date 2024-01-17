@@ -1,8 +1,7 @@
-
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/otp_tff.dart';
 import 'package:be_fit/modules/snackBar.dart';
-import 'package:be_fit/view/log/Log.dart';
+import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,7 +13,7 @@ import '../../../view_model/exercises/states.dart';
 import '../../../widgets_models/records_model.dart';
 import 'exercise_video.dart';
 
-class SpecificExercise extends StatelessWidget {
+class SpecificExercise extends StatefulWidget {
 
 
 Exercises exercise;
@@ -25,6 +24,11 @@ Exercises exercise;
     this.index,
   });
 
+  @override
+  State<SpecificExercise> createState() => _SpecificExerciseState();
+}
+
+class _SpecificExerciseState extends State<SpecificExercise> {
   final weightCont = TextEditingController();
 
   final repsCont = TextEditingController();
@@ -34,6 +38,15 @@ Exercises exercise;
   final formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    ExercisesCubit.getInstance(context).pickRecordsToMakeChart(
+        muscleName: widget.exercise.muscleName!,
+        exerciseDoc: widget.exercise.id,
+        uId: CacheHelper.instance.uId,
+    );
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ExercisesCubit,ExercisesStates>(
       builder: (context, state)
@@ -41,19 +54,17 @@ Exercises exercise;
         return Scaffold(
           key: scaffoldKey,
           appBar: AppBar(
-            title: MyText(text: exercise.name,fontWeight: FontWeight.w500,),
+            title: MyText(text: widget.exercise.name,fontWeight: FontWeight.w500,),
             actions: [
               TextButton(
-                  onPressed: () 
+                  onPressed: ()
                   {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Log(
-                            exerciseId: exercise.id,
-                            muscleName: exercise.muscleName!,
-                            isCustom: exercise.isCustom,
-                          ),
+                          builder: (context) => Statistics(
+                              records: ExercisesCubit.getInstance(context).records,
+                          )
                         ),
                     );
                   },
@@ -67,9 +78,9 @@ Exercises exercise;
           ListView(
             children: [
               StreamBuilder(
-                stream: exercise.isCustom == false?
-                FirebaseFirestore.instance.collection(exercise.muscleName!).doc(exercise.id).collection('records').where('uId',isEqualTo: CacheHelper.instance.uId).orderBy('dateTime').snapshots() :
-                FirebaseFirestore.instance.collection('users').doc(CacheHelper.instance.uId).collection('customExercises').doc(exercise.id).collection('records').orderBy('dateTime').snapshots(),
+                stream: widget.exercise.isCustom == false?
+                FirebaseFirestore.instance.collection(widget.exercise.muscleName!).doc(widget.exercise.id).collection('records').where('uId',isEqualTo: CacheHelper.instance.uId).orderBy('dateTime').snapshots() :
+                FirebaseFirestore.instance.collection('users').doc(CacheHelper.instance.uId).collection('customExercises').doc(widget.exercise.id).collection('records').orderBy('dateTime').snapshots(),
                 builder: (context, snapshot)
                 {
                   if(snapshot.hasData)
@@ -152,7 +163,7 @@ Exercises exercise;
                 child: SizedBox(
                   width: double.infinity,
                   child: Image.network(
-                    exercise.image,
+                    widget.exercise.image,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -168,7 +179,7 @@ Exercises exercise;
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: MyText(
-                            text: exercise.docs,
+                            text: widget.exercise.docs,
                             maxLines: 20,
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
@@ -179,7 +190,7 @@ Exercises exercise;
                     icon: const Icon(Icons.question_mark),
                   ),
                   const Spacer(),
-                  if(exercise.isCustom == false)
+                  if(widget.exercise.isCustom == false)
                     IconButton(
                     onPressed: ()
                     {
@@ -187,10 +198,10 @@ Exercises exercise;
                           context,
                           MaterialPageRoute(
                             builder: (context) => ExerciseVideo(
-                              exerciseName: exercise.name,
-                              url: exercise.video.isEmpty?
+                              exerciseName: widget.exercise.name,
+                              url: widget.exercise.video.isEmpty?
                               'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
-                              exercise.video,
+                              widget.exercise.video,
                             ),
                           ),
                       );
@@ -246,12 +257,12 @@ Exercises exercise;
                                 {
                                   if(formKey.currentState!.validate())
                                   {
-                                    if(exercise.isCustom == false)
+                                    if(widget.exercise.isCustom == false)
                                       {
                                         await ExercisesCubit.getInstance(context).setRecord(
                                           recModel: SetRecModel(
-                                              muscleName: exercise.muscleName!,
-                                              exerciseId: exercise.id,
+                                              muscleName: widget.exercise.muscleName!,
+                                              exerciseId: widget.exercise.id,
                                               weight: weightCont.text,
                                               reps: repsCont.text,
                                               uId: CacheHelper.instance.uId,
@@ -267,7 +278,7 @@ Exercises exercise;
                                       ExercisesCubit.getInstance(context).setRecordForCustomExercise(
                                         context,
                                         setCustomExerciseRecModel: SetCustomExerciseRecModel(
-                                            index: index!,
+                                            index: widget.index!,
                                             reps: repsCont.text,
                                             weight: weightCont.text,
                                             uId: CacheHelper.instance.uId,

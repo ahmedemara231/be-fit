@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
-import 'package:be_fit/view/exercises/specificExercise/exercise_video.dart';
 import 'package:be_fit/view_model/bloc_observer.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';

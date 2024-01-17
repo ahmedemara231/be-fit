@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:be_fit/models/data_types/records_model.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/modules/toast.dart';
+import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -68,7 +70,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
        {
          'weight' : weight,
          'reps' : reps,
-         'dateTime' : Jiffy.now().yMMMd,
+         'dateTime' : Jiffy,
          'uId' : recModel.uId,
        },
    ).then((recordId)async
@@ -104,7 +106,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
                        {
                          'weight' : weight,
                          'reps' : reps,
-                         'dateTime' : Jiffy.now().yMMMd,
+                         'dateTime' : Jiffy().yMMMM
                        },
                      );
                    }
@@ -124,6 +126,35 @@ class ExercisesCubit extends Cubit<ExercisesStates>
    }).catchError((error)
    {
      emit(SetNewRecordErrorState());
+   });
+ }
+
+ List<MyRecord> records = [];
+ Future<void> pickRecordsToMakeChart({
+    required String muscleName,
+   required String exerciseDoc,
+   required String uId,
+})async
+ {
+   records = [];
+   emit(MakeChartForExerciseLoadingState());
+   await FirebaseFirestore.instance
+       .collection(muscleName)
+       .doc(exerciseDoc)
+       .collection('records')
+       .where('uId',isEqualTo: uId)
+       .get()
+       .then((value)
+   {
+     value.docs.forEach((element) {
+       records.add(
+           MyRecord(
+               reps: element.data()['reps'],
+               weight: element.data()['weight'],
+           ),
+       );
+     });
+     emit(MakeChartForExerciseSuccessState());
    });
  }
 
@@ -269,7 +300,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
         {
           'reps' : reps,
           'weight' : weight,
-          'dateTime' : Jiffy.now().yMMM,
+          'dateTime' : Jiffy().yMMM
         },
     ).then((value)
     {
@@ -280,4 +311,5 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       emit(SetRecordForCustomExerciseErrorState());
     });
   }
+
 }

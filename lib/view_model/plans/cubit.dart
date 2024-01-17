@@ -1,12 +1,13 @@
 import 'package:be_fit/models/data_types/exercises.dart';
+import 'package:be_fit/models/data_types/records_model.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/modules/toast.dart';
+import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
-import '../../modules/snackBar.dart';
 
 class PlansCubit extends Cubit<PlansStates>
 {
@@ -185,6 +186,7 @@ class PlansCubit extends Cubit<PlansStates>
     required String uId,
   })async
   {
+    MyToast.showToast(context, msg: 'Preparing tour plan',color: Colors.grey[400]);
     emit(CreateNewPlanLoadingState());
     await FirebaseFirestore.instance
         .collection('users')
@@ -243,7 +245,7 @@ class PlansCubit extends Cubit<PlansStates>
                   .collection(listsKeys[index])
                   .doc(planExerciseId.id);
 
-              exerciseDoc.set(
+              await exerciseDoc.set(
                 {
                   'name' : element.name,
                   'docs' : element.docs,
@@ -267,7 +269,7 @@ class PlansCubit extends Cubit<PlansStates>
               });
             }
             else{
-              FirebaseFirestore.instance
+              await FirebaseFirestore.instance
                   .collection('users')
                   .doc(uId)
                   .collection('plans')
@@ -289,7 +291,6 @@ class PlansCubit extends Cubit<PlansStates>
           }
         });
       }
-
       MyToast.showToast(context, msg: 'Plan is Ready');
       emit(CreateNewPlanSuccessState());
     }).catchError((error)
@@ -450,7 +451,7 @@ class PlansCubit extends Cubit<PlansStates>
       {
         'weight' : weight,
         'reps' : reps,
-        'dateTime' : Jiffy.now().yMMMd,
+        'dateTime' : Jiffy().yMMM,
         'uId' : planExerciseRecord.uId,
       },
     ).then((firstPublish)async
@@ -487,7 +488,7 @@ class PlansCubit extends Cubit<PlansStates>
                     {
                       'weight' : weight,
                       'reps' : reps,
-                      'dateTime' : Jiffy.now().yMMMd,
+                      'dateTime' : Jiffy().yMMM,
                       'uId' : planExerciseRecord.uId,
                     },
                   );
@@ -506,6 +507,39 @@ class PlansCubit extends Cubit<PlansStates>
         });
       });
       MyToast.showToast(context, msg: 'Record added');
+    });
+  }
+
+  List<MyRecord> records = [];
+  Future<void> pickRecordsToMakeChart({
+    required String uId,
+    required String planDoc,
+    required int listIndex,
+    required String exerciseId,
+  })async
+  {
+    records = [];
+    emit(MakeChartForExerciseInPlanLoadingState());
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection('plans')
+        .doc(planDoc)
+        .collection('list$listIndex')
+        .doc(exerciseId)
+        .collection('records')
+        .get()
+        .then((value)
+    {
+      value.docs.forEach((element) {
+        records.add(
+          MyRecord(
+              reps: element.data()['reps'],
+              weight: element.data()['weight'],
+          )
+        );
+      });
+      emit(MakeChartForExerciseInPlanSuccessState());
     });
   }
 }

@@ -8,6 +8,10 @@ class GetExercisesSuccessState extends ExercisesStates {}
 
 class GetExercisesErrorState extends ExercisesStates {}
 
+class MakeChartForExerciseLoadingState extends ExercisesStates{}
+
+class MakeChartForExerciseSuccessState extends ExercisesStates{}
+
 class SetNewRecordLoadingState extends ExercisesStates {}
 
 class SetNewRecordSuccessState extends ExercisesStates {}

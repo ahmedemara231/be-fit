@@ -1,6 +1,8 @@
 import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
+import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,6 @@ import '../../../modules/otp_tff.dart';
 import '../../../modules/snackBar.dart';
 import '../../../widgets_models/records_model.dart';
 import '../../exercises/specificExercise/exercise_video.dart';
-import '../../log/Log.dart';
 
 class PlanExerciseDetails extends StatefulWidget {
 
@@ -38,8 +39,12 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
 
   @override
   void initState() {
-    print('video : ${widget.exercise.video}');
-    print('name : ${widget.exercise.name}');
+    PlansCubit.getInstance(context).pickRecordsToMakeChart(
+        uId: CacheHelper.instance.uId,
+        planDoc: widget.planDoc,
+        listIndex: widget.listIndex,
+        exerciseId: widget.exercise.id,
+    );
     super.initState();
   }
   @override
@@ -55,11 +60,9 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Log(
-                      exerciseId: widget.exercise.id,
-                      muscleName: widget.exercise.muscleName!,
-                      isCustom: widget.exercise.isCustom,
-                    ),
+                    builder: (context) => Statistics(
+                      records: PlansCubit.getInstance(context).records,
+                    )
                   ),
                 );
               },

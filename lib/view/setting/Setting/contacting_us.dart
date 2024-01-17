@@ -1,7 +1,6 @@
 import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../models/widgets/contacting_us.dart';
 
 class Contacting extends StatelessWidget {
@@ -23,7 +22,6 @@ class Contacting extends StatelessWidget {
   ];
 
   List<ContactingUsModel> socialMedia =
-
   [
     const ContactingUsModel(
         icon: Icon(Icons.facebook),
@@ -63,7 +61,24 @@ class Contacting extends StatelessWidget {
             child: Card(
               elevation: 2,
               child: ListView.separated(
-                  itemBuilder: (context, index) => customerSupport[index],
+                  itemBuilder: (context, index) => InkWell(
+                    onTap: ()
+                    {
+                      switch(index)
+                      {
+                        case 0:
+                          SettingCubit.getInstance(context).contactingPhoneClick(
+                            phone: 'tel:${customerSupport[0].value}',
+                          );
+                          break;
+                        case 1:
+                          SettingCubit.getInstance(context).contactingEmailClick(
+                            emailAddress: 'mailto:${customerSupport[1].value}'
+                          );
+                      }
+                    },
+                      child: customerSupport[index],
+                  ),
                   separatorBuilder: (context, index) => const SizedBox(height: 12,),
                   itemCount: customerSupport.length,
               ),

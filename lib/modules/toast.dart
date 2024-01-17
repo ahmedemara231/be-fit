@@ -6,14 +6,14 @@ class MyToast
 {
   static final toast = FToast();
 
-  static void showToast(context,{required String msg})
+  static void showToast(context,{required String msg, Color? color})
   {
     toast.init(context);
     toast.showToast(
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Colors.green,
+          color: color?? Colors.green,
         ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 28),
