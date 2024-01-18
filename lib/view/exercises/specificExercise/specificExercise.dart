@@ -39,11 +39,21 @@ class _SpecificExerciseState extends State<SpecificExercise> {
 
   @override
   void initState() {
-    ExercisesCubit.getInstance(context).pickRecordsToMakeChart(
-        muscleName: widget.exercise.muscleName!,
-        exerciseDoc: widget.exercise.id,
-        uId: CacheHelper.instance.uId,
-    );
+    if(widget.exercise.isCustom == false)
+      {
+        ExercisesCubit.getInstance(context).pickRecordsToMakeChart(
+          muscleName: widget.exercise.muscleName!,
+          exerciseDoc: widget.exercise.id,
+          uId: CacheHelper.instance.uId,
+        );
+      }
+    else
+    {
+      ExercisesCubit.getInstance(context).pickRecordsForCustomExerciseToMakeChart(
+          uId: CacheHelper.instance.uId,
+          exerciseDoc: widget.exercise.id,
+      );
+    }
     super.initState();
   }
   @override
@@ -63,7 +73,9 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => Statistics(
-                              records: ExercisesCubit.getInstance(context).records,
+                              records: widget.exercise.isCustom == false ?
+                              ExercisesCubit.getInstance(context).records:
+                              ExercisesCubit.getInstance(context).recordsForCustomExercise,
                           )
                         ),
                     );
@@ -149,6 +161,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                   }
                   else if(snapshot.hasError)
                   {
+                    print('error : ${snapshot.error.toString()}');
                     MySnackBar.showSnackBar(
                         context: context,
                         message: 'Try again latter'

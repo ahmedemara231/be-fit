@@ -158,6 +158,31 @@ class ExercisesCubit extends Cubit<ExercisesStates>
    });
  }
 
+ List<MyRecord> recordsForCustomExercise = [];
+ Future<void> pickRecordsForCustomExerciseToMakeChart({
+   required String uId,
+   required String exerciseDoc,
+})async
+ {
+   FirebaseFirestore.instance
+       .collection('users')
+       .doc(uId)
+       .collection('customExercises')
+       .doc(exerciseDoc)
+       .collection('records')
+       .get()
+       .then((value)
+   {
+     value.docs.forEach((element) {
+       recordsForCustomExercise.add(
+           MyRecord(
+             reps: element.data()['reps'],
+             weight: element.data()['weight'],
+       ));
+     });
+   });
+ }
+
   File? selectedExerciseImage;
   late String exerciseImageName;
  Future<void> pickImageForCustomExercise()async

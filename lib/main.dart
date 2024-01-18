@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view/bottomNavBar.dart';
 import 'package:be_fit/view_model/bloc_observer.dart';
@@ -18,6 +19,7 @@ import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -86,4 +88,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

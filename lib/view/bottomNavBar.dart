@@ -3,6 +3,7 @@ import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
+import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'exercises/bodyMuscles.dart';
@@ -25,7 +26,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     CacheHelper.instance.getUserData();
-    BottomNavCubit.getInstance(context).getAllPlans(uId: CacheHelper.instance.uId, context: context);
+    BottomNavCubit.getInstance(context).getAllPlans(
+      checkMethod: FirstCheckMethod(),
+      uId: CacheHelper.instance.uId,
+      context: context,
+    );
     super.initState();
   }
   @override

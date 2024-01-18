@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
+import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomNavCubit extends Cubit<BottomNavState>
@@ -21,12 +24,31 @@ class BottomNavCubit extends Cubit<BottomNavState>
   Future<void> getAllPlans({
     required String uId,
     required context,
+    required InternetCheck checkMethod
 })async
   {
-    emit(FetchAllDataLoadingState());
-    await PlansCubit.getInstance(context).getAllPlans(uId);
-    await PlansCubit.getInstance(context).getMuscles();
-    emit(FetchAllDataSuccessState());
+    InternetCheck internetCheck = checkMethod;
+    internetCheck.internetCheck(
+      context,
+      validConnectionAction: () async
+    {
+      emit(FetchAllDataLoadingState());
+      await PlansCubit.getInstance(context).getAllPlans(uId);
+      await PlansCubit.getInstance(context).getMuscles();
+      emit(FetchAllDataSuccessState());
+    },
+      inValidConnectionAction: ()
+      {
+        MySnackBar.showSnackBar(
+            context: context,
+            message: 'Check your internet connection and try again',
+            color: Colors.red
+        );
+        emit(FetchAllDataErrorState());
+      }
+    );
+    // await PlansCubit.getInstance(context).getAllPlans(uId);
+    // await PlansCubit.getInstance(context).getMuscles();
   }
 }
 
