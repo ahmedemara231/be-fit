@@ -51,7 +51,7 @@ class DayExercises extends StatelessWidget {
                         await PlansCubit.getInstance(context).deleteExerciseFromPlan(
                           exerciseIndex: index,
                           planName: planName,
-                          uId: CacheHelper.instance.uId,
+                          uId: CacheHelper.getInstance().uId,
                           planDoc: planDoc,
                           listIndex: listIndex,
                           exerciseDoc: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).id

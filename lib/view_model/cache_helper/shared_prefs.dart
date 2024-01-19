@@ -2,9 +2,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheHelper
 {
-  // try to use singleton design pattern
+  // try to use Singleton design pattern
   CacheHelper._internal();
-  static CacheHelper instance = CacheHelper._internal();
+  static CacheHelper? cacheInstance;
+
+  // Lazy Singleton
+  factory CacheHelper.getInstance()
+  {
+    cacheInstance ??= CacheHelper._internal();
+    return cacheInstance!;
+  }
 
 
    late SharedPreferences sharedPreferences;
@@ -36,15 +43,11 @@ class CacheHelper
 
    Future<void> kill()async
   {
-    bool logOut = await sharedPreferences.setStringList('userData', []);
-    print(logOut);
+    await sharedPreferences.setStringList('userData', []);
   }
 
   Future<void> setAppTheme(bool newMode)async
   {
-    await sharedPreferences.setBool('appTheme', newMode).then((value)
-    {
-      print(newMode);
-    });
+    await sharedPreferences.setBool('appTheme', newMode);
   }
 }

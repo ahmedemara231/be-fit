@@ -96,7 +96,7 @@ class Plans extends StatelessWidget {
                                 {
                                   await PlansCubit.getInstance(context).deletePlan(
                                     index : index,
-                                    uId: CacheHelper.instance.uId,
+                                    uId: CacheHelper.getInstance().uId,
                                     planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
                                   );
                                 },

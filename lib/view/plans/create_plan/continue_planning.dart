@@ -1,7 +1,7 @@
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/snackBar.dart';
-import 'package:be_fit/view/bottomNavBar.dart';
+import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
@@ -134,7 +134,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                   {
                     await PlansCubit.getInstance(context).createNewPlan(
                       context,
-                      uId: CacheHelper.instance.uId,
+                      uId: CacheHelper.getInstance().uId,
                       daysNumber: widget.daysNumber,
                       name: widget.name,
                     ).then((value)

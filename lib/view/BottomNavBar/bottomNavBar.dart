@@ -6,7 +6,7 @@ import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'exercises/bodyMuscles.dart';
+import '../exercises/bodyMuscles.dart';
 
 class BottomNavBar extends StatefulWidget {
     const BottomNavBar({super.key});
@@ -25,10 +25,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   void initState() {
-    CacheHelper.instance.getUserData();
+    CacheHelper.getInstance().getUserData();
     BottomNavCubit.getInstance(context).getAllPlans(
-      checkMethod: FirstCheckMethod(),
-      uId: CacheHelper.instance.uId,
+      checkMethod: FirstCheckMethod.getInstance(),
+      uId: CacheHelper.getInstance().uId,
       context: context,
     );
     super.initState();

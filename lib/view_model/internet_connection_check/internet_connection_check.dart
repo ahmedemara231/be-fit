@@ -13,6 +13,15 @@ abstract class InternetCheck
 
 class FirstCheckMethod implements InternetCheck
 {
+  FirstCheckMethod._internal();
+  static FirstCheckMethod? instance;
+
+  factory FirstCheckMethod.getInstance()
+  {
+    instance ??= FirstCheckMethod._internal();
+    return instance!;
+  }
+
   @override
   Future<void> internetCheck(context, {
     required Function validConnectionAction,
@@ -31,7 +40,6 @@ class FirstCheckMethod implements InternetCheck
       validConnectionAction();
     }
   }
-
 }
 
 class SecondCheckMethod implements InternetCheck

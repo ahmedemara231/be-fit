@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:be_fit/modules/snackBar.dart';
+import 'package:be_fit/view/BottomNavBar/invalid_connection_screen.dart';
 import 'package:be_fit/view/auth/login/login.dart';
-import 'package:be_fit/view/bottomNavBar.dart';
+import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
 import 'package:be_fit/view_model/bloc_observer.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
@@ -28,7 +29,7 @@ import 'firebase_options.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  CacheHelper.instance.initCache();
+  CacheHelper.getInstance().initCache();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -75,11 +76,11 @@ class MyApp extends StatelessWidget {
         builder: (context, state)
         {
           return MaterialApp(
-            theme: CacheHelper.instance.sharedPreferences.getBool('appTheme') == false?
+            theme: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
             ThemeData.light():
             ThemeData.dark(),
             debugShowCheckedModeBanner: false,
-            home: CacheHelper.instance.sharedPreferences.getStringList('userData')!.isEmpty?
+            home: CacheHelper.getInstance().sharedPreferences.getStringList('userData')!.isEmpty?
             Login() :
             const BottomNavBar(),
           );

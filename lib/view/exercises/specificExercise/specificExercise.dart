@@ -44,13 +44,13 @@ class _SpecificExerciseState extends State<SpecificExercise> {
         ExercisesCubit.getInstance(context).pickRecordsToMakeChart(
           muscleName: widget.exercise.muscleName!,
           exerciseDoc: widget.exercise.id,
-          uId: CacheHelper.instance.uId,
+          uId: CacheHelper.getInstance().uId,
         );
       }
     else
     {
       ExercisesCubit.getInstance(context).pickRecordsForCustomExerciseToMakeChart(
-          uId: CacheHelper.instance.uId,
+          uId: CacheHelper.getInstance().uId,
           exerciseDoc: widget.exercise.id,
       );
     }
@@ -91,8 +91,8 @@ class _SpecificExerciseState extends State<SpecificExercise> {
             children: [
               StreamBuilder(
                 stream: widget.exercise.isCustom == false?
-                FirebaseFirestore.instance.collection(widget.exercise.muscleName!).doc(widget.exercise.id).collection('records').where('uId',isEqualTo: CacheHelper.instance.uId).orderBy('dateTime').snapshots() :
-                FirebaseFirestore.instance.collection('users').doc(CacheHelper.instance.uId).collection('customExercises').doc(widget.exercise.id).collection('records').orderBy('dateTime').snapshots(),
+                FirebaseFirestore.instance.collection(widget.exercise.muscleName!).doc(widget.exercise.id).collection('records').where('uId',isEqualTo: CacheHelper.getInstance().uId).orderBy('dateTime').snapshots() :
+                FirebaseFirestore.instance.collection('users').doc(CacheHelper.getInstance().uId).collection('customExercises').doc(widget.exercise.id).collection('records').orderBy('dateTime').snapshots(),
                 builder: (context, snapshot)
                 {
                   if(snapshot.hasData)
@@ -278,7 +278,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                               exerciseId: widget.exercise.id,
                                               weight: weightCont.text,
                                               reps: repsCont.text,
-                                              uId: CacheHelper.instance.uId,
+                                              uId: CacheHelper.getInstance().uId,
                                           ),
                                           context: context,
                                         ).then((value)
@@ -294,7 +294,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                             index: widget.index!,
                                             reps: repsCont.text,
                                             weight: weightCont.text,
-                                            uId: CacheHelper.instance.uId,
+                                            uId: CacheHelper.getInstance().uId,
                                         ),
                                       ).then((value)
                                       {

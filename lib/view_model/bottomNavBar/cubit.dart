@@ -6,6 +6,8 @@ import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../view/BottomNavBar/invalid_connection_screen.dart';
+
 class BottomNavCubit extends Cubit<BottomNavState>
 {
   BottomNavCubit(super.initialState);
@@ -43,6 +45,12 @@ class BottomNavCubit extends Cubit<BottomNavState>
             context: context,
             message: 'Check your internet connection and try again',
             color: Colors.red
+        );
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const InvalidConnectionScreen(),
+            ),
         );
         emit(FetchAllDataErrorState());
       }

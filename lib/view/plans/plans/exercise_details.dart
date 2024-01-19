@@ -40,7 +40,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
   @override
   void initState() {
     PlansCubit.getInstance(context).pickRecordsToMakeChart(
-        uId: CacheHelper.instance.uId,
+        uId: CacheHelper.getInstance().uId,
         planDoc: widget.planDoc,
         listIndex: widget.listIndex,
         exerciseId: widget.exercise.id,
@@ -74,7 +74,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
           StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('users')
-                  .doc(CacheHelper.instance.uId)
+                  .doc(CacheHelper.getInstance().uId)
                   .collection('plans')
                   .doc(widget.planDoc)
                   .collection('list${widget.listIndex}')
@@ -268,7 +268,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                                       exerciseDoc: widget.exercise.id,
                                       reps: repsCont.text,
                                       weight: weightCont.text,
-                                      uId: CacheHelper.instance.uId,
+                                      uId: CacheHelper.getInstance().uId,
                                   ),
                                   context: context,
                                   muscleName: widget.exercise.muscleName!

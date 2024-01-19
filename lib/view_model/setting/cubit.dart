@@ -18,7 +18,7 @@ class SettingCubit extends Cubit<SettingStates>
   Future<void> changeAppTheme(bool newMode)async
   {
     darkMode = newMode;
-    await CacheHelper.instance.setAppTheme(darkMode);
+    await CacheHelper.getInstance().setAppTheme(darkMode);
     emit(ChangeAppThemeSuccessState());
   }
 
@@ -53,7 +53,7 @@ class SettingCubit extends Cubit<SettingStates>
               onPressed: () async
               {
                 Navigator.pop(context);
-                await CacheHelper.instance.kill().then((value)
+                await CacheHelper.getInstance().kill().then((value)
                 {
                   Navigator.pushAndRemoveUntil(
                     context,

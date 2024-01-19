@@ -6,7 +6,6 @@ import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../register/register.dart';
 
 class Login extends StatelessWidget {
@@ -90,10 +89,16 @@ class Login extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUp(),
+                            builder: (context) => const SignUp(),
                           ),
                       );
-                    }, child: MyText(text: 'sign up'))
+                    }, child: MyText(text: 'sign up')),
+                const SizedBox(height: 16,),
+                TextButton(
+                    onPressed: ()
+                    {
+                      LoginCubit.getInstance(context).signInWithGoogle();
+                    }, child: MyText(text: 'Sign in with google')),
               ],
             ),
           ),
