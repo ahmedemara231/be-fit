@@ -5,6 +5,7 @@ import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/modules/toast.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
+import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -55,78 +56,87 @@ class ExercisesCubit extends Cubit<ExercisesStates>
  Future<void> setRecord({
    required SetRecModel recModel,
    required context,
+   required InternetCheck internetCheck,
 })async
  {
    // set a record for exercise
-   double? reps = double.tryParse(recModel.reps);
-   double? weight = double.tryParse(recModel.weight);
 
    emit(SetNewRecordLoadingState());
-   await FirebaseFirestore.instance
-       .collection(recModel.muscleName)
-       .doc(recModel.exerciseId)
-       .collection('records')
-       .add(
+
+   internetCheck.internetCheck(
+       context,
+       validConnectionAction: ()async
        {
-         'weight' : weight,
-         'reps' : reps,
-         'dateTime' : Jiffy,
-         'uId' : recModel.uId,
-       },
-   ).then((recordId)async
-   {
-     // set a record for exercise in plans
-     await FirebaseFirestore.instance
-     .collection('users')
-     .doc(recModel.uId)
-     .collection('plans')
-     .get()
-     .then((value)
-     {
-       value.docs.forEach((element) async{
-         List<int> lists = [1,2,3,4,5,6];
-         for(int i = 1; i < lists.length; i++)
+         double? reps = double.tryParse(recModel.reps);
+         double? weight = double.tryParse(recModel.weight);
+
+         await FirebaseFirestore.instance
+             .collection(recModel.muscleName)
+             .doc(recModel.exerciseId)
+             .collection('records')
+             .add(
            {
-             QuerySnapshot checkCollection = await element.reference
-                 .collection('list$i').get();
-             if(checkCollection.docs.isNotEmpty)
+             'weight' : weight,
+             'reps' : reps,
+             'dateTime' : Jiffy,
+             'uId' : recModel.uId,
+           },
+         ).then((recordId)async
+         {
+           // set a record for exercise in plans
+           await FirebaseFirestore.instance
+               .collection('users')
+               .doc(recModel.uId)
+               .collection('plans')
+               .get()
+               .then((value)
+           {
+             value.docs.forEach((element) async{
+               List<int> lists = [1,2,3,4,5,6];
+               for(int i = 1; i < lists.length; i++)
                {
-                 await element.reference
-                     .collection('list$i').doc(recModel.exerciseId)
-                     .get().then((value)
+                 QuerySnapshot checkCollection = await element.reference
+                     .collection('list$i').get();
+                 if(checkCollection.docs.isNotEmpty)
                  {
-                   if(value.exists)
+                   await element.reference
+                       .collection('list$i').doc(recModel.exerciseId)
+                       .get().then((value)
                    {
-                     element.reference
-                         .collection('list$i')
-                         .doc(recModel.exerciseId)
-                         .collection('records')
-                         .doc(recordId.id)
-                         .set(
-                       {
-                         'weight' : weight,
-                         'reps' : reps,
-                         'dateTime' : Jiffy().yMMMM
-                       },
-                     );
-                   }
-                   else{
-                     return;
-                   }
-                 });
+                     if(value.exists)
+                     {
+                       element.reference
+                           .collection('list$i')
+                           .doc(recModel.exerciseId)
+                           .collection('records')
+                           .doc(recordId.id)
+                           .set(
+                         {
+                           'weight' : weight,
+                           'reps' : reps,
+                           'dateTime' : Jiffy().yMMMM
+                         },
+                       );
+                     }
+                     else{
+                       return;
+                     }
+                   });
+                 }
+                 else{
+                   return;
+                 }
                }
-             else{
-               return;
-             }
-           }
+             });
+             MyToast.showToast(context, msg: 'Record added');
+           });
+           emit(SetNewRecordSuccessState());
+         }).catchError((error)
+         {
+           emit(SetNewRecordErrorState());
+         });
        });
-       MyToast.showToast(context, msg: 'Record added');
-     });
-     emit(SetNewRecordSuccessState());
-   }).catchError((error)
-   {
-     emit(SetNewRecordErrorState());
-   });
+
  }
 
  List<MyRecord> records = [];

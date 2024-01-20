@@ -33,27 +33,12 @@ class BottomNavCubit extends Cubit<BottomNavState>
     internetCheck.internetCheck(
       context,
       validConnectionAction: () async
-    {
-      emit(FetchAllDataLoadingState());
-      await PlansCubit.getInstance(context).getAllPlans(uId);
-      await PlansCubit.getInstance(context).getMuscles();
-      emit(FetchAllDataSuccessState());
-    },
-      inValidConnectionAction: ()
       {
-        MySnackBar.showSnackBar(
-            context: context,
-            message: 'Check your internet connection and try again',
-            color: Colors.red
-        );
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const InvalidConnectionScreen(),
-            ),
-        );
-        emit(FetchAllDataErrorState());
-      }
+        emit(FetchAllDataLoadingState());
+        await PlansCubit.getInstance(context).getAllPlans(uId);
+        await PlansCubit.getInstance(context).getMuscles();
+        emit(FetchAllDataSuccessState());
+      },
     );
     // await PlansCubit.getInstance(context).getAllPlans(uId);
     // await PlansCubit.getInstance(context).getMuscles();

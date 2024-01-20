@@ -80,7 +80,18 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           body: state is FetchAllDataLoadingState?
           const Center(child: CircularProgressIndicator(),) :
-          mainScreens[BottomNavCubit.getInstance(context).currentIndex],
+          RefreshIndicator(
+            backgroundColor: Colors.red[400],
+            color: Colors.white,
+            onRefresh: ()
+            {
+              BottomNavCubit.getInstance(context).getAllPlans(
+                checkMethod: FirstCheckMethod.getInstance(),
+                uId: CacheHelper.getInstance().uId,
+                context: context,
+              );
+              return Future(() => null);
+            }, child: mainScreens[BottomNavCubit.getInstance(context).currentIndex]),
         );
       },
     );

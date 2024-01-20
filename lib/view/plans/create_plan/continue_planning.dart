@@ -3,6 +3,7 @@ import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
+import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -137,15 +138,8 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                       uId: CacheHelper.getInstance().uId,
                       daysNumber: widget.daysNumber,
                       name: widget.name,
-                    ).then((value)
-                    {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const BottomNavBar(),
-                          ), (route) => false,
-                      );
-                    });
+                      internetCheck: FirstCheckMethod.getInstance(),
+                    );
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),

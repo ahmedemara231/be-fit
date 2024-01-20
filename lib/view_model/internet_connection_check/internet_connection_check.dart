@@ -2,13 +2,13 @@ import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import '../../modules/snackBar.dart';
+import '../../view/BottomNavBar/invalid_connection_screen.dart';
 
 abstract class InternetCheck
 {
   Future<void> internetCheck(context,{
     required Function validConnectionAction,
-    required Function inValidConnectionAction,
-  })async {}
+  });
 }
 
 class FirstCheckMethod implements InternetCheck
@@ -25,18 +25,25 @@ class FirstCheckMethod implements InternetCheck
   @override
   Future<void> internetCheck(context, {
     required Function validConnectionAction,
-    required Function inValidConnectionAction
   })async
   {
     final connectivityResult = await Connectivity().checkConnectivity();
     if(connectivityResult == ConnectivityResult.none)
     {
-      log('$connectivityResult');
-      inValidConnectionAction();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const InvalidConnectionScreen(),
+        ),
+      );
+      MySnackBar.showSnackBar(
+          context: context,
+          message: 'Check your internet connection and try again',
+          color: Colors.red
+      );
     }
     else
     {
-      log('$connectivityResult');
       validConnectionAction();
     }
   }
@@ -47,7 +54,6 @@ class SecondCheckMethod implements InternetCheck
   @override
   Future<void> internetCheck(context, {
     required Function validConnectionAction,
-    required Function inValidConnectionAction
   }) async{
       final connectivityResult = await Connectivity().checkConnectivity();
       switch(connectivityResult)

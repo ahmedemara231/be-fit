@@ -3,11 +3,15 @@ import 'package:be_fit/models/data_types/records_model.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/modules/toast.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
+import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
+
+import '../../view/BottomNavBar/bottomNavBar.dart';
+import '../../view/BottomNavBar/invalid_connection_screen.dart';
 
 class PlansCubit extends Cubit<PlansStates>
 {
@@ -184,119 +188,133 @@ class PlansCubit extends Cubit<PlansStates>
     required int? daysNumber,
     required String name,
     required String uId,
+    required InternetCheck internetCheck,
   })async
   {
-    MyToast.showToast(context, msg: 'Preparing tour plan',color: Colors.grey[400]);
-    emit(CreateNewPlanLoadingState());
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uId)
-        .collection('plans')
-        .add(
-      {
-        'name' : name,
-        'daysNumber' : daysNumber,
-      },
-    ).then((value)
-    {
-      List<String> listsKeys = lists.keys.toList();
-      print('half made');
-
-      for(int index = 0; index <= ( daysNumber! - 1 ); index++)
-      {
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(uId)
-            .collection('plans')
-            .doc(value.id)   // البلان اللي انت لسة عاملها
-            .collection(listsKeys[index]); // على حسب عدد الايام هيتفتح collections
-
-        ///////////////////////////////////////////////////////
-
-        // list1
-        lists[listsKeys[index]]!.forEach((element)async {
-
-          DocumentReference planExerciseId = FirebaseFirestore.instance
+    internetCheck.internetCheck(
+        context,
+        validConnectionAction: ()async
+        {
+          MyToast.showToast(context, msg: 'Preparing tour plan',color: Colors.grey[400]);
+          emit(CreateNewPlanLoadingState());
+          await FirebaseFirestore.instance
               .collection('users')
               .doc(uId)
               .collection('plans')
-              .doc(value.id)
-              .collection(listsKeys[index])
-              .doc(element.id); // 1st exercise in list1 in the plan
-
-          // check if this exercise has a records or not for this user
-
-          for(int i = 0; i <= (muscles.length - 1); i++)
-          {
-            var checkCollection = await FirebaseFirestore.instance
-                .collection(muscles[i])
-                .doc(element.id)
-                .collection('records')
-                .where('uId',isEqualTo: uId)
-                .get();
-
-            if(checkCollection.docs.isNotEmpty)
+              .add(
             {
-              DocumentReference exerciseDoc = FirebaseFirestore.instance
+              'name' : name,
+              'daysNumber' : daysNumber,
+            },
+          ).then((value)
+          {
+            List<String> listsKeys = lists.keys.toList();
+            print('half made');
+
+            for(int index = 0; index <= ( daysNumber! - 1 ); index++)
+            {
+              FirebaseFirestore.instance
                   .collection('users')
                   .doc(uId)
                   .collection('plans')
-                  .doc(value.id)
-                  .collection(listsKeys[index])
-                  .doc(planExerciseId.id);
+                  .doc(value.id)   // البلان اللي انت لسة عاملها
+                  .collection(listsKeys[index]); // على حسب عدد الايام هيتفتح collections
 
-              await exerciseDoc.set(
+              ///////////////////////////////////////////////////////
+
+              // list1
+              lists[listsKeys[index]]!.forEach((element)async {
+
+                DocumentReference planExerciseId = FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uId)
+                    .collection('plans')
+                    .doc(value.id)
+                    .collection(listsKeys[index])
+                    .doc(element.id); // 1st exercise in list1 in the plan
+
+                // check if this exercise has a records or not for this user
+
+                for(int i = 0; i <= (muscles.length - 1); i++)
                 {
-                  'name' : element.name,
-                  'docs' : element.docs,
-                  'image' : element.image,
-                  'muscle' : element.muscleName,
-                  'video' : element.video,
-                  'sets' : element.sets,
-                  'reps' : element.reps,
-                },
-              );
-              checkCollection.docs.forEach((element) {
-                exerciseDoc.collection('records')
-                    .doc(element.id)
-                    .set(
+                  var checkCollection = await FirebaseFirestore.instance
+                      .collection(muscles[i])
+                      .doc(element.id)
+                      .collection('records')
+                      .where('uId',isEqualTo: uId)
+                      .get();
+
+                  if(checkCollection.docs.isNotEmpty)
                   {
-                    'dateTime': element.data()['dateTime'],
-                    'reps': element.data()['reps'],
-                    'weight': element.data()['weight'],
-                  },
-                );
+                    DocumentReference exerciseDoc = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(uId)
+                        .collection('plans')
+                        .doc(value.id)
+                        .collection(listsKeys[index])
+                        .doc(planExerciseId.id);
+
+                    await exerciseDoc.set(
+                      {
+                        'name' : element.name,
+                        'docs' : element.docs,
+                        'image' : element.image,
+                        'muscle' : element.muscleName,
+                        'video' : element.video,
+                        'sets' : element.sets,
+                        'reps' : element.reps,
+                      },
+                    );
+                    checkCollection.docs.forEach((element) {
+                      exerciseDoc.collection('records')
+                          .doc(element.id)
+                          .set(
+                        {
+                          'dateTime': element.data()['dateTime'],
+                          'reps': element.data()['reps'],
+                          'weight': element.data()['weight'],
+                        },
+                      );
+                    });
+                  }
+                  else{
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(uId)
+                        .collection('plans')
+                        .doc(value.id)
+                        .collection(listsKeys[index])
+                        .doc(planExerciseId.id)
+                        .set(
+                      {
+                        'name' : element.name,
+                        'docs' : element.docs,
+                        'image' : element.image,
+                        'muscle' : element.muscleName,
+                        'video' : element.video,
+                        'sets' : element.sets,
+                        'reps' : element.reps,
+                      },
+                    );
+                  }
+                }
               });
             }
-            else{
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(uId)
-                  .collection('plans')
-                  .doc(value.id)
-                  .collection(listsKeys[index])
-                  .doc(planExerciseId.id)
-                  .set(
-                {
-                  'name' : element.name,
-                  'docs' : element.docs,
-                  'image' : element.image,
-                  'muscle' : element.muscleName,
-                  'video' : element.video,
-                  'sets' : element.sets,
-                  'reps' : element.reps,
-                },
-              );
-            }
-          }
-        });
-      }
-      MyToast.showToast(context, msg: 'Plan is Ready');
-      emit(CreateNewPlanSuccessState());
-    }).catchError((error)
-    {
-      emit(CreateNewPlanErrorState());
-    });
+            MyToast.showToast(context, msg: 'Plan is Ready');
+
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomNavBar(),
+              ), (route) => false,
+            );
+            emit(CreateNewPlanSuccessState());
+          }).catchError((error)
+          {
+            emit(CreateNewPlanErrorState());
+          });
+        },
+    );
   }
 
   Map<String,List<Exercises>> plan = {};
@@ -438,76 +456,83 @@ class PlansCubit extends Cubit<PlansStates>
     required SetRecordForPlanExercise planExerciseRecord,
     required context,
     required String muscleName,
+    required InternetCheck internetCheck,
 })async
   {
-    double? reps = double.tryParse(planExerciseRecord.reps);
-    double? weight = double.tryParse(planExerciseRecord.weight);
+    internetCheck.internetCheck(
+        context,
+        validConnectionAction: ()async
+        {
+          double? reps = double.tryParse(planExerciseRecord.reps);
+          double? weight = double.tryParse(planExerciseRecord.weight);
 
-    await FirebaseFirestore.instance
-        .collection(muscleName)
-        .doc(planExerciseRecord.exerciseDoc)
-        .collection('records')
-        .add(
-      {
-        'weight' : weight,
-        'reps' : reps,
-        'dateTime' : Jiffy().yMMM,
-        'uId' : planExerciseRecord.uId,
-      },
-    ).then((firstPublish)async
-    {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(planExerciseRecord.uId)
-          .collection('plans')
-          .get()
-          .then((value)
-      {
-        List<int> days = [1,2,3,4,5,6];
-        value.docs.forEach((element) async {
-          for(int i = 1; i <= days.length; i++)
-          {                               // plan 1
-            QuerySnapshot planList = await element.reference
-                .collection('list$i')
-                .get();
-            if(planList.docs.isNotEmpty)
+          await FirebaseFirestore.instance
+              .collection(muscleName)
+              .doc(planExerciseRecord.exerciseDoc)
+              .collection('records')
+              .add(
             {
-              await element.reference
-                  .collection('list$i').doc(planExerciseRecord.exerciseDoc)
-                  .get().then((value)
-              {
-                if(value.exists)
-                {
-                  print(1);
-                  element.reference
+              'weight' : weight,
+              'reps' : reps,
+              'dateTime' : Jiffy().yMMM,
+              'uId' : planExerciseRecord.uId,
+            },
+          ).then((firstPublish)async
+          {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(planExerciseRecord.uId)
+                .collection('plans')
+                .get()
+                .then((value)
+            {
+              List<int> days = [1,2,3,4,5,6];
+              value.docs.forEach((element) async {
+                for(int i = 1; i <= days.length; i++)
+                {                               // plan 1
+                  QuerySnapshot planList = await element.reference
                       .collection('list$i')
-                      .doc(planExerciseRecord.exerciseDoc)
-                      .collection('records')
-                      .doc(firstPublish.id)
-                      .set(
+                      .get();
+                  if(planList.docs.isNotEmpty)
+                  {
+                    await element.reference
+                        .collection('list$i').doc(planExerciseRecord.exerciseDoc)
+                        .get().then((value)
                     {
-                      'weight' : weight,
-                      'reps' : reps,
-                      'dateTime' : Jiffy().yMMM,
-                      'uId' : planExerciseRecord.uId,
-                    },
-                  );
-                }
-                else{
-                  print(0);
-                  return;
+                      if(value.exists)
+                      {
+                        print(1);
+                        element.reference
+                            .collection('list$i')
+                            .doc(planExerciseRecord.exerciseDoc)
+                            .collection('records')
+                            .doc(firstPublish.id)
+                            .set(
+                          {
+                            'weight' : weight,
+                            'reps' : reps,
+                            'dateTime' : Jiffy().yMMM,
+                            'uId' : planExerciseRecord.uId,
+                          },
+                        );
+                      }
+                      else{
+                        print(0);
+                        return;
+                      }
+                    });
+
+                  }
+                  else{
+                    return;
+                  }
                 }
               });
-
-            }
-            else{
-              return;
-            }
-          }
-        });
-      });
-      MyToast.showToast(context, msg: 'Record added');
-    });
+            });
+            MyToast.showToast(context, msg: 'Record added');
+          });
+        },
+    );
   }
 
   List<MyRecord> records = [];

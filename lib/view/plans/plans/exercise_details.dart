@@ -3,6 +3,7 @@ import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
+import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -262,6 +263,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                             onTap: () async
                             {
                               await PlansCubit.getInstance(context).setARecordFromPlan(
+                                  internetCheck: FirstCheckMethod.getInstance(),
                                   planExerciseRecord: SetRecordForPlanExercise(
                                       planDoc: widget.planDoc,
                                       listIndex: widget.listIndex + 1,

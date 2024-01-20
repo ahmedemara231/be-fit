@@ -4,6 +4,7 @@ import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
+import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -281,6 +282,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                               uId: CacheHelper.getInstance().uId,
                                           ),
                                           context: context,
+                                          internetCheck: FirstCheckMethod.getInstance(),
                                         ).then((value)
                                         {
                                           repsCont.clear();
