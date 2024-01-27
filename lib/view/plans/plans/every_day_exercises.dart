@@ -1,7 +1,8 @@
-import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
+import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/states.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/data_types/exercises.dart';
@@ -30,64 +31,80 @@ class DayExercises extends StatelessWidget {
           appBar: AppBar(
             title: MyText(text: 'Day$listIndex exercises',),
           ),
-          body: ListView.separated(
-            itemBuilder: (context, index) => InkWell(
-              onLongPress: ()
-              {
-                showMenu(
-                  context: context,
-                  position: RelativeRect.fromDirectional(
-                    textDirection: TextDirection.ltr,
-                    start: 50,
-                    top: 20,
-                    end: 50,
-                    bottom: 20,
-                  ),
-                  items: [
-                    PopupMenuItem(
-                      child: MyText(text: 'Delete'),
-                      onTap: () async
-                      {
-                        await PlansCubit.getInstance(context).deleteExerciseFromPlan(
-                          exerciseIndex: index,
-                          planName: planName,
-                          uId: CacheHelper.getInstance().uId,
-                          planDoc: planDoc,
-                          listIndex: listIndex,
-                          exerciseDoc: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).id
-                        );
-                      },
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView.separated(
+              itemBuilder: (context, index) => InkWell(
+                onLongPress: ()
+                {
+                  showMenu(
+                    context: context,
+                    position: RelativeRect.fromDirectional(
+                      textDirection: TextDirection.ltr,
+                      start: 50,
+                      top: 20,
+                      end: 50,
+                      bottom: 20,
+                    ),
+                    items: [
+                      PopupMenuItem(
+                        child: MyText(text: 'Delete'),
+                        onTap: () async
+                        {
+                          await PlansCubit.getInstance(context).deleteExerciseFromPlan(
+                            deleteFromPlanModel: DeleteFromPlanModel(
+                              exerciseIndex: index,
+                              planName: planName,
+                              uId: CacheHelper.getInstance().uId,
+                              planDoc: planDoc,
+                              listIndex: listIndex,
+                              exerciseDoc: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).id,
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  );
+                },
+                onTap: ()
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlanExerciseDetails(
+                        planDoc: planDoc,
+                        listIndex: listIndex,
+                        exercise: PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index]
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Constants.appColor),
+                      right: BorderSide(color: Constants.appColor),
+                      bottom: BorderSide(color: Constants.appColor),
+                      left: BorderSide(color: Constants.appColor),
                     )
-                  ],
-                );
-              },
-              onTap: ()
-              {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PlanExerciseDetails(
-                      planDoc: planDoc,
-                      listIndex: listIndex,
-                      exercise: PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index]
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: ListTile(
+                      leading: Image.network((PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).image),
+                      title: MyText(
+                        text: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).name,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios),
                     ),
                   ),
-                );
-              },
-              child: Card(
-                child: ListTile(
-                  leading: Image.network((PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).image),
-                  title: MyText(
-                    text: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).name,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  trailing: const Icon(Icons.arrow_forward_ios),
                 ),
               ),
+              separatorBuilder: (context, index) => const SizedBox(height: 16,),
+              itemCount: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'] as List<Exercises>).length,
             ),
-            separatorBuilder: (context, index) => const SizedBox(height: 16,),
-            itemCount: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'] as List<Exercises>).length,
           ),
         );
       },

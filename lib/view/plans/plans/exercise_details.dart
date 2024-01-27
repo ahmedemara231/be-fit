@@ -1,16 +1,15 @@
 import 'package:be_fit/models/data_types/setRecord_model.dart';
-import 'package:be_fit/modules/myText.dart';
+import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../../models/data_types/exercises.dart';
-import '../../../modules/otp_tff.dart';
-import '../../../modules/snackBar.dart';
-import '../../../widgets_models/records_model.dart';
+import '../../../models/widgets/modules/otp_tff.dart';
+import '../../../models/widgets/modules/snackBar.dart';
+import '../../../models/widgets/records_model.dart';
 import '../../exercises/specificExercise/exercise_video.dart';
 
 class PlanExerciseDetails extends StatefulWidget {

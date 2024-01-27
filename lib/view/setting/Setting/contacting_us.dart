@@ -1,4 +1,4 @@
-import 'package:be_fit/modules/myText.dart';
+import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
 import '../../../models/widgets/contacting_us.dart';

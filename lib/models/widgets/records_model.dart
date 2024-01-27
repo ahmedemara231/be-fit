@@ -1,5 +1,6 @@
-import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/constants.dart';
 import 'package:flutter/material.dart';
+import 'modules/myText.dart';
 
 class RecordsModel extends StatelessWidget {
   const RecordsModel({super.key});
@@ -12,23 +13,23 @@ class RecordsModel extends StatelessWidget {
         const Spacer(),
         MyText(
           text: 'TIME',
-          color: Colors.red,
+          color: Colors.grey,
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 18,
         ),
         const Spacer(),
         MyText(
           text: 'WEIGHT(KG)',
-          color: Colors.red,
+          color: Colors.grey,
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 18,
         ),
         const Spacer(),
         MyText(
           text: 'REPS',
-          color: Colors.red,
+          color: Colors.grey,
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 18,
         ),
         const Spacer(),
       ],

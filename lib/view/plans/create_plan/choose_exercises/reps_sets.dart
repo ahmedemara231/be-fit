@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../../../modules/myText.dart';
-import '../../../../modules/textFormField.dart';
+import '../../../../models/widgets/modules/myText.dart';
+import '../../../../models/widgets/modules/textFormField.dart';
 
 class RepsAnaSets extends StatelessWidget {
 

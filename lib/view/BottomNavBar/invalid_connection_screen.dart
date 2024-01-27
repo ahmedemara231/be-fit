@@ -1,4 +1,4 @@
-import 'package:be_fit/modules/myText.dart';
+import '../../../models/widgets/modules/myText.dart';
 import 'package:flutter/material.dart';
 
 class InvalidConnectionScreen extends StatelessWidget {

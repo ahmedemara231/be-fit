@@ -1,4 +1,6 @@
-import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/models/widgets/modules/divider.dart';
+
+import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,10 +21,11 @@ class _SettingState extends State<Setting> {
   void initState() {
     settingModel =
     [
-      SettingModel(darkModeOption: false,optionName: 'About Us & Contacting'),
-      SettingModel(darkModeOption: false,optionName: 'Report a problem'),
-      SettingModel(darkModeOption: false,optionName: 'Tips'),
-      SettingModel(darkModeOption: false,optionName: 'Logout'),
+      OtherOptions(icon: Icons.contact_phone_sharp, optionName: 'About Us & Contacting'),
+      OtherOptions(icon: Icons.report_gmailerrorred_sharp, optionName: 'Report a problem'),
+      OtherOptions(icon: Icons.tips_and_updates, optionName: 'Tips'),
+      OtherOptions(icon: Icons.share, optionName: 'Share the app'),
+      OtherOptions(icon: Icons.logout, optionName: 'Logout'),
     ];
     super.initState();
   }
@@ -31,20 +34,17 @@ class _SettingState extends State<Setting> {
     return BlocBuilder<SettingCubit,SettingStates>(
       builder: (context, state)
       {
-       
-
         return Scaffold(
           appBar: AppBar(
             title: MyText(text: 'Setting',fontWeight: FontWeight.w500,),
           ),
           body: Column(
             children: [
-              SettingModel(
-                darkModeOption: true,
+              DarkModeOption(
+                icon: Icons.dark_mode,
                 optionName: 'Dark Mode',
                 value: SettingCubit.getInstance(context).darkMode,
-                onChanged: (newMode)async
-                {
+                onChanged: (newMode)async {
                   await SettingCubit.getInstance(context).changeAppTheme(newMode);
                 },
               ),
@@ -59,17 +59,31 @@ class _SettingState extends State<Setting> {
                           SettingCubit.getInstance(context).contacting(context);
                           break;
                         case 1:
-                          SettingCubit.getInstance(context).reportProblem();
+                          SettingCubit.getInstance(context).reportProblem(context);
                           break;
                         case 2:
                           SettingCubit.getInstance(context).tips();
                           break;
                         case 3:
+                          SettingCubit.getInstance(context).share();
+                          break;
+                        case 4:
                           SettingCubit.getInstance(context).logout(context);
                           break;
                       }
                     },
-                    child: settingModel[index],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 4,
+                      ),
+                      child: Column(
+                        children: [
+                          settingModel[index],
+                          const MyDivider(),
+                        ],
+                      ),
+                    ),
                   ),
                   separatorBuilder: (context, index) => const SizedBox(
                     height: 16,

@@ -1,3 +1,5 @@
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view/plans/plans/plans.dart';
 import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
@@ -39,44 +41,51 @@ class _BottomNavBarState extends State<BottomNavBar> {
       builder: (context, state)
       {
         return Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.red[400],
-            selectedIconTheme: const IconThemeData(
-              color: Colors.white,
-              size: 30,
+          bottomNavigationBar: Container(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10))
             ),
-            unselectedIconTheme: const IconThemeData(
-              color: Colors.white70,
-              size: 30,
+            height: context.setHeight(9),
+            child: BottomNavigationBar(
+              backgroundColor: Constants.appColor,
+              selectedIconTheme: const IconThemeData(
+                color: Colors.white,
+                size: 30,
+              ),
+              unselectedIconTheme: const IconThemeData(
+                color: Colors.white70,
+                size: 30,
+              ),
+              selectedLabelStyle: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              ),
+              unselectedLabelStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white70
+              ),
+              onTap: (newTap)
+              {
+                BottomNavCubit.getInstance(context).changeScreen(
+                    newIndex: newTap,
+                );
+              },
+              currentIndex: BottomNavCubit.getInstance(context).currentIndex,
+              items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.fitness_center),
+                    label: 'Exercises'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.notes),
+                    label: 'Plans'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.person),
+                    label: 'Profile'),
+              ],
             ),
-            selectedLabelStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white
-            ),
-            unselectedLabelStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.white70
-            ),
-            onTap: (newTap)
-            {
-              BottomNavCubit.getInstance(context).changeScreen(
-                  newIndex: newTap,
-              );
-            },
-            currentIndex: BottomNavCubit.getInstance(context).currentIndex,
-            items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.fitness_center),
-                  label: 'Exercises'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.notes),
-                  label: 'Plans'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile'),
-            ],
           ),
           body: state is FetchAllDataLoadingState?
           const Center(child: CircularProgressIndicator(),) :

@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../view/BottomNavBar/invalid_connection_screen.dart';
 
 class BottomNavCubit extends Cubit<BottomNavState>
 {
@@ -35,13 +32,12 @@ class BottomNavCubit extends Cubit<BottomNavState>
       validConnectionAction: () async
       {
         emit(FetchAllDataLoadingState());
+        PlansCubit.getInstance(context).test();
         await PlansCubit.getInstance(context).getAllPlans(uId);
-        await PlansCubit.getInstance(context).getMuscles();
+        await PlansCubit.getInstance(context).getMuscles(uId: CacheHelper.getInstance().uId);
         emit(FetchAllDataSuccessState());
       },
     );
-    // await PlansCubit.getInstance(context).getAllPlans(uId);
-    // await PlansCubit.getInstance(context).getMuscles();
   }
 }
 

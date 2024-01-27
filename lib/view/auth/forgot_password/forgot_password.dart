@@ -1,9 +1,11 @@
-import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/modules/textFormField.dart';
+import 'package:be_fit/extensions/mediaQuery.dart';
+import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../models/widgets/modules/myText.dart';
+import '../../../models/widgets/modules/textFormField.dart';
 
 class ForgotPassword extends StatelessWidget {
   ForgotPassword({super.key});
@@ -16,25 +18,26 @@ class ForgotPassword extends StatelessWidget {
       builder: (context, state)
       {
         return Scaffold(
-          appBar: AppBar(
-            title: MyText(text: 'Forgot your password'),
-          ),
+          appBar: AppBar(),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                MyText(text: 'Forgot password?',fontSize: 25,fontWeight: FontWeight.w500,),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MyText(text: 'Enter your email address',fontSize: 22,fontWeight: FontWeight.w500,),
+                  padding: const EdgeInsets.only(bottom: 40.0,top: 10),
+                  child: MyText(text: 'Enter your email to send you the code',fontSize: 18,color: Colors.grey,fontWeight: FontWeight.bold,),
                 ),
                 Form(
                   key: formKey,
-                  child: TFF(
-                    obscureText: false,
-                    controller: emailCont,
-                    enabledBorder: const OutlineInputBorder(),
-                    hintText: 'ahmed@example.com',
+                  child: SizedBox(
+                    height: context.setHeight(10),
+                    child: TFF(
+                      obscureText: false,
+                      controller: emailCont,
+                      enabledBorder: const OutlineInputBorder(),
+                      hintText: 'ahmed@example.com',
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -43,22 +46,13 @@ class ForgotPassword extends StatelessWidget {
                 if(state is ForgotPasswordLoadingState)
                   const CircularProgressIndicator(),
                 if(state is! ForgotPasswordLoadingState)
-                  ElevatedButton(
-                  onPressed: ()async
-                  {
-                    await LoginCubit.getInstance(context).forgotPassword(
-                        emailCont.text,
-                        context
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 50),
-                    child: MyText(text: 'Send',color: Colors.white,fontSize: 18,),
-                  ),
-                )
+                 AppButton(onPressed: () async
+                 {
+                   await LoginCubit.getInstance(context).forgotPassword(
+                       emailCont.text,
+                       context
+                   );
+                 }, text: 'Send')
               ],
             ),
           ),

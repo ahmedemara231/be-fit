@@ -1,12 +1,18 @@
-import 'dart:developer';
-
-import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/routes.dart';
+import 'package:be_fit/models/data_types/report.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view_model/setting/states.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../models/widgets/modules/myText.dart';
 import '../../view/auth/login/login.dart';
+import '../../view/setting/Setting/report_problem/Reports.dart';
+import '../../view/setting/Setting/report_problem/report_problem.dart';
 import '../cache_helper/shared_prefs.dart';
 
 class SettingCubit extends Cubit<SettingStates>
@@ -22,6 +28,7 @@ class SettingCubit extends Cubit<SettingStates>
     emit(ChangeAppThemeSuccessState());
   }
 
+  // Contacting
   void contacting(context)
   {
     Navigator.push(
@@ -32,8 +39,82 @@ class SettingCubit extends Cubit<SettingStates>
     );
   }
 
-  void reportProblem() {}
+  Future<void> contactingPhoneClick({required String phone})async
+  {
+    Uri mobileNumber = Uri.parse(phone);
+    launchUrl(mobileNumber);
+  }
+
+  Future<void> contactingEmailClick({required String emailAddress})async
+  {
+    Uri email = Uri.parse(emailAddress);
+    await launchUrl(email);
+  }
+
+  // Reporting
+  void reportProblem(BuildContext context)
+  {
+    context.normalNewRoute(ReportProblem());
+  }
+
+  Future<void> report(BuildContext context, {required String problem, required String uId})async
+  {
+    await FirebaseFirestore.instance
+        .collection('problems')
+        .add(
+        {
+          'problem' : problem,
+          'dateTime' : Jiffy().yMMMMEEEEdjm,
+          'uId' : uId,
+        },
+    ).then((value)
+    {
+     context.replacementRoute(const Reports());
+      emit(SetAReportSuccessState());
+    }).catchError((error)
+    {
+      emit(SetAReportErrorState());
+    });
+  }
+
+  List<Report> reports = [];
+  Future<void> getAllReports({
+    required String uId,
+  })async
+  {
+    reports = [];
+    emit(GetAllReportsLoadingState());
+    await FirebaseFirestore.instance
+        .collection('problems')
+        .where('uId',isEqualTo: uId)
+        .get()
+        .then((value)
+    {
+      value.docs.forEach((element) {
+        reports.add(
+          Report(
+            problem: element.data()['problem'],
+            dateTime: element.data()['dateTime'],
+          ),
+        );
+      });
+      emit(GetAllReportsSuccessState());
+    }).catchError((error)
+    {
+      emit(GetAllReportsErrorState());
+    });
+  }
+
   void tips() {}
+
+  Future<void> share()async
+  {
+    final result = await Share.shareWithResult('check out my website https://example.com');
+
+    if (result.status == ShareResultStatus.success) {
+      print('Thank you for sharing my website!');
+    }
+  }
 
   Future<void> logout(context) async
   {
@@ -42,14 +123,20 @@ class SettingCubit extends Cubit<SettingStates>
       builder: (context) => AlertDialog(
         title: MyText(text: 'are you sure to logout?',fontSize: 20,),
         actions: [
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              // backgroundColor: Constants.appColor,
+            ),
               onPressed: ()
               {
                 Navigator.pop(context);
               },
-              child: MyText(text: 'Cancel',fontSize: 16,),
+              child: MyText(text: 'Cancel',fontSize: 14,),
           ),
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Constants.appColor,
+            ),
               onPressed: () async
               {
                 Navigator.pop(context);
@@ -64,23 +151,10 @@ class SettingCubit extends Cubit<SettingStates>
                   // FirebaseAuth.instance.signOut();
                 });
               },
-              child: MyText(text: 'logout',fontSize: 16),
+              child: MyText(text: 'logout',fontSize: 14),
           ),
         ],
       ),
     );
-  }
-
-
-  Future<void> contactingPhoneClick({required String phone})async
-  {
-    Uri mobileNumber = Uri.parse(phone);
-    launchUrl(mobileNumber);
-  }
-
-  Future<void> contactingEmailClick({required String emailAddress})async
-  {
-    Uri email = Uri.parse(emailAddress);
-    await launchUrl(email);
   }
 }

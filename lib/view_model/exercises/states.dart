@@ -1,5 +1,7 @@
 class ExercisesStates {}
 
+class ChangeBody extends ExercisesStates{}
+
 class ExerInitialState extends ExercisesStates {}
 
 class GetExercisesLoadingState extends ExercisesStates {}

@@ -1,10 +1,14 @@
+import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/user.dart';
-import 'package:be_fit/modules/myText.dart';
+import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../modules/textFormField.dart';
+import '../../../constants.dart';
+import '../../../models/widgets/modules/textFormField.dart';
+import '../../../models/widgets/modules/myText.dart';
+import '../login/login.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -76,43 +80,60 @@ class _SignUpState extends State<SignUp> {
           appBar: AppBar(),
           body: Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Stack(
+            child: Column(
               children: [
-                SizedBox(
-                    width: double.infinity,
-                    child: Image.network(fit:BoxFit.fill,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD4kN_9TODip-tmg7yQF6zizDOMNwFsquoiw&usqp=CAU')),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height/1.5,
-                    decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: ListView.separated(
-                      itemBuilder: (context, index) => signUpInputs[index],
-                      separatorBuilder: (context, index) => const SizedBox(height: 16,),
-                      itemCount: signUpInputs.length,
-                    ),
+                Image.asset('images/be-fit_logo.png'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyText(
+                    text: 'Let\'s create an account',
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: ElevatedButton(
-                      onPressed: ()async
-                      {
-                        await SignUpCubit.getInstance(context).signUp(
-                            user: Trainee(
-                              name: nameCont.text,
-                              email: emailCont.text,
-                              phone: phoneCont.text,
-                              password: passCont.text,
-                            ),
-                            context: context
-                        );
-                      }, child: MyText(text: 'Sign Up')),
-                )
+                const SizedBox(height: 30,),
+                SizedBox(
+                  height: context.setHeight(2.5),
+                  child: ListView.separated(
+                    itemBuilder: (context, index) => signUpInputs[index],
+                    separatorBuilder: (context, index) => const SizedBox(height: 16,),
+                    itemCount: signUpInputs.length,
+                  ),
+                ),
+                if(state is SignUpLoadingState)
+                  const CircularProgressIndicator(),
+                if(state is! SignUpLoadingState)
+                  AppButton(
+                    onPressed: ()async
+                  {
+                    if(formKey.currentState!.validate())
+                    {
+                      await SignUpCubit.getInstance(context).signUp(
+                        user: Trainee(
+                          email: emailCont.text,
+                          password: passCont.text,
+                        ),
+                        context: context,
+                      );
+                    }
+                  }, text: 'Sign up',
+                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyText(text: 'Already have have an account?',),
+                    TextButton(
+                        onPressed: ()
+                        {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Login(),
+                            ), (route) => false,
+                          );
+                        }, child: MyText(text: 'sign up',)),
+                  ],
+                ),
               ],
             ),
           ),

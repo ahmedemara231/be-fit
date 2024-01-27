@@ -8,6 +8,8 @@ class LoginSuccessState extends LoginStates {}
 
 class LoginErrorState extends LoginStates {}
 
+class SetPasswordVisibility extends LoginStates{}
+
 class ForgotPasswordLoadingState extends LoginStates {}
 
 class ForgotPasswordSuccessState extends LoginStates {}

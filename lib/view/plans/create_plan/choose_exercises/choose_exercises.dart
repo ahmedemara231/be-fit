@@ -1,10 +1,10 @@
 import 'package:be_fit/models/data_types/exercises.dart';
-import 'package:be_fit/modules/myText.dart';
 import 'package:be_fit/view/plans/create_plan/choose_exercises/reps_sets.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../models/widgets/modules/myText.dart';
 
 class ChooseExercises extends StatelessWidget {
 

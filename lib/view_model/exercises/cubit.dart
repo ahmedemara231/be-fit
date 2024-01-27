@@ -1,8 +1,5 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:be_fit/models/data_types/records_model.dart';
-import 'package:be_fit/modules/snackBar.dart';
-import 'package:be_fit/modules/toast.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
@@ -15,11 +12,20 @@ import 'package:jiffy/jiffy.dart';
 import '../../models/data_types/add_custom_exercise.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/setRecord_model.dart';
+import '../../models/widgets/modules/toast.dart';
 
 class ExercisesCubit extends Cubit<ExercisesStates>
 {
   ExercisesCubit(super.initialState);
   static ExercisesCubit getInstance(context) => BlocProvider.of(context);
+
+  int currentIndex = 1;
+  void changeBody(int newIndex)
+  {
+    currentIndex = newIndex;
+    print(currentIndex);
+    emit(ChangeBody());
+  }
 
   List<Exercises> exercises = [];
   Future<void> getExercisesForSpecificMuscle({
@@ -78,7 +84,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
            {
              'weight' : weight,
              'reps' : reps,
-             'dateTime' : Jiffy,
+             'dateTime' : Jiffy().yMMMM,
              'uId' : recModel.uId,
            },
          ).then((recordId)async
@@ -133,6 +139,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
            emit(SetNewRecordSuccessState());
          }).catchError((error)
          {
+           print(error.toString());
            emit(SetNewRecordErrorState());
          });
        });
@@ -141,7 +148,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 
  List<MyRecord> records = [];
  Future<void> pickRecordsToMakeChart({
-    required String muscleName,
+   required String muscleName,
    required String exerciseDoc,
    required String uId,
 })async

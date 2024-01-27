@@ -1,6 +1,8 @@
-import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/modules/snackBar.dart';
-import 'package:be_fit/modules/textFormField.dart';
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/mediaQuery.dart';
+import 'package:be_fit/models/widgets/app_button.dart';
+import '../../../models/widgets/modules/textFormField.dart';
+import '../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
@@ -25,125 +27,99 @@ class CreateExercise extends StatelessWidget {
       {
         return Scaffold(
           appBar: AppBar(
-            title: MyText(text: 'Add Exercise'),
-            actions: [
-              CircleAvatar(
-                radius: 40,
-                child: IconButton(
-                  onPressed: ()
-                  {
-                    ExercisesCubit.getInstance(context).selectedExerciseImage == null;
-                  },
-                  icon: const Icon(Icons.close),
-                ),
-              ),
-              TextButton(
-                onPressed: () async
-                {
-                  if(formKey.currentState!.validate())
-                    {
-                      if(ExercisesCubit.getInstance(context).selectedExerciseImage == null)
-                        {
-                          MySnackBar.showSnackBar(
-                              context: context,
-                              message: 'please select image',
-                          );
-                        }
-                      else{
-                        await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
-                          addCustomExerciseModel: AddCustomExerciseModel(
-                              uId: CacheHelper.getInstance().uId,
-                              muscle: muscleName,
-                              name: nameCont.text,
-                              description: descriptionCont.text,
-                          ),
-                          context: context,
-                        ).then((value)
-                        {
-                          nameCont.clear();
-                          descriptionCont.clear();
-                          Navigator.pop(context);
-                        });
-                      }
-                    }
-                },
-                child: MyText(
-                  text: 'Save',
-                  fontSize: 20,
-                ),
-              )
-            ],
+            title: MyText(text: 'Add Exercise',fontSize: 25,fontWeight: FontWeight.bold,),
+            centerTitle: true,
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Form(
               key: formKey,
-              child: Column(
-                children: [
-                  if(state is CreateCustomExerciseLoadingState)
-                    const LinearProgressIndicator(),
-                  IconButton(
-                    onPressed: ()async
-                    {
-                      await ExercisesCubit.getInstance(context).pickImageForCustomExercise();
-                    },
-                    icon: ExercisesCubit.getInstance(context).selectedExerciseImage == null ?
-                    const Icon(
-                      Icons.photo,
-                      color: Colors.red,
-                      size: 80,
-                    ):
-                    Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width/1.2,
-                          height: MediaQuery.of(context).size.height/2,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if(state is CreateCustomExerciseLoadingState)
+                      const LinearProgressIndicator(),
+                    IconButton(
+                      onPressed: ()async
+                      {
+                        await ExercisesCubit.getInstance(context).pickImageForCustomExercise();
+                      },
+                      icon: ExercisesCubit.getInstance(context).selectedExerciseImage == null ?
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Icon(
+                          Icons.photo,
+                          color: Constants.appColor,
+                          size: 80,
+                        ),
+                      ):
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SizedBox(
+                          width: context.setWidth(1.2),
+                          height: context.setHeight(2.2),
                             child: Image.file(ExercisesCubit.getInstance(context).selectedExerciseImage!)),
-
-                      ],
-                    ),
-                  ),
-                  TFF(
-                    obscureText: false,
-                    controller: nameCont,
-                    hintText: 'Name',
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          width: 1.5,
-                        )
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  TFF(
-                    obscureText: false,
-                    controller: descriptionCont,
-                    hintText: 'Description',
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: const BorderSide(
-                          width: 1.5,
-                        )
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MyText(
-                        text: 'Category : $muscleName',
-                        fontSize: 25,
-                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ),
-                ],
+                    TFF(
+                      obscureText: false,
+                      controller: nameCont,
+                      hintText: 'Name',
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: Constants.appColor,
+                          )
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TFF(
+                      obscureText: false,
+                      controller: descriptionCont,
+                      hintText: 'Description',
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: Constants.appColor,
+                          ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MyText(
+                          text: 'Category : $muscleName',
+                          fontSize: 25,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    AppButton(
+                      onPressed: ()async
+                    {
+                      if(formKey.currentState!.validate())
+                        {
+                          await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
+                          context: context,
+                          addCustomExerciseModel: AddCustomExerciseModel(
+                            uId: CacheHelper.getInstance().uId,
+                            muscle: muscleName,
+                            name: nameCont.text,
+                            description: descriptionCont.text,
+                          ),
+                        );
+                        }
+
+                    }, text: 'Add',
+                    )
+                  ],
+                ),
               ),
             ),
           ),

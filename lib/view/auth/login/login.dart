@@ -1,11 +1,15 @@
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
-import 'package:be_fit/modules/myText.dart';
-import 'package:be_fit/modules/textFormField.dart';
+import 'package:be_fit/models/widgets/app_button.dart';
+import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
 import 'package:be_fit/view/auth/forgot_password/forgot_password.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../models/widgets/modules/textFormField.dart';
+import '../../../models/widgets/modules/myText.dart';
 import '../register/register.dart';
 
 class Login extends StatelessWidget {
@@ -24,82 +28,118 @@ class Login extends StatelessWidget {
           appBar: AppBar(),
           body: Form(
             key: formKey,
-            child: Column(
-              children: [
-                TFF(
-                  obscureText: false,
-                  controller: emailCont,
-                  keyboardType: TextInputType.emailAddress,
-                  hintText: 'ahmed@example.com',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TFF(
-                  obscureText: false,
-                  controller: passCont,
-                  hintText: 'Password',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                if(state is LoginLoadingState)
-                  const CircularProgressIndicator(),
-                if(state is! LoginLoadingState)
-                  ElevatedButton(
-                    onPressed: () async
-                    {
-                      if(formKey.currentState!.validate())
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset('images/be-fit_logo.png'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyText(
+                        text: 'Hi, Welcome Back',
+                        fontSize: 25,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 30,),
+                    TFF(
+                      obscureText: false,
+                      controller: emailCont,
+                      keyboardType: TextInputType.emailAddress,
+                      hintText: 'ahmed@example.com',
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TFF(
+                      obscureText: LoginCubit.getInstance(context).isVisible,
+                      controller: passCont,
+                      suffixIcon: IconButton(
+                          onPressed: ()
+                          {
+                            LoginCubit.getInstance(context).setPasswordVisibility();
+                          },
+                          icon: LoginCubit.getInstance(context).isVisible == true?
+                          const Icon(Icons.visibility_off):
+                          const Icon(Icons.visibility),
+                      ),
+                      hintText: 'Password',
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: TextButton(
+                            onPressed: ()
+                            {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ForgotPassword(),
+                                ),
+                              );
+                            }, child: MyText(
+                          text: 'forget password?',
+                          color: Constants.appColor,
+                        )),
+                      ),
+                    ),
+                    if(state is LoginLoadingState)
+                      const CircularProgressIndicator(),
+                    if(state is! LoginLoadingState)
+                      AppButton(onPressed: ()async
+                      {
+                        if(formKey.currentState!.validate())
                         {
                           await LoginCubit.getInstance(context).login(
-                              user: Trainee(
-                                email: emailCont.text,
-                                password: passCont.text,
-                              ),
-                              context: context,
-                          );
+                            user: Trainee(
+                              email: emailCont.text,
+                              password: passCont.text,
+                            ),
+                            context: context,
+                          ).then((value)
+                          {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavBar(),));
+                            // context.removeOldRoute(const BottomAppBar());
+                          });
                         }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue
+                      }, text: 'Login',
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyText(text: 'Don\'t have an account?',),
+                        TextButton(
+                            onPressed: ()
+                            {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SignUp(),
+                                ),
+                              );
+                            }, child: MyText(text: 'sign up',)),
+                      ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40.0,vertical: 10),
-                      child: MyText(text: 'Login',color: Colors.white,fontSize: 18,),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextButton(
-                      onPressed: ()
-                      {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ForgotPassword(),
-                          ),
-                        );
-                      }, child: MyText(text: 'forget password?')),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: TextButton(
+                    //       onPressed: ()
+                    //       {
+                    //         LoginCubit.getInstance(context).signInWithGoogle();
+                    //       }, child: MyText(text: 'Sign in with google')),
+                    // ),
+                  ],
                 ),
-                TextButton(
-                    onPressed: ()
-                    {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignUp(),
-                          ),
-                      );
-                    }, child: MyText(text: 'sign up')),
-                const SizedBox(height: 16,),
-                TextButton(
-                    onPressed: ()
-                    {
-                      LoginCubit.getInstance(context).signInWithGoogle();
-                    }, child: MyText(text: 'Sign in with google')),
-              ],
+              ),
             ),
           ),
         );

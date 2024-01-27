@@ -1,3 +1,4 @@
+import 'package:be_fit/constants.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class NumberSelection extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            color: Colors.red[300],
+            color: Constants.appColor,
           ),
           child: Padding(
             padding: const EdgeInsets.all(10.0),

@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import '../../modules/snackBar.dart';
+import '../../models/widgets/modules/snackBar.dart';
 import '../../view/BottomNavBar/invalid_connection_screen.dart';
 
 abstract class InternetCheck

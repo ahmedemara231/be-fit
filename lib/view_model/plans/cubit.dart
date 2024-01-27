@@ -1,7 +1,7 @@
 import 'package:be_fit/models/data_types/exercises.dart';
-import 'package:be_fit/models/data_types/records_model.dart';
+import 'package:be_fit/models/data_types/make_plan.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
-import 'package:be_fit/modules/toast.dart';
+import '../../models/widgets/modules/toast.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/states.dart';
@@ -9,9 +9,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
-
+import '../../models/data_types/delete_exercise_from_plan.dart';
 import '../../view/BottomNavBar/bottomNavBar.dart';
-import '../../view/BottomNavBar/invalid_connection_screen.dart';
 
 class PlansCubit extends Cubit<PlansStates>
 {
@@ -27,34 +26,75 @@ class PlansCubit extends Cubit<PlansStates>
     'legs'
   ];
 
+
+
   Map<String, List<Exercises>> musclesAndItsExercises = {};
   Map<String, List<bool>> muscleExercisesCheckBox = {};
 
   // for ui
-  Future<void> getMuscles()async
+  Future<void> getMuscles({
+    required String uId,
+})async
   {
+
+    List<bool> customMusclesFetched = [];
     musclesAndItsExercises = {};
     muscleExercisesCheckBox = {};
 
     for(int i = 0; i <= (muscles.length - 1); i++)
       {
+        customMusclesFetched.add(false);
         musclesAndItsExercises[muscles[i]] = [];
         muscleExercisesCheckBox[muscles[i]] = [];
       }
 
     emit(GetAllMusclesLoadingState());
-    for(int i = 0; i < muscles.length; i++)
+    for(int i = 0; i < muscles.length; i++) // 1
     {
       await FirebaseFirestore.instance
           .collection(muscles[i])
           .get()
           .then((value)
       {
-        value.docs.forEach((element)async{
+        value.docs.forEach((element)async{ // 2
+
+          // 5 times
           if(muscles[i] == 'chest')
           {
-            muscleExercisesCheckBox['chest']?.add(false);
-            musclesAndItsExercises['chest']?.add( Exercises(
+            // 5 times
+            // if(customMusclesFetched[i] == false)
+            // {
+            //   print(i);
+            //   print(false);
+            //   await FirebaseFirestore.instance
+            //       .collection('users')
+            //       .doc(uId)
+            //       .collection('customExercises')
+            //       .where('muscle', isEqualTo: 'chest')
+            //       .get()
+            //       .then((value)
+            //   {
+            //     value.docs.forEach((element) {
+            //       muscleExercisesCheckBox['chest']?.add(false);
+            //       musclesAndItsExercises['chest']?.add(
+            //         CustomExercises(
+            //           name: element.data()['name'],
+            //           image: element.data()['image'],
+            //           docs: element.data()['description'],
+            //           id: element.id,
+            //           isCustom: true,
+            //           video: 'video',
+            //         ),
+            //       );
+            //     });
+            //   });
+            //
+            //   customMusclesFetched[i] = !customMusclesFetched[i];
+            //   print(true);
+            // }
+
+            musclesAndItsExercises['chest']?.add(
+              Exercises(
               name: element.data()['name'],
               image: element.data()['image'],
               docs: element.data()['docs'],
@@ -62,8 +102,11 @@ class PlansCubit extends Cubit<PlansStates>
               isCustom: element.data()['isCustom'],
               video: element.data()['video'],
               muscleName: muscles[i],
-            ),);
+            ),
+            );
+            muscleExercisesCheckBox['chest']?.add(false);
           }
+
           else if(muscles[i] == 'Back')
           {
             muscleExercisesCheckBox['Back']?.add(false);
@@ -126,8 +169,14 @@ class PlansCubit extends Cubit<PlansStates>
 
     print(musclesAndItsExercises);
     print(muscleExercisesCheckBox);
+    print(musclesAndItsExercises['chest']?.length);
   }
 
+
+  Future<void> test()async
+  {
+
+  }
        // day ,    musclesCheckBox
   Map<String,Map<String, List<bool>>> dayCheckBox = {};
   void initializingDaysCheckBox(int day)
@@ -185,9 +234,7 @@ class PlansCubit extends Cubit<PlansStates>
   }
 
   Future<void> createNewPlan(context,{
-    required int? daysNumber,
-    required String name,
-    required String uId,
+    required MakePlanModel makePlanModel,
     required InternetCheck internetCheck,
   })async
   {
@@ -199,23 +246,23 @@ class PlansCubit extends Cubit<PlansStates>
           emit(CreateNewPlanLoadingState());
           await FirebaseFirestore.instance
               .collection('users')
-              .doc(uId)
+              .doc(makePlanModel.uId)
               .collection('plans')
               .add(
             {
-              'name' : name,
-              'daysNumber' : daysNumber,
+              'name' : makePlanModel.name,
+              'daysNumber' : makePlanModel.daysNumber,
             },
           ).then((value)
           {
             List<String> listsKeys = lists.keys.toList();
             print('half made');
 
-            for(int index = 0; index <= ( daysNumber! - 1 ); index++)
+            for(int index = 0; index <= ( makePlanModel.daysNumber! - 1 ); index++)
             {
               FirebaseFirestore.instance
                   .collection('users')
-                  .doc(uId)
+                  .doc(makePlanModel.uId)
                   .collection('plans')
                   .doc(value.id)   // البلان اللي انت لسة عاملها
                   .collection(listsKeys[index]); // على حسب عدد الايام هيتفتح collections
@@ -227,7 +274,7 @@ class PlansCubit extends Cubit<PlansStates>
 
                 DocumentReference planExerciseId = FirebaseFirestore.instance
                     .collection('users')
-                    .doc(uId)
+                    .doc(makePlanModel.uId)
                     .collection('plans')
                     .doc(value.id)
                     .collection(listsKeys[index])
@@ -241,14 +288,14 @@ class PlansCubit extends Cubit<PlansStates>
                       .collection(muscles[i])
                       .doc(element.id)
                       .collection('records')
-                      .where('uId',isEqualTo: uId)
+                      .where('uId',isEqualTo: makePlanModel.uId)
                       .get();
 
                   if(checkCollection.docs.isNotEmpty)
                   {
                     DocumentReference exerciseDoc = FirebaseFirestore.instance
                         .collection('users')
-                        .doc(uId)
+                        .doc(makePlanModel.uId)
                         .collection('plans')
                         .doc(value.id)
                         .collection(listsKeys[index])
@@ -280,7 +327,7 @@ class PlansCubit extends Cubit<PlansStates>
                   else{
                     await FirebaseFirestore.instance
                         .collection('users')
-                        .doc(uId)
+                        .doc(makePlanModel.uId)
                         .collection('plans')
                         .doc(value.id)
                         .collection(listsKeys[index])
@@ -424,26 +471,21 @@ class PlansCubit extends Cubit<PlansStates>
   }
 
   Future<void> deleteExerciseFromPlan({
-    required String planDoc,
-    required int listIndex,
-    required int exerciseIndex,
-    required String exerciseDoc,
-    required String planName,
-    required String uId,
+    required DeleteFromPlanModel deleteFromPlanModel,
 })async
   {
     await FirebaseFirestore.instance
         .collection('users')
-        .doc(uId)
+        .doc(deleteFromPlanModel.uId)
         .collection('plans')
-        .doc(planDoc)
-        .collection('list$listIndex')
-        .doc(exerciseDoc)
+        .doc(deleteFromPlanModel.planDoc)
+        .collection('list${deleteFromPlanModel.listIndex}')
+        .doc(deleteFromPlanModel.exerciseDoc)
         .delete()
         .then((value)
     {
       print('deleted');
-      (allPlans[planName]['list$listIndex'] as List).removeAt(exerciseIndex);
+      (allPlans[deleteFromPlanModel.planName]['list${deleteFromPlanModel.listIndex}'] as List).removeAt(deleteFromPlanModel.exerciseIndex);
       emit(DeleteExerciseFromPlanSuccessState());
     }).catchError((error)
     {

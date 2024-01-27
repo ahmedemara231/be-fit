@@ -1,5 +1,6 @@
-import 'package:be_fit/modules/myText.dart';
 import 'package:flutter/material.dart';
+
+import 'myText.dart';
 
 class MySnackBar
 {

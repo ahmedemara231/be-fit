@@ -1,4 +1,3 @@
-import 'package:be_fit/modules/snackBar.dart';
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/data_types/user.dart';
+import '../../models/widgets/modules/snackBar.dart';
 
 class SignUpCubit extends Cubit<SignUpStates>
 {

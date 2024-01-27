@@ -1,17 +1,19 @@
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
-import 'package:be_fit/modules/snackBar.dart';
-import 'package:be_fit/view/auth/login/login.dart';
+import 'package:be_fit/models/widgets/modules/toast.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../models/widgets/modules/snackBar.dart';
+import '../../view/BottomNavBar/bottomNavBar.dart';
 
 class LoginCubit extends Cubit<LoginStates>
 {
@@ -21,7 +23,7 @@ class LoginCubit extends Cubit<LoginStates>
   late Trainee user;
   Future<void> login({
     required Trainee user,
-    required context,
+    required BuildContext context,
 })async
   {
     emit(LoginLoadingState());
@@ -43,7 +45,6 @@ class LoginCubit extends Cubit<LoginStates>
             phone: value.data()?['phone'],
             id: value.id,
           );
-          print(user);
           await CacheHelper.getInstance().handleUserData(
               userData:
               [
@@ -52,6 +53,12 @@ class LoginCubit extends Cubit<LoginStates>
               ],
           ).then((value)
           {
+            context.removeOldRoute(const BottomNavBar());
+            MyToast.showToast(
+              context,
+              msg: 'Welcome Coach!',
+              color: Constants.appColor,
+            );
             emit(LoginSuccessState());
           });
         });
@@ -99,16 +106,19 @@ class LoginCubit extends Cubit<LoginStates>
     return e;
   }
 
+  bool isVisible = true;
+  void setPasswordVisibility()
+  {
+    isVisible = !isVisible;
+    emit(SetPasswordVisibility());
+  }
+
   Future<void> forgotPassword(String email,context)async
   {
     await FirebaseAuth.instance
         .sendPasswordResetEmail(email: email).then((value)
     {
-      MySnackBar.showSnackBar(
-          context: context,
-          message: 'Check your email',
-          color: Colors.green
-      );
+      MyToast.showToast(context, msg: 'Check your email now');
     });
   }
 

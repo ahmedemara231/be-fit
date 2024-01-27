@@ -1,6 +1,5 @@
 import 'dart:developer';
-
-import 'package:be_fit/modules/myText.dart';
+import '../../../models/widgets/modules/myText.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 

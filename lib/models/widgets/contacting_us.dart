@@ -1,5 +1,5 @@
-import 'package:be_fit/modules/myText.dart';
 import 'package:flutter/material.dart';
+import 'modules/myText.dart';
 
 class ContactingUsModel extends StatelessWidget {
 
