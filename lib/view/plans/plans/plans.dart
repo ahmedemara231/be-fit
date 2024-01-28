@@ -1,4 +1,5 @@
 import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/container_decoration.dart';
 
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/plan_details.dart';
@@ -77,12 +78,7 @@ class Plans extends StatelessWidget {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                              border: Border(
-                                left: BorderSide(color: Constants.appColor),
-                                bottom: BorderSide(color: Constants.appColor),
-                                right: BorderSide(color: Constants.appColor),
-                                top: BorderSide(color: Constants.appColor),
-                              )
+                              border: context.decoration()
                             ),
                             child: ListTile(
                               title: MyText(text: PlansCubit.getInstance(context).allPlans.keys.toList()[index],fontSize: 20,fontWeight: FontWeight.w500,),
@@ -108,12 +104,7 @@ class Plans extends StatelessWidget {
                   child: Container(
                     height: 50,
                     decoration: BoxDecoration(
-                        border: Border(
-                          left: BorderSide(color: Constants.appColor),
-                          bottom: BorderSide(color: Constants.appColor),
-                          right: BorderSide(color: Constants.appColor),
-                          top: BorderSide(color: Constants.appColor),
-                        ),
+                        border: context.decoration()
                     ),
                     child: const Center(child: Icon(Icons.add),),
                   ),

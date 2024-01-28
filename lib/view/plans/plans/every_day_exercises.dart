@@ -1,4 +1,5 @@
 import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -81,12 +82,7 @@ class DayExercises extends StatelessWidget {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Constants.appColor),
-                      right: BorderSide(color: Constants.appColor),
-                      bottom: BorderSide(color: Constants.appColor),
-                      left: BorderSide(color: Constants.appColor),
-                    )
+                    border: context.decoration()
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),

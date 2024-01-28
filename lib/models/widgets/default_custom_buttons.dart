@@ -1,3 +1,4 @@
+import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:flutter/material.dart';
 
@@ -21,12 +22,7 @@ class DefaultAndCustomButtons extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          border: const Border(
-            right: BorderSide(color: Colors.white),
-            bottom: BorderSide(color: Colors.white),
-            top: BorderSide(color: Colors.white),
-            left: BorderSide(color: Colors.white),
-          ),
+          border: context.decoration(),
           color: color,
           borderRadius: BorderRadius.circular(8),
         ),

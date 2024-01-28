@@ -1,4 +1,5 @@
 import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/report.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
@@ -120,40 +121,78 @@ class SettingCubit extends Cubit<SettingStates>
   {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: MyText(text: 'are you sure to logout?',fontSize: 20,),
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              // backgroundColor: Constants.appColor,
+      builder: (context) => Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Constants.scaffoldBackGroundColor,
+              border: context.decoration()
             ),
-              onPressed: ()
-              {
-                Navigator.pop(context);
-              },
-              child: MyText(text: 'Cancel',fontSize: 14,),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Constants.appColor,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MyText(
+                    text: 'Logout',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: MyText(
+                      text: 'Are you sure to logout?',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: ()
+                          {
+                            Navigator.pop(context);
+                          },
+                          child: MyText(text: 'Cancel',fontSize: 14,),
+                        ),
+                        const SizedBox(
+                          width: 22,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Constants.appColor,
+                          ),
+                          onPressed: () async
+                          {
+                            Navigator.pop(context);
+                            await CacheHelper.getInstance().kill().then((value)
+                            {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Login(),
+                                ), (route) => false,
+                              );
+                              // FirebaseAuth.instance.signOut();
+                            });
+                          },
+                          child: MyText(text: 'Yes, Logout',fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-              onPressed: () async
-              {
-                Navigator.pop(context);
-                await CacheHelper.getInstance().kill().then((value)
-                {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Login(),
-                    ), (route) => false,
-                  );
-                  // FirebaseAuth.instance.signOut();
-                });
-              },
-              child: MyText(text: 'logout',fontSize: 14),
           ),
-        ],
+        ),
       ),
     );
   }

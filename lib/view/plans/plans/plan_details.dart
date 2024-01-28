@@ -1,3 +1,5 @@
+import 'package:be_fit/extensions/container_decoration.dart';
+
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/every_day_exercises.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
@@ -78,12 +80,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                         children: List.generate(
                           PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']!.length, (i) =>  Container(
                           decoration: BoxDecoration(
-                              border: Border(
-                                left: BorderSide(color: Constants.appColor),
-                                bottom: BorderSide(color: Constants.appColor),
-                                right: BorderSide(color: Constants.appColor),
-                                top: BorderSide(color: Constants.appColor),
-                              )
+                              border: context.decoration()
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),

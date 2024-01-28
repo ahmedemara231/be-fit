@@ -28,7 +28,7 @@ class _ReportsState extends State<Reports> {
       {
         return Scaffold(
           appBar: AppBar(
-            title: MyText(text: 'your problems'),
+            title: MyText(text: 'Your Reports'),
           ),
           body: state is GetAllReportsLoadingState?
           const Center(child: CircularProgressIndicator(),) : 

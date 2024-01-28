@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
@@ -121,12 +122,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                             height: context.setHeight(2.8),
                             child: Container(
                               decoration: BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(color: Constants.appColor),
-                                    bottom: BorderSide(color: Constants.appColor),
-                                    top: BorderSide(color: Constants.appColor),
-                                    left: BorderSide(color: Constants.appColor),
-                                  )
+                                  border: context.decoration()
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -246,12 +242,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                 Container(
                   height: context.setHeight(5),
                   decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(color: Constants.appColor),
-                        bottom: BorderSide(color: Constants.appColor),
-                        top: BorderSide(color: Constants.appColor),
-                        left: BorderSide(color: Constants.appColor),
-                      )
+                      border: context.decoration()
                   ),
                   child: Center(
                     child: Column(

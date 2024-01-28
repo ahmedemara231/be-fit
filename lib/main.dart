@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:be_fit/constants.dart';
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
 import 'package:be_fit/view_model/bloc_observer.dart';

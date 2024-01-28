@@ -1,4 +1,6 @@
+import 'package:be_fit/constants.dart';
 import 'package:be_fit/models/widgets/modules/divider.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
@@ -38,60 +40,63 @@ class _SettingState extends State<Setting> {
           appBar: AppBar(
             title: MyText(text: 'Setting',fontWeight: FontWeight.w500,),
           ),
-          body: Column(
-            children: [
-              DarkModeOption(
-                icon: Icons.dark_mode,
-                optionName: 'Dark Mode',
-                value: SettingCubit.getInstance(context).darkMode,
-                onChanged: (newMode)async {
-                  await SettingCubit.getInstance(context).changeAppTheme(newMode);
-                },
-              ),
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) => InkWell(
-                    onTap: ()
-                    {
-                      switch(index)
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                DarkModeOption(
+                  icon: Icons.dark_mode,
+                  optionName: 'Dark Mode',
+                  value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme'),
+                  onChanged: (newMode)async {
+                    await SettingCubit.getInstance(context).changeAppTheme(newMode);
+                  },
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    itemBuilder: (context, index) => InkWell(
+                      onTap: ()
                       {
-                        case 0:
-                          SettingCubit.getInstance(context).contacting(context);
-                          break;
-                        case 1:
-                          SettingCubit.getInstance(context).reportProblem(context);
-                          break;
-                        case 2:
-                          SettingCubit.getInstance(context).tips();
-                          break;
-                        case 3:
-                          SettingCubit.getInstance(context).share();
-                          break;
-                        case 4:
-                          SettingCubit.getInstance(context).logout(context);
-                          break;
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 4,
-                      ),
-                      child: Column(
-                        children: [
-                          settingModel[index],
-                          const MyDivider(),
-                        ],
+                        switch(index)
+                        {
+                          case 0:
+                            SettingCubit.getInstance(context).contacting(context);
+                            break;
+                          case 1:
+                            SettingCubit.getInstance(context).reportProblem(context);
+                            break;
+                          case 2:
+                            SettingCubit.getInstance(context).tips();
+                            break;
+                          case 3:
+                            SettingCubit.getInstance(context).share();
+                            break;
+                          case 4:
+                            SettingCubit.getInstance(context).logout(context);
+                            break;
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0,
+                            vertical: 4,
+                        ),
+                        child: Column(
+                          children: [
+                            settingModel[index],
+                            const MyDivider(),
+                          ],
+                        ),
                       ),
                     ),
+                    separatorBuilder: (context, index) => const SizedBox(
+                      height: 16,
+                    ),
+                    itemCount: settingModel.length,
                   ),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 16,
-                  ),
-                  itemCount: settingModel.length,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

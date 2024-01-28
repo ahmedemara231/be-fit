@@ -1,4 +1,5 @@
 import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:flutter/material.dart';
 
 import 'modules/myText.dart';
@@ -20,12 +21,7 @@ class ExerciseModel extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Container(
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Constants.appColor),
-            right: BorderSide(color: Constants.appColor),
-            bottom: BorderSide(color: Constants.appColor),
-            left: BorderSide(color: Constants.appColor),
-          ),
+          border: context.decoration()
         ),
         child: Padding(
           padding: const EdgeInsets.all(10.0),

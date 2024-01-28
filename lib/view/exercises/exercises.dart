@@ -1,4 +1,5 @@
 import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/widgets/default_custom_buttons.dart';
@@ -256,12 +257,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                 width: context.setWidth(1.5),
                                 height: 40,
                                 decoration: BoxDecoration(
-                                  border: Border(
-                                    left: BorderSide(color: Constants.appColor),
-                                    top: BorderSide(color: Constants.appColor), 
-                                    bottom: BorderSide(color: Constants.appColor),
-                                    right: BorderSide(color: Constants.appColor),
-                                  )
+                                  border: context.decoration(),
                                 ),
                                 child: const Center(
                                   child:  Icon(Icons.add) 

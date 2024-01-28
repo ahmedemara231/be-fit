@@ -1,4 +1,5 @@
 import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/make_plan.dart';
 import '../../../../models/widgets/modules/myText.dart';
@@ -88,12 +89,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                 key: ValueKey<Exercises>(PlansCubit.getInstance(context).lists['list${index+1}']![i]),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      border: Border(
-                                        left: BorderSide(color: Constants.appColor),
-                                        bottom: BorderSide(color: Constants.appColor),
-                                        right: BorderSide(color: Constants.appColor),
-                                        top: BorderSide(color: Constants.appColor),
-                                      )
+                                      border: context.decoration()
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10.0),
