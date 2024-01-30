@@ -31,9 +31,11 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
   @override
   void initState() {
     ExercisesCubit.getInstance(context).getExercisesForSpecificMuscle(
+      context,
       muscleName: widget.muscleName,
     );
     ExercisesCubit.getInstance(context).getCustomExercises(
+      context,
       uId: CacheHelper.getInstance().uId,
       muscle: widget.muscleName,
     );
@@ -52,7 +54,11 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          body: Column(
+          body:state is GetCustomExercisesLoadingState || state is GetExercisesLoadingState?
+          const Center(
+            child: CircularProgressIndicator(),
+        ):
+          Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -87,6 +93,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                     color: Colors.white,
                     onRefresh: () {
                       ExercisesCubit.getInstance(context).getExercisesForSpecificMuscle(
+                        context,
                         muscleName: widget.muscleName,
                       );
                       return Future(() => null);
@@ -121,14 +128,9 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: ListTile(
                                   leading: Image.network(
-                                      ExercisesCubit.getInstance(context)
-                                          .exercises[index]
-                                          .image),
+                                      ExercisesCubit.getInstance(context).exercises[index].image),
                                   title: MyText(
-                                    text: ExercisesCubit.getInstance(
-                                        context)
-                                        .exercises[index]
-                                        .name,
+                                    text: ExercisesCubit.getInstance(context).exercises[index].name,
                                     fontSize: 20,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -142,9 +144,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                           const SizedBox(
                             height: 16,
                           ),
-                          itemCount: ExercisesCubit.getInstance(context)
-                              .exercises
-                              .length),
+                          itemCount: ExercisesCubit.getInstance(context).exercises.length),
                     ),
                   ),
                 ),
@@ -153,8 +153,9 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                   child: RefreshIndicator(
                     color: Colors.white,
                     backgroundColor: Colors.red[400],
-                    onRefresh: () {
-                      ExercisesCubit.getInstance(context).getCustomExercises(
+                    onRefresh: () async{
+                      await ExercisesCubit.getInstance(context).getCustomExercises(
+                        context,
                         uId: CacheHelper.getInstance().uId,
                         muscle: widget.muscleName,
                       );
@@ -195,15 +196,9 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: ListTile(
                                         leading: Image.network(
-                                            ExercisesCubit.getInstance(
-                                                context)
-                                                .customExercises[index]
-                                                .image),
+                                            ExercisesCubit.getInstance(context).customExercises[index].image),
                                         title: MyText(
-                                          text: ExercisesCubit
-                                              .getInstance(context)
-                                              .customExercises[index]
-                                              .name,
+                                          text: ExercisesCubit.getInstance(context).customExercises[index].name,
                                           fontSize: 20,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -212,19 +207,16 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                             return [
                                               PopupMenuItem(
                                                 onTap: () async {
-                                                  await ExercisesCubit
-                                                      .getInstance(
-                                                      context)
-                                                      .deleteCustomExercise(
-                                                    uId: CacheHelper
-                                                        .getInstance()
-                                                        .uId,
+                                                  await ExercisesCubit.getInstance(context).deleteCustomExercise(
+                                                    context,
+                                                    uId: CacheHelper.getInstance().uId,
                                                     index: index,
                                                   );
                                                 },
                                                 child: MyText(
                                                     text: 'Delete',
-                                                    fontSize: 16),
+                                                    fontSize: 16
+                                                ),
                                               ),
                                             ];
                                           },
@@ -246,10 +238,9 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                               Navigator.push(
                               context,
                               MaterialPageRoute(
-                                maintainState: false,builder: (context) =>
-                                  CreateExercise(
+                                maintainState: false,builder: (context) => CreateExercise(
                                     muscleName: widget.muscleName,
-                                  ),
+                              ),
                               ),
                               );
                               },

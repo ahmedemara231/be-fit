@@ -35,7 +35,9 @@ class ForgotPassword extends StatelessWidget {
                     child: TFF(
                       obscureText: false,
                       controller: emailCont,
-                      enabledBorder: const OutlineInputBorder(),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white)
+                      ),
                       hintText: 'ahmed@example.com',
                     ),
                   ),

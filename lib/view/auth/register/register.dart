@@ -40,7 +40,8 @@ class _SignUpState extends State<SignUp> {
         controller: nameCont,
         hintText: 'name',
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.white)
         ),
       ),
       TFF(
@@ -49,7 +50,8 @@ class _SignUpState extends State<SignUp> {
         keyboardType: TextInputType.emailAddress,
         hintText: 'ahmed@example.com',
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.white)
         ),
       ),
       TFF(
@@ -57,7 +59,8 @@ class _SignUpState extends State<SignUp> {
         controller: phoneCont,
         hintText: 'phone',
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.white)
         ),
       ),
       TFF(
@@ -65,7 +68,8 @@ class _SignUpState extends State<SignUp> {
         controller: passCont,
         hintText: 'Password',
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.white)
         ),
       ),
     ];
@@ -92,12 +96,16 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
                 const SizedBox(height: 30,),
-                SizedBox(
-                  height: context.setHeight(2.5),
-                  child: ListView.separated(
-                    itemBuilder: (context, index) => signUpInputs[index],
-                    separatorBuilder: (context, index) => const SizedBox(height: 16,),
-                    itemCount: signUpInputs.length,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: List.generate(signUpInputs.length, (index) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: signUpInputs[index],
+                      )),
+                    ),
                   ),
                 ),
                 if(state is SignUpLoadingState)
@@ -131,7 +139,7 @@ class _SignUpState extends State<SignUp> {
                               builder: (context) => Login(),
                             ), (route) => false,
                           );
-                        }, child: MyText(text: 'sign up',)),
+                        }, child: MyText(text: 'sign in',)),
                   ],
                 ),
               ],

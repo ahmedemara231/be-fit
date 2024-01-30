@@ -1,4 +1,5 @@
-import 'package:be_fit/models/data_types/exercises.dart';
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view/plans/create_plan/choose_exercises/reps_sets.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
@@ -12,16 +13,6 @@ class ChooseExercises extends StatelessWidget {
   ChooseExercises({super.key,
     required this.day,
   });
-
-
-  Map<String,List<Exercises>> musclesPlan =
-  {
-    'aps' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
-    'chest' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
-    'back' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
-    'Shoulders' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
-    'legs' : [Exercises(name: 'name', image: 'image', docs: 'docs', id: 'id', isCustom: false, video: 'video')],
-  };
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
@@ -40,7 +31,8 @@ class ChooseExercises extends StatelessWidget {
             actions: [
               IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.add)),
+                  icon: const Icon(Icons.add),
+              ),
             ],
           ),
           body: state is GetAllPlansLoadingState?
@@ -52,7 +44,7 @@ class ChooseExercises extends StatelessWidget {
               Expanded(
                 child: ListView.separated(
                     itemBuilder: (context, index) => Card(
-                      color: Colors.red[400],
+                      color: Constants.appColor,
                       child: ExpansionTile(
                         title: MyText(
                           text: PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
@@ -60,8 +52,7 @@ class ChooseExercises extends StatelessWidget {
                         ),
                         children: List.generate(
                             PlansCubit.getInstance(context).musclesAndItsExercises[PlansCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]!.length,
-                                (i) =>
-                                    ListTile(
+                                (i) => ListTile(
                                   leading: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Image.network(
@@ -83,7 +74,7 @@ class ChooseExercises extends StatelessWidget {
                                           key: formKey,
                                           child: SizedBox(
                                               width: double.infinity,
-                                              height: MediaQuery.of(context).size.height/4,
+                                              height: context.setHeight(4),
                                               child: RepsAnaSets(
                                                 repsCont: repsCont,
                                                 setsCont: setsCont,
@@ -146,7 +137,7 @@ class ChooseExercises extends StatelessWidget {
                 padding: const EdgeInsets.all(20.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red[400]
+                      backgroundColor: Constants.appColor,
                   ),
                   onPressed:
                   PlansCubit.getInstance(context).lists['list$day']!.isEmpty?
@@ -155,7 +146,9 @@ class ChooseExercises extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: context.setWidth(5),
+                    ),
                     child: MyText(
                       text: 'Save',
                       color: Colors.white,

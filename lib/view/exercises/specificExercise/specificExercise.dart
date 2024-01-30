@@ -7,7 +7,6 @@ import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
-import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,6 +47,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
     if(widget.exercise.isCustom == false)
       {
         ExercisesCubit.getInstance(context).pickRecordsToMakeChart(
+          context,
           muscleName: widget.exercise.muscleName!,
           exerciseDoc: widget.exercise.id,
           uId: CacheHelper.getInstance().uId,
@@ -56,8 +56,9 @@ class _SpecificExerciseState extends State<SpecificExercise> {
     else
     {
       ExercisesCubit.getInstance(context).pickRecordsForCustomExerciseToMakeChart(
-          uId: CacheHelper.getInstance().uId,
-          exerciseDoc: widget.exercise.id,
+        context,
+        uId: CacheHelper.getInstance().uId,
+        exerciseDoc: widget.exercise.id,
       );
     }
     super.initState();
@@ -205,12 +206,26 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                           width: double.infinity,
                           height: MediaQuery.of(context).size.height/1.2,
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyText(
-                              text: widget.exercise.docs,
-                              maxLines: 20,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
+                            padding: const EdgeInsets.all(16.0),
+                            child: ListView(
+                              children: [
+                                MyText(
+                                  text: 'Note : It\'s really important to match these steps if you don\'t know how to perform this exercises',
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  maxLines: 5,
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                MyText(
+                                  text: widget.exercise.docs,
+                                  maxLines: 20,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ],
                             ),
                           ),
                         ));
@@ -285,7 +300,6 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                               uId: CacheHelper.getInstance().uId,
                             ),
                             context: context,
-                            internetCheck: FirstCheckMethod.getInstance(),
                           ).then((value)
                           {
                             repsCont.clear();
@@ -310,7 +324,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                       }
                     },
                     text: 'Add',
-                )
+                ),
               ],
             ),
           ),

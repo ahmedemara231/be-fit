@@ -53,6 +53,7 @@ class DayExercises extends StatelessWidget {
                         onTap: () async
                         {
                           await PlansCubit.getInstance(context).deleteExerciseFromPlan(
+                            context,
                             deleteFromPlanModel: DeleteFromPlanModel(
                               exerciseIndex: index,
                               planName: planName,

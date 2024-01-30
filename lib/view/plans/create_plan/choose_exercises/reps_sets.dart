@@ -1,3 +1,4 @@
+import 'package:be_fit/constants.dart';
 import 'package:flutter/material.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import '../../../../models/widgets/modules/textFormField.dart';
@@ -67,7 +68,7 @@ class RepsAnaSets extends StatelessWidget {
             ElevatedButton(
               onPressed: cancelButtonAction,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[400],
+                backgroundColor: Constants.appColor,
               ),
               child: MyText(text: 'Cancel',color: Colors.white,),
             ),
@@ -75,7 +76,7 @@ class RepsAnaSets extends StatelessWidget {
             ElevatedButton(
               onPressed: conformButtonAction,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[400],
+                backgroundColor: Constants.appColor,
               ),
               child: MyText(text: 'Conform',color: Colors.white),
             ),

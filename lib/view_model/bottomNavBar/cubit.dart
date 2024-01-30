@@ -32,9 +32,8 @@ class BottomNavCubit extends Cubit<BottomNavState>
       validConnectionAction: () async
       {
         emit(FetchAllDataLoadingState());
-        PlansCubit.getInstance(context).test();
-        await PlansCubit.getInstance(context).getAllPlans(uId);
-        await PlansCubit.getInstance(context).getMuscles(uId: CacheHelper.getInstance().uId);
+        await PlansCubit.getInstance(context).getAllPlans(context,uId);
+        await PlansCubit.getInstance(context).getMuscles(context,uId: CacheHelper.getInstance().uId);
         emit(FetchAllDataSuccessState());
       },
     );

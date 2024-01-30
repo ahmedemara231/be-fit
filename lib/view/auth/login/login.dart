@@ -50,7 +50,8 @@ class Login extends StatelessWidget {
                       keyboardType: TextInputType.emailAddress,
                       hintText: 'ahmed@example.com',
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white)
                       ),
                     ),
                     const SizedBox(
@@ -70,7 +71,8 @@ class Login extends StatelessWidget {
                       ),
                       hintText: 'Password',
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.white)
                       ),
                     ),
                     Align(

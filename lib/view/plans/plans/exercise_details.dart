@@ -45,10 +45,11 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
   @override
   void initState() {
     PlansCubit.getInstance(context).pickRecordsToMakeChart(
-        uId: CacheHelper.getInstance().uId,
-        planDoc: widget.planDoc,
-        listIndex: widget.listIndex,
-        exerciseId: widget.exercise.id,
+      context,
+      uId: CacheHelper.getInstance().uId,
+      planDoc: widget.planDoc,
+      listIndex: widget.listIndex,
+      exerciseId: widget.exercise.id,
     );
     super.initState();
   }
@@ -176,17 +177,33 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
             children: [
               IconButton(
                 onPressed: () {
-                  scaffoldKey.currentState!
-                      .showBottomSheet((context) => SizedBox(
+                  scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
                     width: double.infinity,
                     height: MediaQuery.of(context).size.height / 1.2,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: MyText(
-                        text: widget.exercise.docs,
-                        maxLines: 20,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ListView(
+                          children: [
+                            MyText(
+                              text: 'Note : It\'s really important to match these steps if you don\'t know how to perform this exercises',
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              maxLines: 5,
+                            ),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            MyText(
+                              text: widget.exercise.docs,
+                              maxLines: 20,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ));

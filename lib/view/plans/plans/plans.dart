@@ -1,6 +1,4 @@
-import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
-
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/plan_details.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -55,6 +53,7 @@ class Plans extends StatelessWidget {
                                   onTap: () async
                                   {
                                     await PlansCubit.getInstance(context).deletePlan(
+                                      context,
                                       index : index,
                                       uId: CacheHelper.getInstance().uId,
                                       planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],

@@ -11,7 +11,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import '../../models/widgets/modules/snackBar.dart';
 import '../../view/BottomNavBar/bottomNavBar.dart';
 
@@ -79,19 +78,19 @@ class LoginCubit extends Cubit<LoginStates>
         MySnackBar.showSnackBar(
           context: context,
           message: 'No user found for that email.',
-          color: Colors.red,
+          color: Constants.appColor,
         );
       } else if (e.code == 'wrong-password') {
         MySnackBar.showSnackBar(
           context: context,
           message: 'Wrong password provided for that user',
-          color: Colors.red,
+          color: Constants.appColor,
         );
       } else{
         MySnackBar.showSnackBar(
           context: context,
           message: 'Try Again later',
-          color: Colors.red,
+          color: Constants.appColor,
         );
       }
     }
@@ -100,7 +99,7 @@ class LoginCubit extends Cubit<LoginStates>
       MySnackBar.showSnackBar(
         context: context,
         message: 'Check your internet connection and try again',
-        color: Colors.red,
+        color: Constants.appColor,
       );
     }
     return e;
@@ -115,11 +114,21 @@ class LoginCubit extends Cubit<LoginStates>
 
   Future<void> forgotPassword(String email,context)async
   {
-    await FirebaseAuth.instance
-        .sendPasswordResetEmail(email: email).then((value)
+    try{
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: email).then((value)
+      {
+        MyToast.showToast(context, msg: 'Check your email now');
+      });
+    } on FirebaseAuthException
     {
-      MyToast.showToast(context, msg: 'Check your email now');
-    });
+      MySnackBar.showSnackBar(
+          context: context,
+          message: 'Check your internet connection and try again',
+          color: Constants.appColor
+      );
+    }
+
   }
 
   Future<UserCredential> signInWithGoogle() async {

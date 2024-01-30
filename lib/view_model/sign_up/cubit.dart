@@ -1,3 +1,5 @@
+import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants.dart';
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,27 +60,33 @@ class SignUpCubit extends Cubit<SignUpStates>
       });
     } on FirebaseAuthException catch (e) {
       emit(SignUpErrorState());
-      if (e.code == 'weak-password') {
-        MySnackBar.showSnackBar(
-            context: context,
-            message: 'The password provided is too weak.',
-            color: Colors.red
-        );
-      } else if (e.code == 'email-already-in-use') {
-        MySnackBar.showSnackBar(
-            context: context,
-            message: 'The account already exists for that email.',
-            color: Colors.red
-        );
-      }
-      else{
-        MySnackBar.showSnackBar(
+      throw handleErrors(context, e);
+    }
+  }
+  Exception handleErrors(context,FirebaseAuthException e)
+  {
+    if (e.code == 'weak-password') {
+      MySnackBar.showSnackBar(
           context: context,
-          message: 'Please try again later',
-        );
-      }
-    } catch (e) {
-      print(e);
+          message: 'The password provided is too weak.',
+          color: Constants.appColor
+      );
+      return e;
+    }
+    else if (e.code == 'email-already-in-use') {
+      MySnackBar.showSnackBar(
+          context: context,
+          message: 'The account already exists for that email.',
+          color: Constants.appColor
+      );
+      return e;
+    }
+    else{
+      MySnackBar.showSnackBar(
+        context: context,
+        message: 'Please try again later',
+      );
+      return e;
     }
   }
 }
