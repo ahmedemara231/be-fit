@@ -28,7 +28,7 @@ class AppButton extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: context.setWidth(3.2),
+            horizontal: context.setWidth(3.5),
             vertical: 10,
           ),
           child: MyText(

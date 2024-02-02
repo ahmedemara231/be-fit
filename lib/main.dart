@@ -72,7 +72,8 @@ class MyApp extends StatelessWidget {
             ThemeData.light():
             ThemeData.dark(),
             debugShowCheckedModeBanner: false,
-            home: CacheHelper.getInstance().sharedPreferences.getStringList('userData')!.isEmpty?
+            home: CacheHelper.getInstance().sharedPreferences.getStringList('userData') == null ||
+                  CacheHelper.getInstance().sharedPreferences.getStringList('userData')!.isEmpty?
             Login() :
             const BottomNavBar(),
           );

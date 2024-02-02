@@ -31,9 +31,7 @@ class PlansCubit extends Cubit<PlansStates>
   Map<String, List<bool>> muscleExercisesCheckBox = {};
 
   // for ui
-  Future<void> getMuscles(context,{
-    required String uId,
-})async
+  Future<void> getMuscles(context)async
   {
     bool isFetched = false;
 
@@ -42,151 +40,116 @@ class PlansCubit extends Cubit<PlansStates>
     muscleExercisesCheckBox = {};
 
     for(int i = 0; i <= (muscles.length - 1); i++)
-      {
-        customMusclesFetched.add(false);
-        musclesAndItsExercises[muscles[i]] = [];
-        muscleExercisesCheckBox[muscles[i]] = [];
-      }
+    {
+      customMusclesFetched.add(false);
+      musclesAndItsExercises[muscles[i]] = [];
+      muscleExercisesCheckBox[muscles[i]] = [];
+    }
 
     emit(GetAllMusclesLoadingState());
-
-
+    try
+    {
       for(int i = 0; i < muscles.length; i++) // 1
-        {
-          try
           {
-            await FirebaseFirestore.instance
-                .collection(muscles[i])
-                .get()
-                .then((value)
+        await FirebaseFirestore.instance
+            .collection(muscles[i])
+            .get()
+            .then((value)
+        {
+          value.docs.forEach((element)async{ // 2
+
+            // 5 times
+            if(muscles[i] == 'chest')
             {
-              value.docs.forEach((element)async{ // 2
+              musclesAndItsExercises['chest']?.add(
+                Exercises(
+                  name: element.data()['name'],
+                  image: element.data()['image'],
+                  docs: element.data()['docs'],
+                  id: element.id,
+                  isCustom: element.data()['isCustom'],
+                  video: element.data()['video'],
+                  muscleName: muscles[i],
+                ),
+              );
+              muscleExercisesCheckBox['chest']?.add(false);
 
-                // 5 times
-                if(muscles[i] == 'chest')
-                {
-                  musclesAndItsExercises['chest']?.add(
-                    Exercises(
-                      name: element.data()['name'],
-                      image: element.data()['image'],
-                      docs: element.data()['docs'],
-                      id: element.id,
-                      isCustom: element.data()['isCustom'],
-                      video: element.data()['video'],
-                      muscleName: muscles[i],
-                    ),
-                  );
-                  muscleExercisesCheckBox['chest']?.add(false);
+            }
 
+            else if(muscles[i] == 'Back')
+            {
+              muscleExercisesCheckBox['Back']?.add(false);
+              musclesAndItsExercises['Back']?.add( Exercises(
+                name: element.data()['name'],
+                image: element.data()['image'],
+                docs: element.data()['docs'],
+                id: element.id,
+                isCustom: element.data()['isCustom'],
+                video: element.data()['video'],
+                muscleName: muscles[i],
+              ),);
+            }
+            else if(muscles[i] == 'Aps')
+            {
+              muscleExercisesCheckBox['Aps']?.add(false);
+              musclesAndItsExercises['Aps']?.add( Exercises(
+                name: element.data()['name'],
+                image: element.data()['image'],
+                docs: element.data()['docs'],
+                id: element.id,
+                isCustom: element.data()['isCustom'],
+                video: element.data()['video'],
+                muscleName: muscles[i],
+              ),);
+            }
+            else if(muscles[i] == 'legs')
+            {
+              muscleExercisesCheckBox['legs']?.add(false);
+              musclesAndItsExercises['legs']?.add( Exercises(
+                name: element.data()['name'],
+                image: element.data()['image'],
+                docs: element.data()['docs'],
+                id: element.id,
+                isCustom: element.data()['isCustom'],
+                video: element.data()['video'],
+                muscleName: muscles[i],
+              ),);
+            }
+            else{
+              muscleExercisesCheckBox['Shoulders']?.add(false);
+              musclesAndItsExercises['Shoulders']?.add( Exercises(
+                name: element.data()['name'],
+                image: element.data()['image'],
+                docs: element.data()['docs'],
+                id: element.id,
+                isCustom: element.data()['isCustom'],
+                video: element.data()['video'],
+                muscleName: muscles[i],
+              ),);
+            }
+          });
+          emit(GetAllMusclesSuccessState());
+        });
 
-
-
-                  // 5 times
-                  // if(isFetched == false)
-                  // {
-                  //   await FirebaseFirestore.instance
-                  //       .collection('users')
-                  //       .doc(uId)
-                  //       .collection('customExercises')
-                  //       .where('muscle', isEqualTo: 'chest')
-                  //       .get()
-                  //       .then((value)
-                  //   {
-                  //     value.docs.forEach((element) {
-                  //       muscleExercisesCheckBox['chest']?.add(false);
-                  //       musclesAndItsExercises['chest']?.add(
-                  //         CustomExercises(
-                  //           name: element.data()['name'],
-                  //           image: element.data()['image'],
-                  //           docs: element.data()['description'],
-                  //           id: element.id,
-                  //           isCustom: true,
-                  //           video: 'video',
-                  //         ),
-                  //       );
-                  //     });
-                  //   });
-                  //
-                  //   isFetched = true;
-                  //   // customMusclesFetched[i] = !customMusclesFetched[i];
-                  //   // print(customMusclesFetched[i]);
-                  // }
-
-                }
-
-                else if(muscles[i] == 'Back')
-                {
-                  muscleExercisesCheckBox['Back']?.add(false);
-                  musclesAndItsExercises['Back']?.add( Exercises(
-                    name: element.data()['name'],
-                    image: element.data()['image'],
-                    docs: element.data()['docs'],
-                    id: element.id,
-                    isCustom: element.data()['isCustom'],
-                    video: element.data()['video'],
-                    muscleName: muscles[i],
-                  ),);
-                }
-                else if(muscles[i] == 'Aps')
-                {
-                  muscleExercisesCheckBox['Aps']?.add(false);
-                  musclesAndItsExercises['Aps']?.add( Exercises(
-                    name: element.data()['name'],
-                    image: element.data()['image'],
-                    docs: element.data()['docs'],
-                    id: element.id,
-                    isCustom: element.data()['isCustom'],
-                    video: element.data()['video'],
-                    muscleName: muscles[i],
-                  ),);
-                }
-                else if(muscles[i] == 'legs')
-                {
-                  muscleExercisesCheckBox['legs']?.add(false);
-                  musclesAndItsExercises['legs']?.add( Exercises(
-                    name: element.data()['name'],
-                    image: element.data()['image'],
-                    docs: element.data()['docs'],
-                    id: element.id,
-                    isCustom: element.data()['isCustom'],
-                    video: element.data()['video'],
-                    muscleName: muscles[i],
-                  ),);
-                }
-                else{
-                  muscleExercisesCheckBox['Shoulders']?.add(false);
-                  musclesAndItsExercises['Shoulders']?.add( Exercises(
-                    name: element.data()['name'],
-                    image: element.data()['image'],
-                    docs: element.data()['docs'],
-                    id: element.id,
-                    isCustom: element.data()['isCustom'],
-                    video: element.data()['video'],
-                    muscleName: muscles[i],
-                  ),);
-                }
-              });
-              emit(GetAllMusclesSuccessState());
-            });
-          } on Exception catch(e){
-            emit(GetAllMusclesErrorState());
-            MyMethods.handleError(context, e);
-          }
       }
 
-    print(musclesAndItsExercises);
-    print(muscleExercisesCheckBox);
-    print(musclesAndItsExercises['chest']?.length);
+      print(musclesAndItsExercises);
+      print(muscleExercisesCheckBox);
+      print(musclesAndItsExercises['chest']?.length);
+    } on Exception catch(e){
+      emit(GetAllMusclesErrorState());
+      MyMethods.handleError(context, e);
+    }
   }
 
-       // day ,    musclesCheckBox
+  // day ,    musclesCheckBox
   Map<String,Map<String, List<bool>>> dayCheckBox = {};
   void initializingDaysCheckBox(int day)
   {
     for(int i = 1; i <= day; day--)
-      {
-        dayCheckBox['day$day'] = Map.from(muscleExercisesCheckBox);
-      }
+    {
+      dayCheckBox['day$day'] = Map.from(muscleExercisesCheckBox);
+    }
     print(dayCheckBox);
   }
 
@@ -195,7 +158,7 @@ class PlansCubit extends Cubit<PlansStates>
     required String muscle,
     required int exerciseIndex,
     required bool value,
-})
+  })
   {
     dayCheckBox['day$dayIndex']?[muscle]?[exerciseIndex] = value;
     emit(ChangeCheckBoxValue());
@@ -207,9 +170,9 @@ class PlansCubit extends Cubit<PlansStates>
     lists = {};
 
     for(int i = 1; i <= numberOfDays!; i++)
-      {
-        lists['list$i'] = [];
-      }
+    {
+      lists['list$i'] = [];
+    }
     print(lists);
   }
 
@@ -361,7 +324,7 @@ class PlansCubit extends Cubit<PlansStates>
         );
         emit(CreateNewPlanSuccessState());
       });
-  } on Exception catch(e)
+    } on Exception catch(e)
     {
       emit(CreateNewPlanErrorState());
       MyMethods.handleError(context, e);
@@ -432,8 +395,8 @@ class PlansCubit extends Cubit<PlansStates>
       });
     }on Exception catch (e)
     {
-    emit(GetAllPlans2ErrorState());
-    MyMethods.handleError(context, e);
+      emit(GetAllPlans2ErrorState());
+      MyMethods.handleError(context, e);
     }
   }
 
@@ -482,7 +445,7 @@ class PlansCubit extends Cubit<PlansStates>
 
   Future<void> deleteExerciseFromPlan(context,{
     required DeleteFromPlanModel deleteFromPlanModel,
-})async
+  })async
   {
     try{
       await FirebaseFirestore.instance
@@ -510,8 +473,7 @@ class PlansCubit extends Cubit<PlansStates>
     required SetRecordForPlanExercise planExerciseRecord,
     required context,
     required String muscleName,
-    required InternetCheck internetCheck,
-})async
+  })async
   {
     double? reps = double.tryParse(planExerciseRecord.reps);
     double? weight = double.tryParse(planExerciseRecord.weight);

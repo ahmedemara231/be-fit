@@ -20,89 +20,100 @@ class LoginCubit extends Cubit<LoginStates>
   static LoginCubit getInstance(context) => BlocProvider.of(context);
 
   late Trainee user;
-  Future<void> login({
-    required Trainee user,
-    required BuildContext context,
-})async
+  Future<void> login({ required Trainee user,
+    required context,
+  })async
   {
     emit(LoginLoadingState());
-    try {
+    try{
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: user.email!,
-          password: user.password!,
-      ).then((value)async
+        email: user.email!,
+        password: user.password!,
+      ). then((value)async
       {
-        await FirebaseFirestore.instance
-        .collection('users')
-        .doc(value.user?.uid)
-        .get()
-        .then((value)async
-        {
-          user = Trainee(
-            email: value.data()?['email'],
-            name: value.data()?['name'],
-            phone: value.data()?['phone'],
-            id: value.id,
-          );
-          await CacheHelper.getInstance().handleUserData(
-              userData:
-              [
-                user.id!,
-                user.name!,
-              ],
-          ).then((value)
-          {
-            context.removeOldRoute(const BottomNavBar());
-            MyToast.showToast(
-              context,
-              msg: 'Welcome Coach!',
-              color: Constants.appColor,
-            );
-            emit(LoginSuccessState());
-          });
-        });
-      });
-    } on Exception catch (e)
+    await FirebaseFirestore.instance
+    .collection('users')
+    .doc(value.user?.uid)
+    .get()
+    .then((value)async
     {
-      log('$e');
-      throw handleLoginErrors(context, e);
+      user = Trainee(
+        email: value.data()?['email'],
+        name: value.data()?['name'],
+        phone: value.data()?['phone'],
+        id: value.id,
+      );
+      await CacheHelper.getInstance().handleUserData(
+          userData:
+          [
+            user.id!,
+            user.name!,
+          ],
+      ).then((value)
+      {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BottomNavBar(),
+            ), (route) => false,
+        );
+
+        MyToast.showToast(
+          context,
+          msg: 'Welcome Coach!',
+          color: Constants.appColor,
+        );
+        emit(LoginSuccessState());
+      });
+    });
+  });
+    }on Exception catch(e)
+    {
+      emit(LoginErrorState());
+      handleLoginErrors(context, e);
     }
   }
 
-  Exception handleLoginErrors(context,Exception e)
+  void handleLoginErrors(context,Exception e)
   {
     if(e is FirebaseAuthException)
     {
-      emit(LoginErrorState());
-      if (e.code == 'user-not-found') {
+      if(e.code == 'invalid-credential') {
         MySnackBar.showSnackBar(
           context: context,
-          message: 'No user found for that email.',
+          message: 'Wrong email or password',
           color: Constants.appColor,
         );
-      } else if (e.code == 'wrong-password') {
+      }
+      else if(e.code == 'network-request-failed'){
         MySnackBar.showSnackBar(
           context: context,
-          message: 'Wrong password provided for that user',
+          message: 'Check your internet connection and try again',
           color: Constants.appColor,
         );
-      } else{
+      }
+      else{
         MySnackBar.showSnackBar(
           context: context,
-          message: 'Try Again later',
+          message: 'Try again later',
           color: Constants.appColor,
         );
       }
     }
-    else if(e is SocketException)
-    {
+    else if(e is SocketException) {
       MySnackBar.showSnackBar(
         context: context,
         message: 'Check your internet connection and try again',
         color: Constants.appColor,
       );
     }
-    return e;
+    else {
+      MySnackBar.showSnackBar(
+        context: context,
+        message: 'Try again later',
+        color: Constants.appColor,
+      );
+    }
   }
 
   bool isVisible = true;
@@ -128,7 +139,6 @@ class LoginCubit extends Cubit<LoginStates>
           color: Constants.appColor
       );
     }
-
   }
 
   Future<UserCredential> signInWithGoogle() async {

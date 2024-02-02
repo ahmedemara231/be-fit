@@ -5,6 +5,7 @@ import 'package:be_fit/models/data_types/report.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
@@ -172,6 +173,8 @@ class SettingCubit extends Cubit<SettingStates>
                           onPressed: () async
                           {
                             Navigator.pop(context);
+
+                            await FirebaseAuth.instance.signOut();
                             await CacheHelper.getInstance().kill().then((value)
                             {
                               Navigator.pushAndRemoveUntil(
@@ -180,7 +183,6 @@ class SettingCubit extends Cubit<SettingStates>
                                   builder: (context) => Login(),
                                 ), (route) => false,
                               );
-                              // FirebaseAuth.instance.signOut();
                             });
                           },
                           child: MyText(text: 'Yes, Logout',fontSize: 14),

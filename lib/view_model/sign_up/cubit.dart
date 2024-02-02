@@ -1,4 +1,4 @@
-import 'package:be_fit/constants.dart';
+import 'dart:io';
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
@@ -58,35 +58,55 @@ class SignUpCubit extends Cubit<SignUpStates>
           });
         }
       });
-    } on FirebaseAuthException catch (e) {
+    } on Exception catch (e) {
       emit(SignUpErrorState());
-      throw handleErrors(context, e);
+      handleErrors(context, e);
     }
   }
-  Exception handleErrors(context,FirebaseAuthException e)
+  void handleErrors(context,Exception e)
   {
-    if (e.code == 'weak-password') {
+    if(e is FirebaseAuthException) {
+        if (e.code == 'weak-password') {
+          MySnackBar.showSnackBar(
+              context: context,
+              message: 'The password provided is too weak.',
+              color: Constants.appColor
+          );
+        }
+        else if (e.code == 'email-already-in-use') {
+          MySnackBar.showSnackBar(
+              context: context,
+              message: 'The account already exists for that email.',
+              color: Constants.appColor
+          );
+        }
+        else if(e.code == 'network-request-failed'){
+          MySnackBar.showSnackBar(
+            context: context,
+            message: 'Check your internet connection and try again',
+            color: Constants.appColor,
+          );
+        }
+        else{
+          MySnackBar.showSnackBar(
+            context: context,
+            message: 'Please try again later',
+          );
+        }
+      }
+    else if(e is SocketException) {
       MySnackBar.showSnackBar(
-          context: context,
-          message: 'The password provided is too weak.',
-          color: Constants.appColor
+        context: context,
+        message: 'Check your internet connection and try again',
+        color: Constants.appColor,
       );
-      return e;
-    }
-    else if (e.code == 'email-already-in-use') {
-      MySnackBar.showSnackBar(
-          context: context,
-          message: 'The account already exists for that email.',
-          color: Constants.appColor
-      );
-      return e;
     }
     else{
       MySnackBar.showSnackBar(
         context: context,
         message: 'Please try again later',
+        color: Constants.appColor
       );
-      return e;
     }
   }
 }

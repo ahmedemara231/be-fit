@@ -133,7 +133,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
        });
        emit(SetNewRecordSuccessState());
      });
-   } on Exception catch(e)
+   } on Exception catch (e)
    {
      emit(GetExercisesErrorState());
      MyMethods.handleError(context, e);

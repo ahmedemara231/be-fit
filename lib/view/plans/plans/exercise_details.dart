@@ -1,4 +1,3 @@
-import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
@@ -75,215 +74,225 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
               child: MyText(text: 'Statistics',fontSize: 18,fontWeight: FontWeight.w500,))
         ],
       ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: Image.network(
-                widget.exercise.image,
-                fit: BoxFit.contain,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 8),
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16)
+                ),
+                width: double.infinity,
+                child: Image.network(
+                  widget.exercise.image,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) => MyText(
+                    text: 'Failed to load image',
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-          ),
-          StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(CacheHelper.getInstance().uId)
-                  .collection('plans')
-                  .doc(widget.planDoc)
-                  .collection('list${widget.listIndex}')
-                  .doc(widget.exercise.id)
-                  .collection('records')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: SizedBox(
-                      height: context.setHeight(2.8),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: context.decoration()
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              const RecordsModel(),
-                              Expanded(
-                                child: ListView.builder(
-                                  itemBuilder: (context, index) => Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        const Spacer(),
-                                        SizedBox(
-                                          width: 100,
-                                          child: Column(
+            StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(CacheHelper.getInstance().uId)
+                    .collection('plans')
+                    .doc(widget.planDoc)
+                    .collection('list${widget.listIndex}')
+                    .doc(widget.exercise.id)
+                    .collection('records')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: SizedBox(
+                        height: context.setHeight(2.8),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: context.decoration()
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                const RecordsModel(),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemBuilder: (context, index) => Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const Spacer(),
+                                          SizedBox(
+                                            width: 100,
+                                            child: Column(
+                                              children: [
+                                                MyText(
+                                                  text: snapshot.data?.docs[index].data()['dateTime'],
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          Column(
                                             children: [
                                               MyText(
-                                                text: snapshot.data?.docs[index].data()['dateTime'],
+                                                text: '${snapshot.data?.docs[index].data()['weight']}',
                                                 fontSize: 22,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ],
                                           ),
-                                        ),
-                                        const Spacer(),
-                                        Column(
-                                          children: [
-                                            MyText(
-                                              text: '${snapshot.data?.docs[index].data()['weight']}',
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ],
-                                        ),
-                                        const Spacer(),
-                                        Column(
-                                          children: [
-                                            MyText(
-                                              text: '${snapshot.data?.docs[index].data()['reps']}',
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ],
-                                        ),
-                                        const Spacer(),
-                                      ],
+                                          const Spacer(),
+                                          Column(
+                                            children: [
+                                              MyText(
+                                                text: '${snapshot.data?.docs[index].data()['reps']}',
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ],
+                                          ),
+                                          const Spacer(),
+                                        ],
+                                      ),
                                     ),
+                                    itemCount: snapshot.data?.docs.length,
                                   ),
-                                  itemCount: snapshot.data?.docs.length,
                                 ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    MySnackBar.showSnackBar(
+                        context: context, message: 'Try again latter');
+                    return MyText(text: '');
+                  } else {
+                    print('idk : $snapshot');
+                    return MyText(text: '');
+                  }
+                }),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height / 1.2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ListView(
+                            children: [
+                              MyText(
+                                text: 'Note : It\'s really important to match these steps if you don\'t know how to perform this exercises',
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                maxLines: 5,
+                              ),
+                              const SizedBox(
+                                height: 25,
+                              ),
+                              MyText(
+                                text: widget.exercise.docs,
+                                maxLines: 20,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  MySnackBar.showSnackBar(
-                      context: context, message: 'Try again latter');
-                  return MyText(text: '');
-                } else {
-                  print('idk : $snapshot');
-                  return MyText(text: '');
-                }
-              }),
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height / 1.2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ListView(
-                          children: [
-                            MyText(
-                              text: 'Note : It\'s really important to match these steps if you don\'t know how to perform this exercises',
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              maxLines: 5,
-                            ),
-                            const SizedBox(
-                              height: 25,
-                            ),
-                            MyText(
-                              text: widget.exercise.docs,
-                              maxLines: 20,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ],
+                    ));
+                  },
+                  icon: const Icon(Icons.question_mark),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: ()
+                  {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ExerciseVideo(
+                          exerciseName: widget.exercise.name,
+                          url: widget.exercise.video.isEmpty?
+                          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
+                          widget.exercise.video,
                         ),
                       ),
-                    ),
-                  ));
-                },
-                icon: const Icon(Icons.question_mark),
+                    );
+                  },
+                  icon: const Icon(Icons.play_arrow),
+                )
+              ],
+            ),
+            Container(
+              height: context.setHeight(5),
+              decoration: BoxDecoration(
+                  border: context.decoration()
               ),
-              const Spacer(),
-              IconButton(
-                onPressed: ()
-                {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ExerciseVideo(
-                        exerciseName: widget.exercise.name,
-                        url: widget.exercise.video.isEmpty?
-                        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
-                        widget.exercise.video,
+              child: Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: MyText(
+                        text: Jiffy().yMMMMEEEEd,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
                     ),
-                  );
-                },
-                icon: const Icon(Icons.play_arrow),
-              )
-            ],
-          ),
-          Container(
-            height: context.setHeight(5),
-            decoration: BoxDecoration(
-                border: context.decoration()
-            ),
-            child: Center(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: MyText(
-                      text: Jiffy().yMMMMEEEEd,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Form(
-                    key: formKey,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        OtpTff(controller: weightCont, hintText: 'weight'),
-                        OtpTff(controller: repsCont, hintText: 'reps'),
-                      ],
-                    ),
-                  )
-                ],
+                    Form(
+                      key: formKey,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          OtpTff(controller: weightCont, hintText: 'weight'),
+                          OtpTff(controller: repsCont, hintText: 'reps'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          AppButton(
-            onPressed: () async
-            {
-              await PlansCubit.getInstance(context).setARecordFromPlan(
-                  internetCheck: FirstCheckMethod.getInstance(),
-                  planExerciseRecord: SetRecordForPlanExercise(
-                    planDoc: widget.planDoc,
-                    listIndex: widget.listIndex + 1,
-                    exerciseDoc: widget.exercise.id,
-                    reps: repsCont.text,
-                    weight: weightCont.text,
-                    uId: CacheHelper.getInstance().uId,
-                  ),
-                  context: context,
-                  muscleName: widget.exercise.muscleName!
-              ).then((value)
+            AppButton(
+              onPressed: () async
               {
-                weightCont.clear();
-                repsCont.clear();
-              });
-            },
-            text: 'Add',
-          )
-        ],
+                await PlansCubit.getInstance(context).setARecordFromPlan(
+                    planExerciseRecord: SetRecordForPlanExercise(
+                      planDoc: widget.planDoc,
+                      listIndex: widget.listIndex + 1,
+                      exerciseDoc: widget.exercise.id,
+                      reps: repsCont.text,
+                      weight: weightCont.text,
+                      uId: CacheHelper.getInstance().uId,
+                    ),
+                    context: context,
+                    muscleName: widget.exercise.muscleName!
+                ).then((value)
+                {
+                  weightCont.clear();
+                  repsCont.clear();
+                });
+              },
+              text: 'Add',
+            )
+          ],
+        ),
       ),
     );
   }

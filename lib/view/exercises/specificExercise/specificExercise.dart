@@ -98,15 +98,22 @@ class _SpecificExerciseState extends State<SpecificExercise> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 8),
             child: ListView(
               children: [
-                Container(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16)
-                  ),
-                  width: double.infinity,
-                  child: Image.network(
-                    widget.exercise.image,
-                    fit: BoxFit.contain,
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16)
+                    ),
+                    width: double.infinity,
+                    child: Image.network(
+                      widget.exercise.image,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) => MyText(
+                        text: 'Failed to load image',fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 StreamBuilder(

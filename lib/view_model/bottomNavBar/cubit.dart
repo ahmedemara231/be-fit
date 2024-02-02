@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,9 +30,11 @@ class BottomNavCubit extends Cubit<BottomNavState>
       context,
       validConnectionAction: () async
       {
+        // the compiler repeats this method 2 times
+        print('==========================================');
         emit(FetchAllDataLoadingState());
         await PlansCubit.getInstance(context).getAllPlans(context,uId);
-        await PlansCubit.getInstance(context).getMuscles(context,uId: CacheHelper.getInstance().uId);
+        await PlansCubit.getInstance(context).getMuscles(context);
         emit(FetchAllDataSuccessState());
       },
     );

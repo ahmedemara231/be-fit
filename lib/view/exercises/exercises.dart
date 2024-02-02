@@ -127,8 +127,19 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: ListTile(
-                                  leading: Image.network(
-                                      ExercisesCubit.getInstance(context).exercises[index].image),
+                                  leading: Container(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5)
+                                    ),
+                                    child: Image.network(
+                                      ExercisesCubit.getInstance(context).exercises[index].image,
+                                      errorBuilder: (context, error, stackTrace) => MyText(
+                                        text: 'Failed to load image',
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                   title: MyText(
                                     text: ExercisesCubit.getInstance(context).exercises[index].name,
                                     fontSize: 20,
@@ -195,8 +206,19 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: ListTile(
-                                        leading: Image.network(
-                                            ExercisesCubit.getInstance(context).customExercises[index].image),
+                                        leading: Container(
+                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(5)
+                                          ),
+                                          child: Image.network(
+                                            ExercisesCubit.getInstance(context).customExercises[index].image,
+                                            errorBuilder: (context, error, stackTrace) => MyText(
+                                              text: 'Failed to load image',
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
                                         title: MyText(
                                           text: ExercisesCubit.getInstance(context).customExercises[index].name,
                                           fontSize: 20,

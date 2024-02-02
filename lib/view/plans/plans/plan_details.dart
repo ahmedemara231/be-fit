@@ -87,10 +87,21 @@ class _PlanDetailsState extends State<PlanDetails> {
                             child: ListTile(
                                 leading: Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: SizedBox(
+                                  child: Container(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
                                       width: 80,
                                       height: 80,
-                                      child: Image.network(PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].image)),
+                                      child: Image.network(
+                                        PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].image,
+                                        errorBuilder: (context, error, stackTrace) => MyText(
+                                          text: 'Failed to load image',
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                  ),
                                 ),
                                 subtitle: MyText(
                                   text: PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].name,

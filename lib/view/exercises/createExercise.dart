@@ -115,7 +115,6 @@ class CreateExercise extends StatelessWidget {
                           ),
                         );
                         }
-
                     }, text: 'Add',
                     )
                   ],

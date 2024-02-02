@@ -107,11 +107,7 @@ class Login extends StatelessWidget {
                               password: passCont.text,
                             ),
                             context: context,
-                          ).then((value)
-                          {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavBar(),));
-                            // context.removeOldRoute(const BottomAppBar());
-                          });
+                          );
                         }
                       }, text: 'Login',
                       ),

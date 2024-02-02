@@ -88,7 +88,19 @@ class DayExercises extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: ListTile(
-                      leading: Image.network((PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).image),
+                      leading: Container(
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5)
+                        ),
+                        child: Image.network(
+                          (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).image,
+                          errorBuilder: (context, error, stackTrace) => MyText(
+                            text: 'Failed to load image',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                       title: MyText(
                         text: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).name,
                         fontSize: 18,
