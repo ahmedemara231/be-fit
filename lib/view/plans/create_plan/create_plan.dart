@@ -1,12 +1,11 @@
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-
+import 'package:be_fit/view_model/plan_creation/cubit.dart';
+import 'package:be_fit/view_model/plan_creation/states.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/create_plan/continue_planning.dart';
 import 'package:be_fit/view/plans/create_plan/number_selector.dart';
-import 'package:be_fit/view_model/plans/cubit.dart';
-import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/widgets/modules/snackBar.dart';
@@ -20,7 +19,7 @@ class CreatePlan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlansCubit,PlansStates>(
+    return BlocBuilder<PlanCreationCubit,PlanCreationStates>(
       builder: (context, state)
       {
         return Scaffold(
@@ -64,7 +63,7 @@ class CreatePlan extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: MyText(
-                                text: '${PlansCubit.getInstance(context).currentIndex}',
+                                text: '${PlanCreationCubit.getInstance(context).currentIndex}',
                                 fontSize: 16,
                               ),
                             ),
@@ -84,7 +83,7 @@ class CreatePlan extends StatelessWidget {
                     {
                       if(formKey.currentState!.validate())
                         {
-                          if(PlansCubit.getInstance(context).currentIndex == 0)
+                          if(PlanCreationCubit.getInstance(context).currentIndex == 0)
                           {
                             MySnackBar.showSnackBar(
                               context: context,
@@ -97,7 +96,7 @@ class CreatePlan extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => ContinuePlanning(
                                   name: workOutNameCont.text,
-                                  daysNumber: PlansCubit.getInstance(context).currentIndex,
+                                  daysNumber: PlanCreationCubit.getInstance(context).currentIndex,
                                 ),
                               ),
                             );

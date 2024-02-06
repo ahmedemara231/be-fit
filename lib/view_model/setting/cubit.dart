@@ -1,11 +1,12 @@
+import 'dart:developer';
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/report.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
+import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
@@ -114,7 +115,7 @@ class SettingCubit extends Cubit<SettingStates>
     final result = await Share.shareWithResult('check out my website https://example.com');
 
     if (result.status == ShareResultStatus.success) {
-      print('Thank you for sharing my website!');
+      log('Thank you for sharing my app!');
     }
   }
 
@@ -174,16 +175,23 @@ class SettingCubit extends Cubit<SettingStates>
                           {
                             Navigator.pop(context);
 
-                            await FirebaseAuth.instance.signOut();
-                            await CacheHelper.getInstance().kill().then((value)
+                            await CacheHelper.getInstance().kill();
+
+                            if(CacheHelper.getInstance().sharedPreferences.getBool('isGoogleUser') == true)
                             {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Login(),
-                                ), (route) => false,
-                              );
-                            });
+                              await CacheHelper.getInstance().killGoogleUser().then((value)async
+                              {
+                                await LoginCubit.getInstance(context).google.disconnect().then((value)
+                                {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Login(),
+                                    ), (route) => false,
+                                  );
+                                });
+                              });
+                            }
                           },
                           child: MyText(text: 'Yes, Logout',fontSize: 14),
                         ),

@@ -5,7 +5,6 @@ import 'package:jiffy/jiffy.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -220,7 +219,8 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                   icon: const Icon(Icons.question_mark),
                 ),
                 const Spacer(),
-                IconButton(
+                if(widget.exercise.isCustom == false)
+                  IconButton(
                   onPressed: ()
                   {
                     Navigator.push(
@@ -272,22 +272,25 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
             AppButton(
               onPressed: () async
               {
-                await PlansCubit.getInstance(context).setARecordFromPlan(
-                    planExerciseRecord: SetRecordForPlanExercise(
-                      planDoc: widget.planDoc,
-                      listIndex: widget.listIndex + 1,
-                      exerciseDoc: widget.exercise.id,
-                      reps: repsCont.text,
-                      weight: weightCont.text,
-                      uId: CacheHelper.getInstance().uId,
-                    ),
-                    context: context,
-                    muscleName: widget.exercise.muscleName!
-                ).then((value)
-                {
-                  weightCont.clear();
-                  repsCont.clear();
-                });
+                if(formKey.currentState!.validate())
+                  {
+                    await PlansCubit.getInstance(context).setARecordFromPlan(
+                        planExerciseRecord: SetRecordForPlanExercise(
+                          planDoc: widget.planDoc,
+                          listIndex: widget.listIndex + 1,
+                          exercise: widget.exercise,
+                          reps: repsCont.text,
+                          weight: weightCont.text,
+                          uId: CacheHelper.getInstance().uId,
+                        ),
+                        context: context,
+                        muscleName: widget.exercise.muscleName
+                    ).then((value)
+                    {
+                      weightCont.clear();
+                      repsCont.clear();
+                    });
+                  }
               },
               text: 'Add',
             )

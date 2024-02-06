@@ -4,6 +4,7 @@ import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../models/widgets/modules/divider.dart';
 import '../../../models/widgets/modules/textFormField.dart';
 import '../../../models/widgets/modules/myText.dart';
 import '../login/login.dart';
@@ -73,6 +74,15 @@ class _SignUpState extends State<SignUp> {
     ];
     super.initState();
   }
+
+  @override
+  void dispose() {
+    nameCont.dispose();
+    emailCont.dispose();
+    passCont.dispose();
+    phoneCont.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SignUpCubit,SignUpStates>(
@@ -82,7 +92,7 @@ class _SignUpState extends State<SignUp> {
           appBar: AppBar(),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
                   Image.asset('images/be-fit_logo.png'),
@@ -95,16 +105,13 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   const SizedBox(height: 30,),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Form(
-                      key: formKey,
-                      child: Column(
-                        children: List.generate(signUpInputs.length, (index) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          child: signUpInputs[index],
-                        )),
-                      ),
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      children: List.generate(signUpInputs.length, (index) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: signUpInputs[index],
+                      )),
                     ),
                   ),
                   if(state is SignUpLoadingState)

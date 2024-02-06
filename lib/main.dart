@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'package:be_fit/constants.dart';
 import 'package:be_fit/view/auth/login/login.dart';
 import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
 import 'package:be_fit/view_model/FCM/FCM.dart';
@@ -11,6 +9,8 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
+import 'package:be_fit/view_model/plan_creation/cubit.dart';
+import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
@@ -24,7 +24,9 @@ import 'firebase_options.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  CacheHelper.getInstance().initCache();
+
+  await CacheHelper.getInstance().initCache();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -52,6 +54,9 @@ class MyApp extends StatelessWidget {
           create: (context) => ExercisesCubit(ExerInitialState()),
         ),
         BlocProvider(
+          create: (context) => PlanCreationCubit(PlanCreationInitialState()),
+        ),
+        BlocProvider(
           create: (context) => PlansCubit(PlansInitialState()),
         ),
         BlocProvider(
@@ -68,9 +73,11 @@ class MyApp extends StatelessWidget {
         builder: (context, state)
         {
           return MaterialApp(
+            // darkTheme: ThemeData.dark()..scaffoldBackgroundColor = HexColor('hexColor'),
             theme: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
             ThemeData.light():
             ThemeData.dark(),
+            // themeMode: ThemeMode.dark,
             debugShowCheckedModeBanner: false,
             home: CacheHelper.getInstance().sharedPreferences.getStringList('userData') == null ||
                   CacheHelper.getInstance().sharedPreferences.getStringList('userData')!.isEmpty?

@@ -10,32 +10,6 @@ class GetAllPlansSuccessState extends PlansStates {}
 
 class GetAllPlansErrorState extends PlansStates {}
 
-class GetAllMusclesLoadingState extends PlansStates {}
-
-class GetAllMusclesSuccessState extends PlansStates {}
-
-class GetAllMusclesErrorState extends PlansStates {}
-
-class ChangeCheckBoxValue extends PlansStates {}
-
-class AddToExercisePlanList extends PlansStates {}
-
-class AddToDismissList extends PlansStates {}
-
-class RemoveFromExercisePlanList extends PlansStates {}
-
-class RemoveFromDismissList extends PlansStates {}
-
-class PutExercisesInList extends PlansStates{}
-
-class ChangeDaysNumber extends PlansStates{}
-
-class CreateNewPlanLoadingState extends PlansStates{}
-
-class CreateNewPlanSuccessState extends PlansStates{}
-
-class CreateNewPlanErrorState extends PlansStates{}
-
 class GetAllPlans2LoadingState extends PlansStates {}
 
 class GetAllPlans2SuccessState extends PlansStates {}

@@ -2,11 +2,10 @@ import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/make_plan.dart';
+import 'package:be_fit/view_model/plan_creation/cubit.dart';
+import 'package:be_fit/view_model/plan_creation/states.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
-import 'package:be_fit/view_model/plans/cubit.dart';
-import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'choose_exercises/choose_exercises.dart';
@@ -28,13 +27,13 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
 
   @override
   void initState() {
-    PlansCubit.getInstance(context).makeListForEachDay(widget.daysNumber);
-    PlansCubit.getInstance(context).initializingDaysCheckBox(widget.daysNumber!);
+    PlanCreationCubit.getInstance(context).makeListForEachDay(widget.daysNumber);
+    PlanCreationCubit.getInstance(context).initializingDaysCheckBox(widget.daysNumber!);
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlansCubit,PlansStates>(
+    return BlocBuilder<PlanCreationCubit,PlanCreationStates>(
       builder: (context, state)
       {
         return Scaffold(
@@ -79,14 +78,14 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                           padding: const EdgeInsets.all(10.0),
                           child: Column(
                             children: List.generate(
-                              PlansCubit.getInstance(context).lists['list${index+1}']!.length, (i)
+                              PlanCreationCubit.getInstance(context).lists['list${index+1}']!.length, (i)
                             {
                               return Dismissible(
                                 background: Container(
                                   color: Colors.red,
                                   child: const Icon(Icons.delete,color: Colors.white,),
                                 ),
-                                key: ValueKey<Exercises>(PlansCubit.getInstance(context).lists['list${index+1}']![i]),
+                                key: ValueKey<Exercises>(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i]),
                                 child: Container(
                                   decoration: BoxDecoration(
                                       border: context.decoration()
@@ -99,15 +98,15 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                           child: SizedBox(
                                               width: 80,
                                               height: 80,
-                                              child: Image.network(PlansCubit.getInstance(context).lists['list${index+1}']![i].image)),
+                                              child: Image.network(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].image)),
                                         ),
                                       subtitle: MyText(
-                                          text: PlansCubit.getInstance(context).lists['list${index+1}']![i].name,
+                                          text: PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].name,
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       trailing: MyText(
-                                        text: '${PlansCubit.getInstance(context).lists['list${index+1}']![i].reps!} X ${PlansCubit.getInstance(context).lists['list${index+1}']![i].sets!}',
+                                        text: '${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].reps!} X ${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].sets!}',
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16,
                                       ),
@@ -116,13 +115,10 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                 ),
                                 onDismissed: (direction)
                                 {
-                                  PlansCubit.getInstance(context).removeFromPlanExercises(
+                                  PlanCreationCubit.getInstance(context).removeFromPlanExercises(
                                       index + 1,
-                                      PlansCubit.getInstance(context).lists['list${index+1}']![i],
+                                      PlanCreationCubit.getInstance(context).lists['list${index+1}']![i],
                                   );
-
-                                  // PlansCubit.getInstance(context).removeFromDismissList(index, i);
-
                                 },
                               );
                              }
@@ -144,17 +140,17 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                         backgroundColor: Colors.red[400]
                     ),
                     onPressed: state is CreateNewPlanLoadingState? ||
-                    PlansCubit.getInstance(context).lists.entries.every((element) => element.value.isEmpty)?
+                    PlanCreationCubit.getInstance(context).lists.entries.every((element) => element.value.isEmpty)?
                     null : () async
                     {
-                      await PlansCubit.getInstance(context).createNewPlan(
+                      await PlanCreationCubit.getInstance(context).createNewPlan(
                         context,
+                        uId: CacheHelper.getInstance().uId,
                         makePlanModel: MakePlanModel(
                             daysNumber: widget.daysNumber,
                             name: widget.name,
                             uId: CacheHelper.getInstance().uId,
                         ),
-                        internetCheck: FirstCheckMethod.getInstance(),
                       );
                     },
                     child: Padding(

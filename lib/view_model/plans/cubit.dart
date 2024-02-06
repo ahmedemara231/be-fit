@@ -1,335 +1,19 @@
+import 'dart:developer';
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
-import 'package:be_fit/models/data_types/make_plan.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
 import '../../models/widgets/modules/toast.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
-import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 import '../../models/data_types/delete_exercise_from_plan.dart';
-import '../../view/BottomNavBar/bottomNavBar.dart';
 
 class PlansCubit extends Cubit<PlansStates>
 {
   PlansCubit(super.initialState);
   static PlansCubit getInstance(context) => BlocProvider.of(context);
-
-  List<String> muscles =
-  [
-    'Aps',
-    'chest',
-    'Back',
-    'Shoulders',
-    'legs'
-  ];
-
-  Map<String, List<Exercises>> musclesAndItsExercises = {};
-  Map<String, List<bool>> muscleExercisesCheckBox = {};
-
-  // for ui
-  Future<void> getMuscles(context)async
-  {
-    bool isFetched = false;
-
-    List<bool> customMusclesFetched = [];
-    musclesAndItsExercises = {};
-    muscleExercisesCheckBox = {};
-
-    for(int i = 0; i <= (muscles.length - 1); i++)
-    {
-      customMusclesFetched.add(false);
-      musclesAndItsExercises[muscles[i]] = [];
-      muscleExercisesCheckBox[muscles[i]] = [];
-    }
-
-    emit(GetAllMusclesLoadingState());
-    try
-    {
-      for(int i = 0; i < muscles.length; i++) // 1
-          {
-        await FirebaseFirestore.instance
-            .collection(muscles[i])
-            .get()
-            .then((value)
-        {
-          value.docs.forEach((element)async{ // 2
-
-            // 5 times
-            if(muscles[i] == 'chest')
-            {
-              musclesAndItsExercises['chest']?.add(
-                Exercises(
-                  name: element.data()['name'],
-                  image: element.data()['image'],
-                  docs: element.data()['docs'],
-                  id: element.id,
-                  isCustom: element.data()['isCustom'],
-                  video: element.data()['video'],
-                  muscleName: muscles[i],
-                ),
-              );
-              muscleExercisesCheckBox['chest']?.add(false);
-
-            }
-
-            else if(muscles[i] == 'Back')
-            {
-              muscleExercisesCheckBox['Back']?.add(false);
-              musclesAndItsExercises['Back']?.add( Exercises(
-                name: element.data()['name'],
-                image: element.data()['image'],
-                docs: element.data()['docs'],
-                id: element.id,
-                isCustom: element.data()['isCustom'],
-                video: element.data()['video'],
-                muscleName: muscles[i],
-              ),);
-            }
-            else if(muscles[i] == 'Aps')
-            {
-              muscleExercisesCheckBox['Aps']?.add(false);
-              musclesAndItsExercises['Aps']?.add( Exercises(
-                name: element.data()['name'],
-                image: element.data()['image'],
-                docs: element.data()['docs'],
-                id: element.id,
-                isCustom: element.data()['isCustom'],
-                video: element.data()['video'],
-                muscleName: muscles[i],
-              ),);
-            }
-            else if(muscles[i] == 'legs')
-            {
-              muscleExercisesCheckBox['legs']?.add(false);
-              musclesAndItsExercises['legs']?.add( Exercises(
-                name: element.data()['name'],
-                image: element.data()['image'],
-                docs: element.data()['docs'],
-                id: element.id,
-                isCustom: element.data()['isCustom'],
-                video: element.data()['video'],
-                muscleName: muscles[i],
-              ),);
-            }
-            else{
-              muscleExercisesCheckBox['Shoulders']?.add(false);
-              musclesAndItsExercises['Shoulders']?.add( Exercises(
-                name: element.data()['name'],
-                image: element.data()['image'],
-                docs: element.data()['docs'],
-                id: element.id,
-                isCustom: element.data()['isCustom'],
-                video: element.data()['video'],
-                muscleName: muscles[i],
-              ),);
-            }
-          });
-          emit(GetAllMusclesSuccessState());
-        });
-
-      }
-
-      print(musclesAndItsExercises);
-      print(muscleExercisesCheckBox);
-      print(musclesAndItsExercises['chest']?.length);
-    } on Exception catch(e){
-      emit(GetAllMusclesErrorState());
-      MyMethods.handleError(context, e);
-    }
-  }
-
-  // day ,    musclesCheckBox
-  Map<String,Map<String, List<bool>>> dayCheckBox = {};
-  void initializingDaysCheckBox(int day)
-  {
-    for(int i = 1; i <= day; day--)
-    {
-      dayCheckBox['day$day'] = Map.from(muscleExercisesCheckBox);
-    }
-    print(dayCheckBox);
-  }
-
-  void newChangeCheckBoxValue({
-    required int dayIndex,
-    required String muscle,
-    required int exerciseIndex,
-    required bool value,
-  })
-  {
-    dayCheckBox['day$dayIndex']?[muscle]?[exerciseIndex] = value;
-    emit(ChangeCheckBoxValue());
-  }
-
-  Map<String,List<Exercises>> lists = {};
-  void makeListForEachDay(int? numberOfDays)
-  {
-    lists = {};
-
-    for(int i = 1; i <= numberOfDays!; i++)
-    {
-      lists['list$i'] = [];
-    }
-    print(lists);
-  }
-
-  void addToPlanExercises(int day,Exercises exercise)
-  {
-    lists['list$day']!.add(exercise);
-    print(lists);
-    emit(AddToExercisePlanList());
-  }
-
-  void removeFromPlanExercises(int day,Exercises exercise)
-  {
-    lists['list$day']!.remove(exercise);
-    print(lists);
-    emit(RemoveFromExercisePlanList());
-  }
-
-  int currentIndex = 1;
-
-  void changeDaysNumber(int newValue)
-  {
-    currentIndex = newValue;
-    emit(ChangeDaysNumber());
-  }
-
-  Future<void> createNewPlan(context,{
-    required MakePlanModel makePlanModel,
-    required InternetCheck internetCheck,
-  })async
-  {
-    MyToast.showToast(
-        context,
-        msg: 'Preparing tour plan',
-        color: Colors.grey[400]
-    );
-    emit(CreateNewPlanLoadingState());
-
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(makePlanModel.uId)
-          .collection('plans')
-          .add(
-        {
-          'name' : makePlanModel.name,
-          'daysNumber' : makePlanModel.daysNumber,
-        },
-      ).then((value)
-      {
-        List<String> listsKeys = lists.keys.toList();
-        print('half made');
-
-        for(int index = 0; index <= ( makePlanModel.daysNumber! - 1 ); index++)
-        {
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(makePlanModel.uId)
-              .collection('plans')
-              .doc(value.id)   // البلان اللي انت لسة عاملها
-              .collection(listsKeys[index]); // على حسب عدد الايام هيتفتح collections
-
-          ///////////////////////////////////////////////////////
-
-          // list1
-          lists[listsKeys[index]]!.forEach((element)async {
-
-            DocumentReference planExerciseId = FirebaseFirestore.instance
-                .collection('users')
-                .doc(makePlanModel.uId)
-                .collection('plans')
-                .doc(value.id)
-                .collection(listsKeys[index])
-                .doc(element.id); // 1st exercise in list1 in the plan
-
-            // check if this exercise has a records or not for this user
-
-            for(int i = 0; i <= (muscles.length - 1); i++)
-            {
-              var checkCollection = await FirebaseFirestore.instance
-                  .collection(muscles[i])
-                  .doc(element.id)
-                  .collection('records')
-                  .where('uId',isEqualTo: makePlanModel.uId)
-                  .get();
-
-              if(checkCollection.docs.isNotEmpty)
-              {
-                DocumentReference exerciseDoc = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(makePlanModel.uId)
-                    .collection('plans')
-                    .doc(value.id)
-                    .collection(listsKeys[index])
-                    .doc(planExerciseId.id);
-
-                await exerciseDoc.set(
-                  {
-                    'name' : element.name,
-                    'docs' : element.docs,
-                    'image' : element.image,
-                    'muscle' : element.muscleName,
-                    'video' : element.video,
-                    'sets' : element.sets,
-                    'reps' : element.reps,
-                  },
-                );
-                checkCollection.docs.forEach((element) {
-                  exerciseDoc.collection('records')
-                      .doc(element.id)
-                      .set(
-                    {
-                      'dateTime': element.data()['dateTime'],
-                      'reps': element.data()['reps'],
-                      'weight': element.data()['weight'],
-                    },
-                  );
-                });
-              }
-              else{
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(makePlanModel.uId)
-                    .collection('plans')
-                    .doc(value.id)
-                    .collection(listsKeys[index])
-                    .doc(planExerciseId.id)
-                    .set(
-                  {
-                    'name' : element.name,
-                    'docs' : element.docs,
-                    'image' : element.image,
-                    'muscle' : element.muscleName,
-                    'video' : element.video,
-                    'sets' : element.sets,
-                    'reps' : element.reps,
-                  },
-                );
-              }
-            }
-          });
-        }
-        MyToast.showToast(context, msg: 'Plan is Ready');
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const BottomNavBar(),
-          ), (route) => false,
-        );
-        emit(CreateNewPlanSuccessState());
-      });
-    } on Exception catch(e)
-    {
-      emit(CreateNewPlanErrorState());
-      MyMethods.handleError(context, e);
-    }
-  }
 
   Map<String,List<Exercises>> plan = {};
   Map<String,dynamic> allPlans = {};
@@ -376,7 +60,7 @@ class PlansCubit extends Cubit<PlansStates>
                     docs: element.data()['docs'],
                     id: element.id,
                     muscleName: element.data()['muscle'],
-                    isCustom: false,
+                    isCustom: element.data()['isCustom'],
                     video: element.data()['video'],
                     reps: element.data()['reps'],
                     sets: element.data()['sets'],
@@ -413,7 +97,7 @@ class PlansCubit extends Cubit<PlansStates>
   {
     List<String> allKeys = allPlans.keys.toList();
 
-    print('all Keys : $allKeys');
+    log('all Keys : $allKeys');
     return allKeys;
   }
 
@@ -472,78 +156,134 @@ class PlansCubit extends Cubit<PlansStates>
   Future<void> setARecordFromPlan({
     required SetRecordForPlanExercise planExerciseRecord,
     required context,
-    required String muscleName,
+    String? muscleName,
   })async
   {
     double? reps = double.tryParse(planExerciseRecord.reps);
     double? weight = double.tryParse(planExerciseRecord.weight);
 
+    List<int> days = [1,2,3,4,5,6];
+
     try {
-      await FirebaseFirestore.instance
-          .collection(muscleName)
-          .doc(planExerciseRecord.exerciseDoc)
-          .collection('records')
-          .add(
+      if(planExerciseRecord.exercise.isCustom == true)
         {
-          'weight' : weight,
-          'reps' : reps,
-          'dateTime' : Jiffy().yMMM,
-          'uId' : planExerciseRecord.uId,
-        },
-      ).then((firstPublish)async
-      {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(planExerciseRecord.uId)
-            .collection('plans')
-            .get()
-            .then((value)
-        {
-          List<int> days = [1,2,3,4,5,6];
-          value.docs.forEach((element) async {
-            for(int i = 1; i <= days.length; i++)
-            {                               // plan 1
-              QuerySnapshot planList = await element.reference
-                  .collection('list$i')
-                  .get();
-              if(planList.docs.isNotEmpty)
-              {
-                await element.reference
-                    .collection('list$i').doc(planExerciseRecord.exerciseDoc)
-                    .get().then((value)
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(planExerciseRecord.uId)
+              .collection('customExercises')
+              .doc(planExerciseRecord.exercise.id)
+              .collection('records')
+              .add({
+            'weight' : weight,
+            'reps' : reps,
+            'dateTime' : Jiffy().yMMM,
+          }).then((firstPublish)
+          {
+            FirebaseFirestore.instance
+                .collection('users')
+                .doc(planExerciseRecord.uId)
+                .collection('plans')
+                .get()
+                .then((value)
+            {                  // each plans
+              value.docs.forEach((element) async{
+                for(int i = 1; i <= days.length; i++)
                 {
-                  if(value.exists)
-                  {
-                    print(1);
-                    element.reference
-                        .collection('list$i')
-                        .doc(planExerciseRecord.exerciseDoc)
-                        .collection('records')
-                        .doc(firstPublish.id)
-                        .set(
-                      {
-                        'weight' : weight,
-                        'reps' : reps,
-                        'dateTime' : Jiffy().yMMM,
-                        'uId' : planExerciseRecord.uId,
-                      },
-                    );
-                  }
+                  var myExercise = await element.reference
+                      .collection('list$i')
+                      .doc(planExerciseRecord.exercise.id)
+                      .get();
+                  if(myExercise.exists)
+                    {
+                      element.reference.collection('list$i')
+                          .doc(planExerciseRecord.exercise.id)
+                          .collection('records')
+                          .doc(firstPublish.id)
+                          .set(
+                          {
+                            'weight' : weight,
+                            'reps' : reps,
+                            'dateTime' : Jiffy().yMMM,
+                            'uId' : planExerciseRecord.uId,
+                          },
+                      );
+                    }
                   else{
-                    print(0);
+                    log(' not exists');
                     return;
                   }
-                });
-
-              }
-              else{
-                return;
-              }
-            }
+                }
+              });
+            });
           });
+        }
+      else{
+        await FirebaseFirestore.instance
+            .collection(muscleName!)
+            .doc(planExerciseRecord.exercise.id)
+            .collection('records')
+            .add(
+          {
+            'weight' : weight,
+            'reps' : reps,
+            'dateTime' : Jiffy().yMMM,
+            'uId' : planExerciseRecord.uId,
+          },
+        ).then((firstPublish)async
+        {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(planExerciseRecord.uId)
+              .collection('plans')
+              .get()
+              .then((value)
+          {
+
+            value.docs.forEach((element) async {
+              for(int i = 1; i <= days.length; i++)
+              {                               // plan 1
+                QuerySnapshot planList = await element.reference
+                    .collection('list$i')
+                    .get();
+                if(planList.docs.isNotEmpty)
+                {
+                  await element.reference
+                      .collection('list$i')
+                      .doc(planExerciseRecord.exercise.id)
+                      .get().then((value)
+                  {
+                    if(value.exists)
+                    {
+                      element.reference
+                          .collection('list$i')
+                          .doc(planExerciseRecord.exercise.id)
+                          .collection('records')
+                          .doc(firstPublish.id)
+                          .set(
+                        {
+                          'weight' : weight,
+                          'reps' : reps,
+                          'dateTime' : Jiffy().yMMM,
+                          'uId' : planExerciseRecord.uId,
+                        },
+                      );
+                    }
+                    else{
+                      return;
+                    }
+                  });
+
+                }
+                else{
+                  return;
+                }
+              }
+            });
+          });
+          MyToast.showToast(context, msg: 'Record added');
         });
-        MyToast.showToast(context, msg: 'Record added');
-      });
+      }
+
     }on Exception catch(e)
     {
       MyMethods.handleError(context, e);

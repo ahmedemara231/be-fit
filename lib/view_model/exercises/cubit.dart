@@ -365,8 +365,44 @@ class ExercisesCubit extends Cubit<ExercisesStates>
           'weight' : weight,
           'dateTime' : Jiffy().yMMM
         },
-      ).then((value)
+      ).then((record)
       {
+
+        FirebaseFirestore.instance
+        .collection('users')
+        .doc(setCustomExerciseRecModel.uId)
+        .collection('plans')
+        .get()
+        .then((value)
+        {
+          List<int> days = [1,2,3,4,5,6];
+          for(int i = 1; i <= days.length; i++)
+            {
+              value.docs.forEach((element) async{
+               var myCustomExercise = await element.reference.collection('list$i')
+                    .doc(setCustomExerciseRecModel.exerciseDoc)
+                    .get();
+               if(myCustomExercise.exists)
+                 {
+                   await element.reference.collection('list$i')
+                       .doc(setCustomExerciseRecModel.exerciseDoc)
+                       .collection('records')
+                       .doc(record.id)
+                       .set(
+                       {
+                         'reps' : reps,
+                         'weight' : weight,
+                         'dateTime' : Jiffy().yMMM
+                       },
+                   );
+                 }
+               else{
+                 return;
+               }
+              });
+            }
+        });
+
         emit(SetRecordForCustomExerciseSuccessState());
         MyToast.showToast(context, msg: 'Record added');
       });

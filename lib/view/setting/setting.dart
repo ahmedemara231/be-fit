@@ -1,7 +1,5 @@
-import 'package:be_fit/constants.dart';
 import 'package:be_fit/models/widgets/modules/divider.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +8,7 @@ import '../../models/widgets/setting_model.dart';
 import '../../view_model/setting/states.dart';
 
 class Setting extends StatefulWidget {
-  Setting({super.key});
+  const Setting({super.key});
 
   @override
   State<Setting> createState() => _SettingState();
@@ -47,7 +45,7 @@ class _SettingState extends State<Setting> {
                 DarkModeOption(
                   icon: Icons.dark_mode,
                   optionName: 'Dark Mode',
-                  value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme'),
+                  value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme')?? false,
                   onChanged: (newMode)async {
                     await SettingCubit.getInstance(context).changeAppTheme(newMode);
                   },

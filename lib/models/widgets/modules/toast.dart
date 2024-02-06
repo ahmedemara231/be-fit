@@ -1,3 +1,5 @@
+import 'package:be_fit/extensions/mediaQuery.dart';
+import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'myText.dart';
@@ -11,7 +13,7 @@ class MyToast
     toast.init(context);
     toast.showToast(
       child: Align(
-        alignment: Alignment.center,
+        // alignment: Alignment.center,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -22,12 +24,9 @@ class MyToast
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.check),
-                  const SizedBox(width: 20,),
                   MyText(
                     text: msg,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ],
@@ -39,8 +38,9 @@ class MyToast
       positionedToastBuilder: (context, child)
       {
         return Positioned(
-          bottom: 80,
-          left: MediaQuery.of(context).size.width/4,
+          bottom: context.setWidth(5),
+          left: context.setWidth(4),
+          right: context.setWidth(4),
           child: child,
         );
       },

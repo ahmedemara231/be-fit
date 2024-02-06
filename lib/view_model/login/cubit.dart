@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:be_fit/constants.dart';
-import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/modules/toast.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -19,8 +17,8 @@ class LoginCubit extends Cubit<LoginStates>
   LoginCubit(super.initialState);
   static LoginCubit getInstance(context) => BlocProvider.of(context);
 
-  late Trainee user;
-  Future<void> login({ required Trainee user,
+  Future<void> login({
+    required Trainee user,
     required context,
   })async
   {
@@ -141,20 +139,72 @@ class LoginCubit extends Cubit<LoginStates>
     }
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  GoogleSignIn google = GoogleSignIn();
+  Future<void> signInWithGoogle(context) async {
 
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    emit(LoginLoadingState());
 
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+    try{
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await google.signIn();
 
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      if(googleUser == null)
+        {
+          emit(GoBackState());
+        }
+      else{
+        // Create a new credential
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
+
+        // Once signed in, return the UserCredential
+        UserCredential user =  await FirebaseAuth.instance.signInWithCredential(credential);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.user!.uid)
+            .set(
+          {
+            'name' : user.user!.displayName,
+            'email' : user.user!.email,
+          },
+        ).then((value) async
+        {
+          await CacheHelper.getInstance().handleUserData(
+            userData:
+            [
+              user.user!.uid,
+              user.user!.displayName!
+            ],
+          ).then((value)
+          {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomNavBar(),
+              ), (route) => false,
+            );
+
+            MyToast.showToast(
+              context,
+              msg: 'Welcome Coach!',
+              color: Constants.appColor,
+            );
+            emit(LoginSuccessState());
+          });
+
+          CacheHelper.getInstance().googleUser();
+        });
+      }
+    } on Exception catch(e)
+    {
+      emit(LoginErrorState());
+      handleLoginErrors(context, e);
+    }
   }
 }

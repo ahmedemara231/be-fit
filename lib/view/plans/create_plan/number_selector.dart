@@ -1,6 +1,6 @@
 import 'package:be_fit/constants.dart';
-import 'package:be_fit/view_model/plans/cubit.dart';
-import 'package:be_fit/view_model/plans/states.dart';
+import 'package:be_fit/view_model/plan_creation/cubit.dart';
+import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wheel_slider/wheel_slider.dart';
@@ -10,7 +10,7 @@ class NumberSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PlansCubit,PlansStates>(
+    return BlocBuilder<PlanCreationCubit,PlanCreationStates>(
       builder: (context, state)
       {
         return Container(
@@ -39,9 +39,9 @@ class NumberSelection extends StatelessWidget {
                 fontSize: 16.0,
                 color: Colors.black54,
               ),
-              currentIndex: PlansCubit.getInstance(context).currentIndex,
+              currentIndex: PlanCreationCubit.getInstance(context).currentIndex,
               onValueChanged: (val) {
-                PlansCubit.getInstance(context).changeDaysNumber(val);
+                PlanCreationCubit.getInstance(context).changeDaysNumber(val);
               },
               hapticFeedbackType: HapticFeedbackType.heavyImpact,
             ),

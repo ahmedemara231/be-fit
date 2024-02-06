@@ -21,6 +21,11 @@ class CacheHelper
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
+  Future<void> setAppTheme(bool newMode)async
+  {
+    await sharedPreferences.setBool('appTheme', newMode);
+  }
+
    Future<void> handleUserData({
     required List<String> userData
 })async
@@ -46,8 +51,13 @@ class CacheHelper
     await sharedPreferences.setStringList('userData', []);
   }
 
-  Future<void> setAppTheme(bool newMode)async
+  Future<void> googleUser()async
   {
-    await sharedPreferences.setBool('appTheme', newMode);
+    await sharedPreferences.setBool('isGoogleUser', true);
+  }
+
+  Future<void> killGoogleUser()async
+  {
+    await sharedPreferences.setBool('isGoogleUser', false);
   }
 }

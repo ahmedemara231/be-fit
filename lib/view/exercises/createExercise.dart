@@ -1,6 +1,7 @@
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
+import 'package:be_fit/models/widgets/modules/snackBar.dart';
 import '../../../models/widgets/modules/textFormField.dart';
 import '../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -102,18 +103,27 @@ class CreateExercise extends StatelessWidget {
                     ),
                     AppButton(
                       onPressed: ()async
-                    {
-                      if(formKey.currentState!.validate())
+                      {
+                        if(formKey.currentState!.validate())
                         {
-                          await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
-                          context: context,
-                          addCustomExerciseModel: AddCustomExerciseModel(
-                            uId: CacheHelper.getInstance().uId,
-                            muscle: muscleName,
-                            name: nameCont.text,
-                            description: descriptionCont.text,
-                          ),
-                        );
+                          if(ExercisesCubit.getInstance(context).selectedExerciseImage == null)
+                            {
+                              MySnackBar.showSnackBar(
+                                  context: context,
+                                  message: 'Please select exercise photo',
+                              );
+                            }
+                          else{
+                            await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
+                              context: context,
+                              addCustomExerciseModel: AddCustomExerciseModel(
+                                uId: CacheHelper.getInstance().uId,
+                                muscle: muscleName,
+                                name: nameCont.text,
+                                description: descriptionCont.text,
+                              ),
+                            );
+                          }
                         }
                     }, text: 'Add',
                     )

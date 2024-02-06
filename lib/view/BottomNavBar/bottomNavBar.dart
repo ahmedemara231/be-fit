@@ -19,10 +19,10 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> mainScreens =
-  [
-     const BodyMuscles(),
-     const Plans(),
-     Setting(),
+  const [
+    BodyMuscles(),
+    Plans(),
+    Setting(),
   ];
 
   @override

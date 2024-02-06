@@ -1,11 +1,11 @@
 import 'package:be_fit/constants.dart';
-import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
-import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
+import 'package:be_fit/models/widgets/modules/divider.dart';
 import 'package:be_fit/view/auth/forgot_password/forgot_password.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
+import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/widgets/modules/textFormField.dart';
@@ -29,7 +29,7 @@ class Login extends StatelessWidget {
           body: Form(
             key: formKey,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -127,14 +127,29 @@ class Login extends StatelessWidget {
                             }, child: MyText(text: 'sign up',)),
                       ],
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: TextButton(
-                    //       onPressed: ()
-                    //       {
-                    //         LoginCubit.getInstance(context).signInWithGoogle();
-                    //       }, child: MyText(text: 'Sign in with google')),
-                    // ),
+                    Row(
+                      children: [
+                        const Expanded(child: MyDivider()),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: MyText(text: 'OR'),
+                        ),
+                        const Expanded(child: MyDivider()),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                          onTap: ()
+                          {
+                            LoginCubit.getInstance(context).signInWithGoogle(context);
+                          },
+                        child: SizedBox(
+                          width: 75,
+                          height: 75,
+                          child: Image.asset('images/google.png')),
+                      ),
+                    ),
                   ],
                 ),
               ),

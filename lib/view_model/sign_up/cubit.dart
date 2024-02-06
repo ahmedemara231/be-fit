@@ -63,6 +63,7 @@ class SignUpCubit extends Cubit<SignUpStates>
       handleErrors(context, e);
     }
   }
+
   void handleErrors(context,Exception e)
   {
     if(e is FirebaseAuthException) {

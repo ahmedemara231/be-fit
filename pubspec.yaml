@@ -49,6 +49,7 @@ dependencies:
   url_launcher: ^6.2.3
   custom_refresh_indicator: ^3.0.0
   share_plus: ^7.2.1
+  flutter_native_splash: ^2.3.10
 
   firebase_core: ^2.16.0
   firebase_auth: ^4.1.2
@@ -57,7 +58,7 @@ dependencies:
   firebase_storage: ^11.5.3
   firebase_messaging: ^14.7.9
   firebase_analytics: ^10.8.0
-  flutter_native_splash: ^2.3.10
+
 
 flutter_native_splash:
   color: "#444444"

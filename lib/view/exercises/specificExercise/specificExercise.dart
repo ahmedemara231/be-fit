@@ -317,6 +317,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                           ExercisesCubit.getInstance(context).setRecordForCustomExercise(
                             context,
                             setCustomExerciseRecModel: SetCustomExerciseRecModel(
+                              exerciseDoc: widget.exercise.id,
                               index: widget.index!,
                               reps: repsCont.text,
                               weight: weightCont.text,
