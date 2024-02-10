@@ -29,12 +29,12 @@ class LoginCubit extends Cubit<LoginStates>
         password: user.password!,
       ). then((value)async
       {
-    await FirebaseFirestore.instance
-    .collection('users')
-    .doc(value.user?.uid)
-    .get()
-    .then((value)async
-    {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(value.user?.uid)
+            .get()
+            .then((value)async
+        {
       user = Trainee(
         email: value.data()?['email'],
         name: value.data()?['name'],

@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,32 +10,23 @@ class BottomNavCubit extends Cubit<BottomNavState>
   static BottomNavCubit getInstance(context) => BlocProvider.of(context);
 
   int currentIndex = 0;
-  void changeScreen({
+  Future<void> changeScreen(context,{
     required int newIndex,
-})
+    required PlanCreationCubit planCreationCubit,
+    required PlansCubit plansCubit,
+    required uId,
+})async
   {
     currentIndex = newIndex;
     emit(BottomNavState());
-  }
-////////////////////////////////////////
-
-  Future<void> getAllPlans({
-    required String uId,
-    required context,
-    required InternetCheck checkMethod
-})async
-  {
-    InternetCheck internetCheck = checkMethod;
-    internetCheck.internetCheck(
-      context,
-      validConnectionAction: () async
+    if(plansCubit.allPlans.isNotEmpty || planCreationCubit.musclesAndItsExercises.isNotEmpty)
       {
-        emit(FetchAllDataLoadingState());
-        await PlansCubit.getInstance(context).getAllPlans(context,uId);
-        await PlanCreationCubit.getInstance(context).getMuscles(context,uId: CacheHelper.getInstance().uId);
-        emit(FetchAllDataSuccessState());
-      },
-    );
+        return;
+      }
+    else{
+      await plansCubit.getAllPlans(context, uId);
+      await planCreationCubit.getMuscles(context, uId: uId);
+    }
   }
 }
 

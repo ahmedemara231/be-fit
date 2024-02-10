@@ -42,7 +42,7 @@ class _SettingState extends State<Setting> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                DarkModeOption(
+                SwitchOption(
                   icon: Icons.dark_mode,
                   optionName: 'Dark Mode',
                   value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme')?? false,
@@ -50,6 +50,18 @@ class _SettingState extends State<Setting> {
                     await SettingCubit.getInstance(context).changeAppTheme(newMode);
                   },
                 ),
+                const SizedBox(height: 16,),
+                SwitchOption(
+                  icon: Icons.notifications,
+                  optionName: 'Notifications',
+                  value: SettingCubit.getInstance(context).isEnabled,
+                  onChanged: (value)
+                  {
+                    SettingCubit.getInstance(context).notificationState(value);
+                  },
+                ),
+                const SizedBox(height: 16,),
+
                 Expanded(
                   child: ListView.separated(
                     itemBuilder: (context, index) => InkWell(

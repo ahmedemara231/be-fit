@@ -1,5 +1,4 @@
 import 'package:be_fit/extensions/mediaQuery.dart';
-import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'myText.dart';
@@ -13,7 +12,6 @@ class MyToast
     toast.init(context);
     toast.showToast(
       child: Align(
-        // alignment: Alignment.center,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),

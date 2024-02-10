@@ -232,6 +232,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                                   await ExercisesCubit.getInstance(context).deleteCustomExercise(
                                                     context,
                                                     uId: CacheHelper.getInstance().uId,
+                                                    muscleName: widget.muscleName,
                                                     index: index,
                                                   );
                                                 },

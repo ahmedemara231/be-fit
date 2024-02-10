@@ -5,7 +5,8 @@ import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
-import 'package:be_fit/view_model/internet_connection_check/internet_connection_check.dart';
+import 'package:be_fit/view_model/plan_creation/cubit.dart';
+import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../exercises/bodyMuscles.dart';
@@ -28,13 +29,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     CacheHelper.getInstance().getUserData();
-    BottomNavCubit.getInstance(context).getAllPlans(
-      checkMethod: FirstCheckMethod.getInstance(),
-      uId: CacheHelper.getInstance().uId,
-      context: context,
-    );
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BottomNavCubit,BottomNavState>(
@@ -70,7 +67,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
               onTap: (newTap)
               {
                 BottomNavCubit.getInstance(context).changeScreen(
-                    newIndex: newTap,
+                  context,
+                  uId: CacheHelper.getInstance().uId,
+                  planCreationCubit: PlanCreationCubit.getInstance(context),
+                  plansCubit: PlansCubit.getInstance(context),
+                  newIndex: newTap,
                 );
               },
               currentIndex: BottomNavCubit.getInstance(context).currentIndex,
@@ -87,9 +88,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               ],
             ),
           ),
-          body: state is FetchAllDataLoadingState?
-          const Center(child: CircularProgressIndicator(),) :
-          mainScreens[BottomNavCubit.getInstance(context).currentIndex],
+          body: mainScreens[BottomNavCubit.getInstance(context).currentIndex],
         );
       },
     );

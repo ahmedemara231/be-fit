@@ -1,4 +1,3 @@
-import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
 import '../../../../models/widgets/modules/myText.dart';

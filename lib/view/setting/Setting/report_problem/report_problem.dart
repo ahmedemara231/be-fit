@@ -1,8 +1,7 @@
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
-
 import '../../../../models/widgets/modules/myText.dart';
-import 'package:be_fit/view/setting/Setting/report_problem/Reports.dart';
+import 'package:be_fit/view/setting/Setting/report_problem/reports.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';

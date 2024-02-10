@@ -1,11 +1,10 @@
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
+import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../models/widgets/modules/divider.dart';
-import '../../../models/widgets/modules/textFormField.dart';
 import '../../../models/widgets/modules/myText.dart';
 import '../login/login.dart';
 
@@ -28,48 +27,32 @@ class _SignUpState extends State<SignUp> {
 
   final formKey = GlobalKey<FormState>();
 
-  late List<TFF> signUpInputs;
+  late List<AuthTFF> signUpInputs;
 
   @override
   void initState() {
     signUpInputs =
     [
-      TFF(
+      AuthTFF(
         obscureText: false,
         controller: nameCont,
         hintText: 'name',
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.white)
-        ),
       ),
-      TFF(
+      AuthTFF(
         obscureText: false,
         controller: emailCont,
         keyboardType: TextInputType.emailAddress,
         hintText: 'ahmed@example.com',
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.white)
-        ),
       ),
-      TFF(
+      AuthTFF(
         obscureText: false,
         controller: phoneCont,
         hintText: 'phone',
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.white)
-        ),
       ),
-      TFF(
+      AuthTFF(
         obscureText: false,
         controller: passCont,
         hintText: 'Password',
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.white)
-        ),
       ),
     ];
     super.initState();
@@ -126,6 +109,8 @@ class _SignUpState extends State<SignUp> {
                           user: Trainee(
                             email: emailCont.text,
                             password: passCont.text,
+                            name: nameCont.text,
+                            phone: phoneCont.text,
                           ),
                           context: context,
                         );

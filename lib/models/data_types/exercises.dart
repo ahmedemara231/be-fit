@@ -26,6 +26,7 @@ class Exercises
 class CustomExercises extends Exercises
 {
   CustomExercises({
+    super.muscleName,
     required super.name,
     required super.image,
     required super.docs,

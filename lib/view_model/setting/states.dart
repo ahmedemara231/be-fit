@@ -4,6 +4,8 @@ class SettingInitialState extends SettingStates {}
 
 class ChangeAppThemeSuccessState extends SettingStates {}
 
+class ChangeNotificationState extends SettingStates{}
+
 class SetAReportSuccessState extends SettingStates {}
 
 class SetAReportErrorState extends SettingStates {}

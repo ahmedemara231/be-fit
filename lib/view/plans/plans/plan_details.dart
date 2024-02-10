@@ -1,5 +1,4 @@
 import 'package:be_fit/extensions/container_decoration.dart';
-
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/every_day_exercises.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
@@ -28,7 +27,6 @@ class _PlanDetailsState extends State<PlanDetails> {
   @override
   void initState() {
     planLists = PlansCubit.getInstance(context).allPlans[widget.planName].keys.toList();
-    print(planLists);
     super.initState();
   }
   @override
@@ -113,9 +111,10 @@ class _PlanDetailsState extends State<PlanDetails> {
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500
                               ),
-                                                  ),
+                            ),
                           ),
-                          ),),
+                          ),
+                        ),
                       ),
                     ),
                   ],

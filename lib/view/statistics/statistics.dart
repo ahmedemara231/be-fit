@@ -1,10 +1,5 @@
 import '../../../../models/widgets/modules/myText.dart';
-import 'package:be_fit/view_model/exercises/cubit.dart';
-import 'package:be_fit/view_model/exercises/states.dart';
-import 'package:be_fit/view_model/plans/cubit.dart';
-import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Statistics extends StatefulWidget {

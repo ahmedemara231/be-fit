@@ -1,12 +1,18 @@
+import '../../models/data_types/exercises.dart';
+
 class PlanCreationStates{}
 
 class PlanCreationInitialState extends PlanCreationStates{}
 
 class GetAllMusclesLoadingState extends PlanCreationStates {}
 
-class GetAllMusclesSuccessState extends PlanCreationStates{}
+class GetAllMusclesSuccessState extends PlanCreationStates {}
 
 class GetAllMusclesErrorState extends PlanCreationStates {}
+
+class AddCustomExerciseToMuscles extends PlanCreationStates{}
+
+class RemoveCustomExerciseFromMuscles extends PlanCreationStates{}
 
 class ChangeCheckBoxValue extends PlanCreationStates {}
 

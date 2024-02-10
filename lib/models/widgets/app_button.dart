@@ -10,7 +10,7 @@ class AppButton extends StatelessWidget {
   String text;
 
   AppButton({super.key,
-    required this.onPressed,
+    this.onPressed,
     required this.text,
   });
 

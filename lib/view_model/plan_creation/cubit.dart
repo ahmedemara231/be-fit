@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import '../../constants.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/make_plan.dart';
@@ -80,14 +82,12 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
               await getShouldersExercises(element: element, i: i, uId: uId);
             }
           });
-          emit(GetAllMusclesSuccessState());
         });
-
       }
 
-      print(musclesAndItsExercises);
-      print(muscleExercisesCheckBox);
-
+      log('$musclesAndItsExercises');
+      log('$muscleExercisesCheckBox');
+      emit(GetAllMusclesSuccessState());
     } on Exception catch(e){
       emit(GetAllMusclesErrorState());
       MyMethods.handleError(context, e);
@@ -128,6 +128,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
           muscleExercisesCheckBox['chest']?.add(false);
           musclesAndItsExercises['chest']?.add(
             CustomExercises(
+              muscleName: muscles[i],
               name: element.data()['name'],
               image: element.data()['image'],
               docs: element.data()['description'],
@@ -147,7 +148,8 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     required uId,
   })async{
     muscleExercisesCheckBox['Aps']?.add(false);
-    musclesAndItsExercises['Aps']?.add( Exercises(
+    musclesAndItsExercises['Aps']?.add(
+      Exercises(
       name: element.data()['name'],
       image: element.data()['image'],
       docs: element.data()['docs'],
@@ -171,6 +173,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
           muscleExercisesCheckBox['Aps']?.add(false);
           musclesAndItsExercises['Aps']?.add(
             CustomExercises(
+              muscleName: muscles[i],
               name: element.data()['name'],
               image: element.data()['image'],
               docs: element.data()['description'],
@@ -217,6 +220,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
           muscleExercisesCheckBox['Back']?.add(false);
           musclesAndItsExercises['Back']?.add(
             CustomExercises(
+              muscleName: muscles[i],
               name: element.data()['name'],
               image: element.data()['image'],
               docs: element.data()['description'],
@@ -260,6 +264,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
           muscleExercisesCheckBox['legs']?.add(false);
           musclesAndItsExercises['legs']?.add(
             CustomExercises(
+              muscleName: muscles[i],
               name: element.data()['name'],
               image: element.data()['image'],
               docs: element.data()['description'],
@@ -303,6 +308,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
           muscleExercisesCheckBox['Shoulders']?.add(false);
           musclesAndItsExercises['Shoulders']?.add(
             CustomExercises(
+              muscleName: muscles[i],
               name: element.data()['name'],
               image: element.data()['image'],
               docs: element.data()['description'],
@@ -316,6 +322,24 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     }
   }
 
+  void addCustomExerciseToMuscles(String muscleName, CustomExercises exercise)
+  {
+    musclesAndItsExercises[muscleName]!.add(exercise);
+    muscleExercisesCheckBox[muscleName]!.add(false);
+    emit(AddCustomExerciseToMuscles());
+  }
+
+  void removeCustomExerciseFromMuscles({
+    required String muscleName,
+    required String exerciseId,
+  })
+  {
+    musclesAndItsExercises[muscleName]!.removeWhere((element) => element.id == exerciseId);
+    muscleExercisesCheckBox[muscleName]!.remove(false);
+
+    emit(RemoveCustomExerciseFromMuscles());
+  }
+
   // day ,    musclesCheckBox
   Map<String,Map<String, List<bool>>> dayCheckBox = {};
   void initializingDaysCheckBox(int day)
@@ -324,7 +348,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     {
       dayCheckBox['day$day'] = Map.from(muscleExercisesCheckBox);
     }
-    print(dayCheckBox);
+    log('$dayCheckBox');
   }
 
   void newChangeCheckBoxValue({
@@ -347,20 +371,20 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     {
       lists['list$i'] = [];
     }
-    print(lists);
+    log('$lists');
   }
 
   void addToPlanExercises(int day,Exercises exercise)
   {
     lists['list$day']!.add(exercise);
-    print(lists);
+    log('$lists');
     emit(AddToExercisePlanList());
   }
 
   void removeFromPlanExercises(int day,Exercises exercise)
   {
     lists['list$day']!.remove(exercise);
-    print(lists);
+    log('$lists');
     emit(RemoveFromExercisePlanList());
   }
 
@@ -380,7 +404,9 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     MyToast.showToast(
         context,
         msg: 'Preparing tour plan',
-        color: Colors.grey[400]
+        color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+        Colors.grey[200]:
+        HexColor('#333333'),
     );
     emit(CreateNewPlanLoadingState());
 
@@ -425,7 +451,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
 
             if(element.isCustom == true)
             {
-              FirebaseFirestore.instance
+              await FirebaseFirestore.instance
                   .collection('users')
                   .doc(uId)
                   .collection('customExercises')
@@ -444,7 +470,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
                       .collection(listsKeys[index])
                       .doc(planExerciseDoc.id);
 
-                  planExercise.set({
+                  await planExercise.set({
                     'name' : element.name,
                     'docs' : element.docs,
                     'image' : element.image,
@@ -455,8 +481,8 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
                     'isCustom' : true,
                   });
 
-                  value.docs.forEach((element) {
-                    planExercise.collection('records')
+                  value.docs.forEach((element)async {
+                    await planExercise.collection('records')
                         .doc(element.id)
                         .set({
                       'dateTime': element.data()['dateTime'],
@@ -519,8 +545,8 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
                       'isCustom' : false,
                     },
                   );
-                  checkCollection.docs.forEach((element) {
-                    exerciseDoc.collection('records')
+                  checkCollection.docs.forEach((element)async {
+                   await exerciseDoc.collection('records')
                         .doc(element.id)
                         .set(
                       {
@@ -556,7 +582,11 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
             }
           });
         }
-        MyToast.showToast(context, msg: 'Plan is Ready');
+        MyToast.showToast(
+            context,
+            msg: 'Plan is Ready',
+            color: Colors.green,
+        );
 
         Navigator.pushAndRemoveUntil(
           context,
@@ -572,5 +602,4 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
       MyMethods.handleError(context, e);
     }
   }
-
 }

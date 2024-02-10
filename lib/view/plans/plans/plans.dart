@@ -32,19 +32,15 @@ class Plans extends StatelessWidget {
               );
               return Future(() => null);
             },
-            child: Padding(
+            child: state is GetAllPlans2LoadingState?
+            const Center(
+              child: CircularProgressIndicator(),
+            ) :
+            Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
-                  if(state is GetAllPlans2LoadingState)
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(25.0),
-                        child: MyText(text: ''),
-                      ),
-                    ),
-                  if(state is! GetAllPlans2LoadingState)
-                    Expanded(
+                  Expanded(
                       child: PlansCubit.getInstance(context).allPlans.isEmpty?
                       Center(
                         child: MyText(text: 'No Plans Yet',fontSize: 20,fontWeight: FontWeight.w500,),
@@ -115,12 +111,15 @@ class Plans extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          border: context.decoration()
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                            border: context.decoration()
+                        ),
+                        child: const Center(child: Icon(Icons.add),),
                       ),
-                      child: const Center(child: Icon(Icons.add),),
                     ),
                   ),
                 ],

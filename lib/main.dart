@@ -73,11 +73,9 @@ class MyApp extends StatelessWidget {
         builder: (context, state)
         {
           return MaterialApp(
-            // darkTheme: ThemeData.dark()..scaffoldBackgroundColor = HexColor('hexColor'),
             theme: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
             ThemeData.light():
             ThemeData.dark(),
-            // themeMode: ThemeMode.dark,
             debugShowCheckedModeBanner: false,
             home: CacheHelper.getInstance().sharedPreferences.getStringList('userData') == null ||
                   CacheHelper.getInstance().sharedPreferences.getStringList('userData')!.isEmpty?

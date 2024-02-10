@@ -23,8 +23,8 @@ class NumberSelection extends StatelessWidget {
             child: WheelSlider.number(
               isInfinite: false,
               horizontal: false,
-              verticalListWidth: 50,
-              verticalListHeight: 100,
+              verticalListWidth: 60,
+              verticalListHeight: 120,
               enableAnimation: true,
               animationDuration: const Duration(milliseconds: 500),
               perspective: 0.01,

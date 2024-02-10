@@ -1,14 +1,15 @@
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
+import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
 import 'package:be_fit/models/widgets/modules/divider.dart';
 import 'package:be_fit/view/auth/forgot_password/forgot_password.dart';
+import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
-import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../models/widgets/modules/textFormField.dart';
+import 'package:hexcolor/hexcolor.dart';
 import '../../../models/widgets/modules/myText.dart';
 import '../register/register.dart';
 
@@ -44,20 +45,16 @@ class Login extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 30,),
-                    TFF(
+                    AuthTFF(
                       obscureText: false,
                       controller: emailCont,
                       keyboardType: TextInputType.emailAddress,
                       hintText: 'ahmed@example.com',
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Colors.white)
-                      ),
                     ),
                     const SizedBox(
                       height: 16,
                     ),
-                    TFF(
+                    AuthTFF(
                       obscureText: LoginCubit.getInstance(context).isVisible,
                       controller: passCont,
                       suffixIcon: IconButton(
@@ -70,10 +67,6 @@ class Login extends StatelessWidget {
                           const Icon(Icons.visibility),
                       ),
                       hintText: 'Password',
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Colors.white)
-                      ),
                     ),
                     Align(
                       alignment: Alignment.centerRight,
@@ -138,16 +131,35 @@ class Login extends StatelessWidget {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: InkWell(
-                          onTap: ()
-                          {
-                            LoginCubit.getInstance(context).signInWithGoogle(context);
-                          },
-                        child: SizedBox(
-                          width: 75,
-                          height: 75,
-                          child: Image.asset('images/google.png')),
+                        onTap: () async
+                        {
+                          await LoginCubit.getInstance(context).signInWithGoogle(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+                            Colors.grey[200]:
+                            HexColor('#333333'),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: Image.asset('images/google.png')
+                                ),
+                                MyText(text: 'Sign in with Google',fontWeight: FontWeight.bold,)
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

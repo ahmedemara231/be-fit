@@ -1,11 +1,11 @@
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
+import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/widgets/modules/myText.dart';
-import '../../../models/widgets/modules/textFormField.dart';
 
 class ForgotPassword extends StatelessWidget {
   ForgotPassword({super.key});
@@ -32,12 +32,9 @@ class ForgotPassword extends StatelessWidget {
                   key: formKey,
                   child: SizedBox(
                     height: context.setHeight(10),
-                    child: TFF(
+                    child: AuthTFF(
                       obscureText: false,
                       controller: emailCont,
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white)
-                      ),
                       hintText: 'ahmed@example.com',
                     ),
                   ),

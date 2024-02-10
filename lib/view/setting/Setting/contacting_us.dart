@@ -1,6 +1,4 @@
-import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
-
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';

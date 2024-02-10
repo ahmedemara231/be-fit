@@ -16,11 +16,11 @@ abstract class SettingModel extends StatelessWidget {
   Widget build(BuildContext context);
 }
 
-class DarkModeOption extends SettingModel
+class SwitchOption extends SettingModel
 {
   void Function(bool)? onChanged;
   bool? value;
-  DarkModeOption({
+  SwitchOption({
     required super.icon,
     required super.optionName,
     required this.value,

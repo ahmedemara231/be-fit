@@ -14,7 +14,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/widgets/modules/myText.dart';
 import '../../view/auth/login/login.dart';
-import '../../view/setting/Setting/report_problem/Reports.dart';
+import '../../view/setting/Setting/report_problem/reports.dart';
 import '../../view/setting/Setting/report_problem/report_problem.dart';
 import '../cache_helper/shared_prefs.dart';
 
@@ -29,6 +29,13 @@ class SettingCubit extends Cubit<SettingStates>
     darkMode = newMode;
     await CacheHelper.getInstance().setAppTheme(darkMode);
     emit(ChangeAppThemeSuccessState());
+  }
+
+  bool isEnabled = false;
+  void notificationState(bool newValue)
+  {
+    isEnabled = newValue;
+    emit(ChangeNotificationState());
   }
 
   // Contacting
@@ -128,8 +135,11 @@ class SettingCubit extends Cubit<SettingStates>
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: Container(
             decoration: BoxDecoration(
-              color: Constants.scaffoldBackGroundColor,
-              border: context.decoration()
+                color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+                Colors.grey[300]:
+                Constants.scaffoldBackGroundColor,
+
+                border: context.decoration()
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -175,21 +185,27 @@ class SettingCubit extends Cubit<SettingStates>
                           {
                             Navigator.pop(context);
 
-                            await CacheHelper.getInstance().kill();
-
                             if(CacheHelper.getInstance().sharedPreferences.getBool('isGoogleUser') == true)
                             {
-                              await CacheHelper.getInstance().killGoogleUser().then((value)async
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Login(),
+                                ), (route) => false,
+                              );
+                              await LoginCubit.getInstance(context).google.disconnect();
+                              await CacheHelper.getInstance().kill();
+                              await CacheHelper.getInstance().killGoogleUser();
+                            }
+                            else{
+                              await CacheHelper.getInstance().kill().then((value)
                               {
-                                await LoginCubit.getInstance(context).google.disconnect().then((value)
-                                {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Login(),
-                                    ), (route) => false,
-                                  );
-                                });
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Login(),
+                                  ), (route) => false,
+                                );
                               });
                             }
                           },

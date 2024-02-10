@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
@@ -13,6 +12,7 @@ import '../../models/data_types/add_custom_exercise.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/setRecord_model.dart';
 import '../../models/widgets/modules/toast.dart';
+import '../plan_creation/cubit.dart';
 
 class ExercisesCubit extends Cubit<ExercisesStates>
 {
@@ -237,9 +237,9 @@ class ExercisesCubit extends Cubit<ExercisesStates>
          .putFile(selectedExerciseImage!)
          .then((value)
      {
-       value.ref.getDownloadURL().then((imageUrl)
+       value.ref.getDownloadURL().then((imageUrl)async
        {
-         FirebaseFirestore.instance
+         await FirebaseFirestore.instance
              .collection('users')
              .doc(addCustomExerciseModel.uId)
              .collection('customExercises')
@@ -262,10 +262,33 @@ class ExercisesCubit extends Cubit<ExercisesStates>
                video: '',
              ),
            );
+
+           PlanCreationCubit.getInstance(context).addCustomExerciseToMuscles(
+             addCustomExerciseModel.muscle,
+             CustomExercises(
+                 name: addCustomExerciseModel.name,
+                 image: imageUrl,
+                 docs: addCustomExerciseModel.description,
+                 id: value.id,
+                 isCustom: true,
+                 video: ''
+             ),
+           );
+
            MyToast.showToast(context, msg: 'New Exercise is Ready');
            Navigator.pop(context);
            selectedExerciseImage = null;
-           emit(CreateCustomExerciseSuccessState());
+
+           emit(CreateCustomExerciseSuccessState(
+             customExercise: CustomExercises(
+               name: addCustomExerciseModel.name,
+               image: imageUrl,
+               docs: addCustomExerciseModel.description,
+               id: value.id,
+               isCustom: true,
+               video: '',
+             ),
+           ));
          }).catchError((error)
          {
            emit(CreateCustomExerciseErrorState());
@@ -320,6 +343,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   Future<void> deleteCustomExercise(context,{
     required String uId,
     required int index,
+    required String muscleName
 })async
   {
     try{
@@ -329,10 +353,54 @@ class ExercisesCubit extends Cubit<ExercisesStates>
           .collection('customExercises')
           .doc(customExercises[index].id)
           .delete()
-          .then((value)
+          .then((value)async
       {
-        log('deleted');
+        PlanCreationCubit.getInstance(context).removeCustomExerciseFromMuscles(
+            muscleName: muscleName,
+            exerciseId: customExercises[index].id
+        );
+
         customExercises.remove(customExercises[index]);
+
+        // await FirebaseFirestore.instance
+        // .collection('users')
+        // .doc(uId)
+        // .collection('plans')
+        // .get()
+        // .then((value) {
+        //   if (value.docs.isNotEmpty) {
+        //     log('not empty');
+        //     List<int> days = [1,2,3,4,5,6];
+        //     value.docs.forEach((element)async {
+        //       for(int i = 1; i<= days.length; i++)
+        //       {
+        //         var myTargetExercise = await element.reference
+        //             .collection('list$i')
+        //             .doc(customExercises[index].id)
+        //             .get();
+        //         if(myTargetExercise.exists)
+        //         {
+        //           log('$myTargetExercise');
+        //           log('exists ${customExercises[index].id} at ${element.id} and list$i');
+        //           await element.reference
+        //               .collection('list$i')
+        //               .doc(customExercises[index].id)
+        //               .delete();
+        //           log('deleted');
+        //         }
+        //         else{
+        //           log('not exists ${customExercises[index].id} at ${element.id} and list$i');
+        //           return;
+        //         }
+        //       }
+        //     });
+        //   }
+        //   else {
+        //     log('empty');
+        //     return;
+        //   }
+        // });
+
         emit(DeleteCustomExerciseSuccessState());
       });
     }on Exception catch(e)
@@ -340,7 +408,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       emit(GetExercisesErrorState());
       MyMethods.handleError(context, e);
     }
-
   }
 
   Future<void> setRecordForCustomExercise(context,{

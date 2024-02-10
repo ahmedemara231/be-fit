@@ -51,5 +51,5 @@ class HandleNotifications implements Notifications
 }
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async
 {
-  print("Handling a background message: ${message.messageId}");
+  log("Handling a background message: ${message.messageId}");
 }

@@ -1,9 +1,12 @@
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
+import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/make_plan.dart';
+import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
+import 'package:be_fit/view_model/plans/cubit.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +42,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
         return Scaffold(
           appBar: AppBar(),
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(5.0),
             child: Column(
               children: [
                 Expanded(
@@ -151,10 +154,23 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                             name: widget.name,
                             uId: CacheHelper.getInstance().uId,
                         ),
-                      );
+                      ).then((value) async
+                      {
+                        await PlansCubit.getInstance(context).getAllPlans(
+                            context, CacheHelper.getInstance().uId
+                        ).then((value)
+                        {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const BottomNavBar(),
+                              ), (route) => false,
+                          );
+                        });
+                      });
                     },
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/5),
+                      padding: EdgeInsets.symmetric(horizontal: context.setWidth(5)),
                       child: MyText(
                         text: 'Create Plan',
                         color: Colors.white,

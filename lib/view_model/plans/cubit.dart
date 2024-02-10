@@ -42,10 +42,10 @@ class PlansCubit extends Cubit<PlansStates>
         for(int index = 0; index <= (value.docs.length - 1); index++)
         {
           allPlansIds.add(value.docs[index].id);
-          print('all plans ids : $allPlansIds');
+          log('all plans ids : $allPlansIds');
 
           plan = {};
-          print(value.docs[index].id);
+          log(value.docs[index].id);
           for(int i = 1; i <= days.length; i++)
           {       // plan1
             await value.docs[index].reference.collection('list$i').get()
@@ -89,8 +89,6 @@ class PlansCubit extends Cubit<PlansStates>
     plan.removeWhere((key, value) => value.isEmpty);
 
     allPlans[planName] = plan;
-
-    print(allPlans);
   }
 
   List<String> getAllKeys()
@@ -142,7 +140,6 @@ class PlansCubit extends Cubit<PlansStates>
           .delete()
           .then((value)
       {
-        print('deleted');
         (allPlans[deleteFromPlanModel.planName]['list${deleteFromPlanModel.listIndex}'] as List).removeAt(deleteFromPlanModel.exerciseIndex);
         emit(DeleteExerciseFromPlanSuccessState());
       });
