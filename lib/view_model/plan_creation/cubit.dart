@@ -22,6 +22,8 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     'Aps',
     'chest',
     'Back',
+    'biceps',
+    'triceps',
     'Shoulders',
     'legs'
   ];
@@ -33,23 +35,22 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
   Future<void> getMuscles(context,{required String uId})async
   {
 
-    List<bool> customMusclesFetched = [];
     musclesAndItsExercises = {};
     muscleExercisesCheckBox = {};
 
-    for(int i = 0; i <= (muscles.length - 1); i++)
+    for(int i = 0; i < muscles.length; i++)
     {
-      customMusclesFetched.add(false);
       musclesAndItsExercises[muscles[i]] = [];
       muscleExercisesCheckBox[muscles[i]] = [];
     }
+    print(musclesAndItsExercises.length);
 
     emit(GetAllMusclesLoadingState());
     try
     {
       for(int i = 0; i < muscles.length; i++) // 1
           {
-        await FirebaseFirestore.instance
+            await FirebaseFirestore.instance
             .collection(muscles[i])
             .get()
             .then((value)
@@ -57,29 +58,35 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
           value.docs.forEach((element)async{ // 2
 
             // 5 times
-
-            if(muscles[i] == 'chest')
+            switch(muscles[i])
             {
-              await getChestExercises(element: element, i: i, uId: uId);
-            }
+              case 'chest':
+                await getChestExercises(element: element, i: i, uId: uId);
+                break;
 
-            else if(muscles[i] == 'Back')
-            {
-              await getBackExercises(element: element, i: i, uId: uId);
-            }
+              case 'Back' :
+                await getBackExercises(element: element, i: i, uId: uId);
+                break;
 
-            else if(muscles[i] == 'Aps')
-            {
-              await getApsExercises(element: element, i: i, uId: uId);
-            }
+              case 'biceps':
+                await getBicepsExercises(element: element, i: i, uId: uId);
+                break;
 
-            else if(muscles[i] == 'legs')
-            {
-              await getLegsExercises(element: element, i: i, uId: uId);
-            }
+              case 'triceps' :
+                await getTricepsExercises(element: element, i: i, uId: uId);
+                break;
 
-            else{
-              await getShouldersExercises(element: element, i: i, uId: uId);
+              case 'Aps' :
+                await getApsExercises(element: element, i: i, uId: uId);
+                break;
+
+              case 'legs' :
+                await getLegsExercises(element: element, i: i, uId: uId);
+                break;
+
+              case 'Shoulders' :
+                await getShouldersExercises(element: element, i: i, uId: uId);
+                break;
             }
           });
         });
@@ -234,6 +241,102 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     }
   }
 
+  Future<void> getBicepsExercises({
+    required QueryDocumentSnapshot<Map<String, dynamic>> element,
+    required int i,
+    required uId,
+  })async
+  {
+    musclesAndItsExercises['biceps']?.add(
+      Exercises(
+        name: element.data()['name'],
+        image: element.data()['image'],
+        docs: element.data()['docs'],
+        id: element.id,
+        isCustom: element.data()['isCustom'],
+        video: element.data()['video'],
+        muscleName: muscles[i],
+      ),
+    );
+
+    muscleExercisesCheckBox['biceps']?.add(false);
+
+    if(element.data()['name'] == 'barbell curls')
+    {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uId)
+          .collection('customExercises')
+          .where('muscle', isEqualTo: 'biceps')
+          .get()
+          .then((value)
+      {
+        value.docs.forEach((element) {
+          muscleExercisesCheckBox['biceps']?.add(false);
+          musclesAndItsExercises['biceps']?.add(
+            CustomExercises(
+              muscleName: muscles[i],
+              name: element.data()['name'],
+              image: element.data()['image'],
+              docs: element.data()['description'],
+              id: element.id,
+              isCustom: true,
+              video: 'video',
+            ),
+          );
+        });
+      });
+    }
+  }
+
+  Future<void> getTricepsExercises({
+    required QueryDocumentSnapshot<Map<String, dynamic>> element,
+    required int i,
+    required uId,
+  })async
+  {
+    musclesAndItsExercises['triceps']?.add(
+      Exercises(
+        name: element.data()['name'],
+        image: element.data()['image'],
+        docs: element.data()['docs'],
+        id: element.id,
+        isCustom: element.data()['isCustom'],
+        video: element.data()['video'],
+        muscleName: muscles[i],
+      ),
+    );
+
+    muscleExercisesCheckBox['triceps']?.add(false);
+
+    if(element.data()['name'] == 'Bumbell kick back')
+    {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uId)
+          .collection('customExercises')
+          .where('muscle', isEqualTo: 'triceps')
+          .get()
+          .then((value)
+      {
+        value.docs.forEach((element) {
+          muscleExercisesCheckBox['triceps']?.add(false);
+          musclesAndItsExercises['triceps']?.add(
+            CustomExercises(
+              muscleName: muscles[i],
+              name: element.data()['name'],
+              image: element.data()['image'],
+              docs: element.data()['description'],
+              id: element.id,
+              isCustom: true,
+              video: 'video',
+            ),
+          );
+        });
+      });
+    }
+  }
+
   Future<void> getLegsExercises({
     required QueryDocumentSnapshot<Map<String, dynamic>> element,
     required int i,
@@ -340,6 +443,16 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     emit(RemoveCustomExerciseFromMuscles());
   }
 
+
+  Map<String, List<bool>> _deepCopyMap(Map<String, List<bool>> muscleExercisesCheckBox)
+  {
+    Map<String, List<bool>> newMap = {};
+    muscleExercisesCheckBox.forEach((key, value) {
+      newMap[key] = List.from(value); // Deep copy the list
+    });
+    return newMap;
+  }
+
   // day ,    musclesCheckBox
   Map<String,Map<String, List<bool>>> dayCheckBox = {};
   void initializingDaysCheckBox(int day)
@@ -347,6 +460,11 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     for(int i = 1; i <= day; day--)
     {
       dayCheckBox['day$day'] = Map.from(muscleExercisesCheckBox);
+      // dayCheckBox['day$day'] = {...muscleExercisesCheckBox};
+      // dayCheckBox['day$day'] = jsonDecode(jsonEncode(muscleExercisesCheckBox));
+      // dayCheckBox['day$day'] = _deepCopyMap(muscleExercisesCheckBox);
+      log('test2 ${identical(dayCheckBox['day$day'], muscleExercisesCheckBox)}');
+
     }
     log('$dayCheckBox');
   }

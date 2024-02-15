@@ -6,13 +6,13 @@ class CacheHelper
   CacheHelper._internal();
   static CacheHelper? cacheInstance;
 
+
   // Lazy Singleton
   factory CacheHelper.getInstance()
   {
     cacheInstance ??= CacheHelper._internal();
     return cacheInstance!;
   }
-
 
    late SharedPreferences sharedPreferences;
 
@@ -46,6 +46,20 @@ class CacheHelper
     userName = sharedPreferences.getStringList('userData')![1];
   }
 
+  Future<void> setNotificationsOnEveryDay({
+    required bool everyday,
+  })async
+  {
+    await sharedPreferences.setBool('notificationsEveryDay', everyday);
+  }
+
+  Future<void> setNotificationsOnWorkoutDays({
+    required bool onWorkoutDays,
+  })async
+  {
+    await sharedPreferences.setBool('notificationsOnWorkoutDays', onWorkoutDays);
+  }
+
    Future<void> kill()async
   {
     await sharedPreferences.setStringList('userData', []);
@@ -60,4 +74,13 @@ class CacheHelper
   {
     await sharedPreferences.setBool('isGoogleUser', false);
   }
+}
+
+void ahmed()
+{
+  esraa();
+}
+void esraa({String? name})
+{
+  String name2 = name ?? 'sksksks';
 }

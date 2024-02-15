@@ -9,7 +9,7 @@ import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../exercises/bodyMuscles.dart';
+import '../exercises/body_muscles.dart';
 
 class BottomNavBar extends StatefulWidget {
     const BottomNavBar({super.key});
@@ -20,10 +20,10 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> mainScreens =
-  const [
-    BodyMuscles(),
-    Plans(),
-    Setting(),
+   [
+     BodyMuscles(),
+     const Plans(),
+     const Setting(),
   ];
 
   @override

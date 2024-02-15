@@ -179,104 +179,111 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                       ),
                       child: Column(
                         children: [
-                          Expanded(
-                            child: ListView.separated(
-                                itemBuilder: (context, index) => InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            SpecificExercise(
-                                              exercise: Exercises(
-                                                name: ExercisesCubit.getInstance(context).customExercises[index].name,
-                                                docs: ExercisesCubit.getInstance(context).customExercises[index].docs,
-                                                id: ExercisesCubit.getInstance(context).customExercises[index].id,
-                                                image: ExercisesCubit.getInstance(context).customExercises[index].image,
-                                                isCustom: ExercisesCubit.getInstance(context).customExercises[index].isCustom,
-                                                video: ExercisesCubit.getInstance(context).customExercises[index].video,
-                                                muscleName: widget.muscleName,
-                                              ),
-                                              index: index,
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ListTile(
-                                        leading: Container(
-                                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(5)
-                                          ),
-                                          child: Image.network(
-                                            ExercisesCubit.getInstance(context).customExercises[index].image,
-                                            errorBuilder: (context, error, stackTrace) => MyText(
-                                              text: 'Failed to load image',
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        title: MyText(
-                                          text: ExercisesCubit.getInstance(context).customExercises[index].name,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        trailing: PopupMenuButton(
-                                          itemBuilder: (context) {
-                                            return [
-                                              PopupMenuItem(
-                                                onTap: () async {
-                                                  await ExercisesCubit.getInstance(context).deleteCustomExercise(
-                                                    context,
-                                                    uId: CacheHelper.getInstance().uId,
-                                                    muscleName: widget.muscleName,
-                                                    index: index,
-                                                  );
-                                                },
-                                                child: MyText(
-                                                    text: 'Delete',
-                                                    fontSize: 16
+                          if(ExercisesCubit.getInstance(context).customExercises.isEmpty)
+                            Expanded(
+                                child: Center(
+                                  child: MyText(text: 'No Custom Exercises Yet',fontSize: 20,fontWeight: FontWeight.w500),
+                                ),
+                            ),
+                          if(ExercisesCubit.getInstance(context).customExercises.isNotEmpty)
+                            Expanded(
+                              child: ListView.separated(
+                                  itemBuilder: (context, index) => InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SpecificExercise(
+                                                exercise: Exercises(
+                                                  name: ExercisesCubit.getInstance(context).customExercises[index].name,
+                                                  docs: ExercisesCubit.getInstance(context).customExercises[index].docs,
+                                                  id: ExercisesCubit.getInstance(context).customExercises[index].id,
+                                                  image: ExercisesCubit.getInstance(context).customExercises[index].image,
+                                                  isCustom: ExercisesCubit.getInstance(context).customExercises[index].isCustom,
+                                                  video: ExercisesCubit.getInstance(context).customExercises[index].video,
+                                                  muscleName: widget.muscleName,
                                                 ),
+                                                index: index,
                                               ),
-                                            ];
-                                          },
-                                          icon: const Icon(Icons.menu),
+                                        ),
+                                      );
+                                    },
+                                    child: Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ListTile(
+                                          leading: Container(
+                                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(5)
+                                            ),
+                                            child: Image.network(
+                                              ExercisesCubit.getInstance(context).customExercises[index].image,
+                                              errorBuilder: (context, error, stackTrace) => MyText(
+                                                text: 'Failed to load image',
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          title: MyText(
+                                            text: ExercisesCubit.getInstance(context).customExercises[index].name,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          trailing: PopupMenuButton(
+                                            itemBuilder: (context) {
+                                              return [
+                                                PopupMenuItem(
+                                                  onTap: () async {
+                                                    await ExercisesCubit.getInstance(context).deleteCustomExercise(
+                                                      context,
+                                                      uId: CacheHelper.getInstance().uId,
+                                                      muscleName: widget.muscleName,
+                                                      index: index,
+                                                    );
+                                                  },
+                                                  child: MyText(
+                                                      text: 'Delete',
+                                                      fontSize: 16
+                                                  ),
+                                                ),
+                                              ];
+                                            },
+                                            icon: const Icon(Icons.menu),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                separatorBuilder: (context, index) =>
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                itemCount:
-                                ExercisesCubit.getInstance(context).customExercises.length),
-                          ),
+                                  separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  itemCount:
+                                  ExercisesCubit.getInstance(context).customExercises.length),
+                            ),
                           InkWell(
                             onTap: () {
                               Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                maintainState: false,builder: (context) => CreateExercise(
-                                    muscleName: widget.muscleName,
-                              ),
-                              ),
+                                context,
+                                MaterialPageRoute(
+                                  maintainState: false,builder: (context) => CreateExercise(
+                                  muscleName: widget.muscleName,
+                                ),
+                                ),
                               );
-                              },
-                              child: Container(
-                                width: context.setWidth(1.5),
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  border: context.decoration(),
-                                ),
-                                child: const Center(
-                                  child:  Icon(Icons.add) 
-                                ),
+                            },
+                            child: Container(
+                              width: context.setWidth(1.5),
+                              height: 40,
+                              decoration: BoxDecoration(
+                                border: context.decoration(),
                               ),
+                              child: const Center(
+                                  child:  Icon(Icons.add)
+                              ),
+                            ),
                           )
                         ],
                       ),

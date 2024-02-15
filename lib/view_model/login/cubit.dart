@@ -123,14 +123,17 @@ class LoginCubit extends Cubit<LoginStates>
 
   Future<void> forgotPassword(String email,context)async
   {
+    emit(ForgotPasswordLoadingState());
     try{
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: email).then((value)
       {
+        emit(ForgotPasswordSuccessState());
         MyToast.showToast(context, msg: 'Check your email now');
       });
     } on FirebaseAuthException
     {
+      emit(ForgotPasswordErrorState());
       MySnackBar.showSnackBar(
           context: context,
           message: 'Check your internet connection and try again',

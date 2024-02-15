@@ -4,6 +4,7 @@ import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/report.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
+import 'package:be_fit/view/setting/Setting/notifications/notifications.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +14,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/widgets/modules/myText.dart';
+import '../../models/widgets/setting_model.dart';
 import '../../view/auth/login/login.dart';
 import '../../view/setting/Setting/report_problem/reports.dart';
 import '../../view/setting/Setting/report_problem/report_problem.dart';
@@ -23,6 +25,29 @@ class SettingCubit extends Cubit<SettingStates>
   SettingCubit(super.initialState);
   static SettingCubit getInstance(context) => BlocProvider.of(context);
 
+  late List<SettingModel> settingModel;
+
+  void createSettings(context)
+  {
+    settingModel =
+    [
+      SwitchOption(
+        icon: Icons.dark_mode,
+        optionName: 'Dark Mode',
+        value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme'),
+        onChanged: (newMode)async {
+          await changeAppTheme(newMode);
+        },
+      ),
+      OtherOptions(icon: Icons.notifications, optionName: 'Notifications'),
+      OtherOptions(icon: Icons.contact_phone_sharp, optionName: 'About Us & Contacting'),
+      OtherOptions(icon: Icons.report_gmailerrorred_sharp, optionName: 'Report a problem'),
+      OtherOptions(icon: Icons.tips_and_updates, optionName: 'Tips'),
+      OtherOptions(icon: Icons.share, optionName: 'Share the app'),
+      OtherOptions(icon: Icons.logout, optionName: 'Logout'),
+    ];
+  }
+
   bool darkMode = false;
   Future<void> changeAppTheme(bool newMode)async
   {
@@ -32,10 +57,52 @@ class SettingCubit extends Cubit<SettingStates>
   }
 
   bool isEnabled = false;
-  void notificationState(bool newValue)
+  void notifications(context)
   {
-    isEnabled = newValue;
-    emit(ChangeNotificationState());
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Notifications(),
+        ),
+    );
+  }
+
+  List<SwitchOption> notificationOptions = [];
+  void setNotificationOptions()
+  {
+    notificationOptions =
+    [
+      SwitchOption(
+        icon: Icons.notifications,
+        optionName: 'notifications everyday',
+        value: CacheHelper.getInstance().sharedPreferences.getBool('notificationsEveryDay')?? false,
+        onChanged: (value) async
+        {
+          await setNotificationsOnEveryDay(value);
+        },
+      ),
+      SwitchOption(
+        icon: Icons.notifications,
+        optionName: 'notification on workout days',
+        value: CacheHelper.getInstance().sharedPreferences.getBool('notificationsOnWorkoutDays')?? false,
+        onChanged: (value) async
+        {
+          await setNotificationsOnWorkoutDays(value);
+        },
+      ),
+    ];
+  }
+
+  Future<void> setNotificationsOnEveryDay(bool value)async
+  {
+    await CacheHelper.getInstance().setNotificationsOnEveryDay(everyday: value);
+    emit(ChangeNotificationEveryDayState());
+  }
+
+  Future<void> setNotificationsOnWorkoutDays(bool value)async
+  {
+    await CacheHelper.getInstance().setNotificationsOnWorkoutDays(onWorkoutDays: value);
+    emit(ChangeNotificationsOnWorkoutDays());
   }
 
   // Contacting
@@ -67,7 +134,10 @@ class SettingCubit extends Cubit<SettingStates>
     context.normalNewRoute(ReportProblem());
   }
 
-  Future<void> report(BuildContext context, {required String problem, required String uId})async
+  Future<void> report(BuildContext context, {
+    required String problem,
+    required String uId
+  })async
   {
     await FirebaseFirestore.instance
         .collection('problems')
@@ -124,6 +194,25 @@ class SettingCubit extends Cubit<SettingStates>
     if (result.status == ShareResultStatus.success) {
       log('Thank you for sharing my app!');
     }
+  }
+
+  void personalData(BuildContext context, Widget newRoute)
+  {
+    context.normalNewRoute(newRoute);
+  }
+
+  Future<void> setNewUserData({String? userName, String? email})async
+  {
+    emit(ChangePersonalDataLoadingState());
+    await CacheHelper.getInstance().handleUserData(
+        userData: [
+          userName?? CacheHelper.getInstance().userName,
+          email?? ''
+        ],
+    ).then((value)
+    {
+      emit(ChangePersonalDataSuccessState());
+    });
   }
 
   Future<void> logout(context) async

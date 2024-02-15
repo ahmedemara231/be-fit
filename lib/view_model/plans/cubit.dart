@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'package:be_fit/constants.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
+import '../../models/widgets/modules/snackBar.dart';
 import '../../models/widgets/modules/toast.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/plans/states.dart';
@@ -82,6 +85,48 @@ class PlansCubit extends Cubit<PlansStates>
       emit(GetAllPlans2ErrorState());
       MyMethods.handleError(context, e);
     }
+  }
+
+  Future<void> getAllPlans2(context, String uId)async
+  {
+    try{
+      Timer.periodic(const Duration(seconds: 5), (_) {
+        throw TimeoutException('timeout');
+      });
+
+      await getAllPlans(context, uId).then((value) => log('success'));
+
+    } on Exception catch(e)
+    {
+      emit(TimeoutErrorState());
+      log('error : $e');
+      handleErrors(context,e);
+    }
+  }
+
+  void handleErrors(context,Exception e)
+  {
+
+    if(e is FirebaseException)
+      {
+        MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
+
+      }
+    else if(e is SocketException)
+      {
+        MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
+
+      }
+    else if(e is TimeoutException)
+    {
+      MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
+
+    }
+    else{
+      MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
+
+    }
+
   }
 
   void finishPlansForCurrentUser(int index,String planName)
@@ -297,7 +342,7 @@ class PlansCubit extends Cubit<PlansStates>
   {
     records = [];
     emit(MakeChartForExerciseInPlanLoadingState());
-    try{
+    try {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(uId)
@@ -307,8 +352,7 @@ class PlansCubit extends Cubit<PlansStates>
           .doc(exerciseId)
           .collection('records')
           .get()
-          .then((value)
-      {
+          .then((value) {
         value.docs.forEach((element) {
           records.add(
               MyRecord(
@@ -319,9 +363,9 @@ class PlansCubit extends Cubit<PlansStates>
         });
         emit(MakeChartForExerciseInPlanSuccessState());
       });
-    }on Exception catch(e)
-    {
+    } on Exception catch (e) {
       MyMethods.handleError(context, e);
     }
   }
 }
+

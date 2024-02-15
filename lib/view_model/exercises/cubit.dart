@@ -11,6 +11,7 @@ import 'package:jiffy/jiffy.dart';
 import '../../models/data_types/add_custom_exercise.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/setRecord_model.dart';
+import '../../models/widgets/exercise_model.dart';
 import '../../models/widgets/modules/toast.dart';
 import '../plan_creation/cubit.dart';
 
@@ -24,6 +25,39 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   {
     currentIndex = newIndex;
     emit(ChangeBody());
+  }
+
+  List<ExerciseModel> exerciseModel = [
+    ExerciseModel(imageUrl: 'aps', text: 'Aps',numberOfExercises: 2),
+    ExerciseModel(imageUrl: 'back', text: 'Back',numberOfExercises: 4),
+    ExerciseModel(imageUrl: 'chest', text: 'chest',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'biceps', text: 'biceps',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'triceps', text: 'triceps',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'Legs', text: 'legs',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
+  ];
+
+  List<ExerciseModel> musclesList = [
+    ExerciseModel(imageUrl: 'aps', text: 'Aps',numberOfExercises: 2),
+    ExerciseModel(imageUrl: 'back', text: 'Back',numberOfExercises: 4),
+    ExerciseModel(imageUrl: 'chest', text: 'chest',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'biceps', text: 'biceps',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'triceps', text: 'triceps',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'Legs', text: 'legs',numberOfExercises: 5),
+    ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
+  ];
+
+  void search(String pattern)
+  {
+    if(pattern == '')
+      {
+        musclesList = List.from(exerciseModel);
+        emit(NewSearchState());
+      }
+    else{
+      musclesList = exerciseModel.where((element) => element.text.contains(pattern)).toList();
+      emit(NewSearchState());
+    }
   }
 
   List<Exercises> exercises = [];

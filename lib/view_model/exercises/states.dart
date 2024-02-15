@@ -6,6 +6,8 @@ class ChangeBody extends ExercisesStates{}
 
 class ExerInitialState extends ExercisesStates {}
 
+class NewSearchState extends ExercisesStates{}
+
 class GetExercisesLoadingState extends ExercisesStates {}
 
 class GetExercisesSuccessState extends ExercisesStates {}

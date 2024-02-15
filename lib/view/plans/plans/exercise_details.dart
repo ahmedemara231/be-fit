@@ -109,7 +109,8 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                   if (snapshot.hasData) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: SizedBox(
+                      child: snapshot.data!.docs.isEmpty?
+                      null : SizedBox(
                         height: context.setHeight(2.8),
                         child: Container(
                           decoration: BoxDecoration(
@@ -181,63 +182,66 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                     return MyText(text: '');
                   }
                 }),
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height / 1.2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      scaffoldKey.currentState!.showBottomSheet((context) => SizedBox(
+                        width: double.infinity,
+                        height: MediaQuery.of(context).size.height / 1.2,
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ListView(
-                            children: [
-                              MyText(
-                                text: 'Note : It\'s really important to match these steps if you don\'t know how to perform this exercises',
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                maxLines: 5,
-                              ),
-                              const SizedBox(
-                                height: 25,
-                              ),
-                              MyText(
-                                text: widget.exercise.docs,
-                                maxLines: 20,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ],
+                          padding: const EdgeInsets.all(8.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ListView(
+                              children: [
+                                MyText(
+                                  text: 'Note : It\'s really important to match these steps if you don\'t know how to perform this exercises',
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  maxLines: 5,
+                                ),
+                                const SizedBox(
+                                  height: 25,
+                                ),
+                                MyText(
+                                  text: widget.exercise.docs,
+                                  maxLines: 20,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ));
-                  },
-                  icon: const Icon(Icons.question_mark),
-                ),
-                const Spacer(),
-                if(widget.exercise.isCustom == false)
-                  IconButton(
-                  onPressed: ()
-                  {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ExerciseVideo(
-                          exerciseName: widget.exercise.name,
-                          url: widget.exercise.video.isEmpty?
-                          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
-                          widget.exercise.video,
+                      ));
+                    },
+                    icon: const Icon(Icons.question_mark),
+                  ),
+                  const Spacer(),
+                  if(widget.exercise.isCustom == false)
+                    IconButton(
+                    onPressed: ()
+                    {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseVideo(
+                            exerciseName: widget.exercise.name,
+                            url: widget.exercise.video.isEmpty?
+                            'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
+                            widget.exercise.video,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.play_arrow),
-                )
-              ],
+                      );
+                    },
+                    icon: const Icon(Icons.play_arrow),
+                  )
+                ],
+              ),
             ),
             Container(
               height: context.setHeight(5),
@@ -269,30 +273,33 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                 ),
               ),
             ),
-            AppButton(
-              onPressed: () async
-              {
-                if(formKey.currentState!.validate())
-                  {
-                    await PlansCubit.getInstance(context).setARecordFromPlan(
-                        planExerciseRecord: SetRecordForPlanExercise(
-                          planDoc: widget.planDoc,
-                          listIndex: widget.listIndex + 1,
-                          exercise: widget.exercise,
-                          reps: repsCont.text,
-                          weight: weightCont.text,
-                          uId: CacheHelper.getInstance().uId,
-                        ),
-                        context: context,
-                        muscleName: widget.exercise.muscleName
-                    ).then((value)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: AppButton(
+                onPressed: () async
+                {
+                  if(formKey.currentState!.validate())
                     {
-                      weightCont.clear();
-                      repsCont.clear();
-                    });
-                  }
-              },
-              text: 'Add',
+                      await PlansCubit.getInstance(context).setARecordFromPlan(
+                          planExerciseRecord: SetRecordForPlanExercise(
+                            planDoc: widget.planDoc,
+                            listIndex: widget.listIndex + 1,
+                            exercise: widget.exercise,
+                            reps: repsCont.text,
+                            weight: weightCont.text,
+                            uId: CacheHelper.getInstance().uId,
+                          ),
+                          context: context,
+                          muscleName: widget.exercise.muscleName
+                      ).then((value)
+                      {
+                        weightCont.clear();
+                        repsCont.clear();
+                      });
+                    }
+                },
+                text: 'Add',
+              ),
             )
           ],
         ),

@@ -87,9 +87,9 @@ class Login extends StatelessWidget {
                         )),
                       ),
                     ),
-                    if(state is LoginLoadingState)
+                    if(state is LoginLoadingState || state is SetPasswordVisibility)
                       const CircularProgressIndicator(),
-                    if(state is! LoginLoadingState)
+                    if(state is! LoginLoadingState && state is! SetPasswordVisibility)
                       AppButton(onPressed: ()async
                       {
                         if(formKey.currentState!.validate())

@@ -24,8 +24,8 @@ class BottomNavCubit extends Cubit<BottomNavState>
         return;
       }
     else{
-      await plansCubit.getAllPlans(context, uId);
-      await planCreationCubit.getMuscles(context, uId: uId);
+        await plansCubit.getAllPlans2(context, uId);
+        await planCreationCubit.getMuscles(context, uId: uId);
     }
   }
 }

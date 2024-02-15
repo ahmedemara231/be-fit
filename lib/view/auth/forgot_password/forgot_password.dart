@@ -45,7 +45,8 @@ class ForgotPassword extends StatelessWidget {
                 if(state is ForgotPasswordLoadingState)
                   const CircularProgressIndicator(),
                 if(state is! ForgotPasswordLoadingState)
-                 AppButton(onPressed: () async
+                 AppButton(
+                     onPressed: () async
                  {
                    await LoginCubit.getInstance(context).forgotPassword(
                        emailCont.text,

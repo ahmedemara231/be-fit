@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:be_fit/extensions/container_decoration.dart';
+import 'package:flutter/cupertino.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/plan_details.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -33,8 +35,10 @@ class Plans extends StatelessWidget {
               return Future(() => null);
             },
             child: state is GetAllPlans2LoadingState?
-            const Center(
-              child: CircularProgressIndicator(),
+             Center(
+              child: Platform.isIOS?
+              const CupertinoActivityIndicator() :
+              const CircularProgressIndicator(),
             ) :
             Padding(
               padding: const EdgeInsets.all(12.0),
@@ -100,19 +104,19 @@ class Plans extends StatelessWidget {
                           itemCount: PlansCubit.getInstance(context).allPlans.length,
                       ),
                     ),
-                  InkWell(
-                    onTap: ()
-                    {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          maintainState: false,
-                          builder: (context) => CreatePlan(),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: InkWell(
+                      onTap: ()
+                      {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            maintainState: false,
+                            builder: (context) => CreatePlan(),
+                          ),
+                        );
+                      },
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
