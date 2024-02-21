@@ -7,7 +7,9 @@ import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
@@ -42,8 +44,12 @@ class _SpecificExerciseState extends State<SpecificExercise> {
 
   final formKey = GlobalKey<FormState>();
 
+  final PageController controller = PageController();
+
   @override
   void initState() {
+    ExercisesCubit.getInstance(context).dot = 0;
+
     if(widget.exercise.isCustom == false)
       {
         ExercisesCubit.getInstance(context).pickRecordsToMakeChart(
@@ -99,23 +105,44 @@ class _SpecificExerciseState extends State<SpecificExercise> {
             child: ListView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(5.0),
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
                   child: Container(
+                    width: double.infinity,
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16)
                     ),
-                    width: double.infinity,
-                    child: Image.network(
-                      widget.exercise.image,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => MyText(
-                        text: 'Failed to load image',fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: CarouselSlider(
+                        items: widget.exercise.image.map((e) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Image.network(
+                            e,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) => MyText(
+                            text: 'Failed to load image',
+                            fontWeight: FontWeight.bold,
+                          ),),
+                        )).toList(),
+                        options: CarouselOptions(
+                          onPageChanged: (newDot, reason)
+                          {
+                            ExercisesCubit.getInstance(context).changeDot(newDot);
+                          },
+                          disableCenter: false,
+                          enableInfiniteScroll: false,
+                          autoPlay: false,
+                        ),
                     ),
                   ),
                 ),
+                DotsIndicator(
+                  dotsCount: widget.exercise.image.length,
+                  position: ExercisesCubit.getInstance(context).dot,
+                  decorator: const DotsDecorator(
+                    color: Colors.black87, // Inactive color
+                    activeColor: Colors.redAccent,
+              ),
+            ),
                 StreamBuilder(
                   stream: widget.exercise.isCustom == false?
                   FirebaseFirestore.instance.collection(widget.exercise.muscleName!).doc(widget.exercise.id).collection('records').where('uId',isEqualTo: CacheHelper.getInstance().uId).orderBy('dateTime').snapshots() :
@@ -264,7 +291,6 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                     ],
                   ),
                 ),
-
                 Container(
                   height: context.setHeight(5),
                   decoration: BoxDecoration(

@@ -24,6 +24,6 @@ class MakeChartForExerciseInPlanLoadingState extends PlansStates{}
 
 class MakeChartForExerciseInPlanSuccessState extends PlansStates{}
 
-class TimeoutErrorState extends PlansStates{}
+class ChangeDotSuccessState extends PlansStates{}
 
 

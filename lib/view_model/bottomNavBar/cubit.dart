@@ -9,6 +9,11 @@ class BottomNavCubit extends Cubit<BottomNavState>
   BottomNavCubit(super.initialState);
   static BottomNavCubit getInstance(context) => BlocProvider.of(context);
 
+  void returnToHome(context)
+  {
+    currentIndex = 0;
+    emit(BottomNavState());
+  }
   int currentIndex = 0;
   Future<void> changeScreen(context,{
     required int newIndex,
@@ -19,13 +24,19 @@ class BottomNavCubit extends Cubit<BottomNavState>
   {
     currentIndex = newIndex;
     emit(BottomNavState());
-    if(plansCubit.allPlans.isNotEmpty || planCreationCubit.musclesAndItsExercises.isNotEmpty)
+    if(newIndex == 1)
       {
-        return;
+        if(plansCubit.allPlans.isNotEmpty || planCreationCubit.musclesAndItsExercises.isNotEmpty)
+        {
+          return;
+        }
+        else{
+          await plansCubit.getAllPlans(context, uId);
+          await planCreationCubit.getMuscles(context, uId: uId);
+        }
       }
     else{
-        await plansCubit.getAllPlans2(context, uId);
-        await planCreationCubit.getMuscles(context, uId: uId);
+      return;
     }
   }
 }

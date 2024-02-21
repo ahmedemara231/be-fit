@@ -57,7 +57,7 @@ class ChooseExercises extends StatelessWidget {
                                 leading: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Image.network(
-                                      PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].image
+                                      PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].image[0]
                                   ),
                                 ),
                                 title: MyText(

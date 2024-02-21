@@ -10,7 +10,8 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'createExercise.dart';
+import '../../models/widgets/modules/textFormField.dart';
+import 'create_exercise.dart';
 
 class ExercisesForMuscle extends StatefulWidget {
   String muscleName;
@@ -27,6 +28,8 @@ class ExercisesForMuscle extends StatefulWidget {
 }
 
 class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
+
+  final searchCont = TextEditingController();
 
   @override
   void initState() {
@@ -58,52 +61,74 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
           const Center(
             child: CircularProgressIndicator(),
         ):
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  DefaultAndCustomButtons(
-                      text: 'Default',
-                      onTap: ()
-                      {
-                        ExercisesCubit.getInstance(context).changeBody(1);
-                      },
-                      color: ExercisesCubit.getInstance(context).currentIndex == 1?
-                      Constants.appColor:
-                      null,
-                  ),
-                  DefaultAndCustomButtons(
-                      text: 'Custom (${ExercisesCubit.getInstance(context).customExercises.length})',
-                      onTap: ()
-                      {
-                        ExercisesCubit.getInstance(context).changeBody(2);
-                      },
-                      color: ExercisesCubit.getInstance(context).currentIndex == 2?
-                      Constants.appColor:
-                      null,
-              
-                  ),
-                ],
-              ),
-              if(ExercisesCubit.getInstance(context).currentIndex == 1)
-                Expanded(
-                  child: RefreshIndicator(
-                    backgroundColor: Colors.red[400],
-                    color: Colors.white,
-                    onRefresh: () {
-                      ExercisesCubit.getInstance(context).getExercisesForSpecificMuscle(
-                        context,
-                        muscleName: widget.muscleName,
-                      );
-                      return Future(() => null);
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 16),
+            child: ListView(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DefaultAndCustomButtons(
+                        text: 'Default',
+                        onTap: ()
+                        {
+                          ExercisesCubit.getInstance(context).changeBody(1);
+                        },
+                        color: ExercisesCubit.getInstance(context).currentIndex == 1?
+                        Constants.appColor:
+                        null,
+                    ),
+                    DefaultAndCustomButtons(
+                        text: 'Custom (${ExercisesCubit.getInstance(context).customExercisesList.length})',
+                        onTap: ()
+                        {
+                          ExercisesCubit.getInstance(context).changeBody(2);
+                        },
+                        color: ExercisesCubit.getInstance(context).currentIndex == 2?
+                        Constants.appColor:
+                        null,
+
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 10),
+                  child: TFF(
+                    obscureText: false,
+                    controller: searchCont,
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Constants.appColor),
+                        borderRadius: BorderRadius.circular(25)
+                    ),
+                    hintText: 'Search for Exercise',
+                    prefixIcon: const Icon(Icons.search),
+                    onChanged: (newLetter)
+                    {
+                      if(ExercisesCubit.getInstance(context).currentIndex == 1)
+                        {
+                          ExercisesCubit.getInstance(context).exerciseSearch(newLetter);
+                        }
+                      else{
+                        ExercisesCubit.getInstance(context).customExerciseSearch(newLetter);
+                      }
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 22.0,
-                          horizontal: 8,
-                      ),
+                  ),
+                ),
+                if(ExercisesCubit.getInstance(context).currentIndex == 1)
+                  Expanded(
+                    child: RefreshIndicator(
+                      backgroundColor: Constants.appColor,
+                      color: Colors.white,
+                      onRefresh: () {
+                        ExercisesCubit.getInstance(context).getExercisesForSpecificMuscle(
+                          context,
+                          muscleName: widget.muscleName,
+                        );
+                        return Future(() => null);
+                      },
                       child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) => InkWell(
                             onTap: () {
                               Navigator.push(
@@ -111,12 +136,12 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                 MaterialPageRoute(
                                   builder: (context) => SpecificExercise(
                                     exercise: Exercises(
-                                      name: ExercisesCubit.getInstance(context).exercises[index].name,
-                                      docs: ExercisesCubit.getInstance(context).exercises[index].docs,
-                                      id: ExercisesCubit.getInstance(context).exercises[index].id,
-                                      image: ExercisesCubit.getInstance(context).exercises[index].image,
-                                      isCustom: ExercisesCubit.getInstance(context).exercises[index].isCustom,
-                                      video: ExercisesCubit.getInstance(context).exercises[index].video,
+                                      name: ExercisesCubit.getInstance(context).exercisesList[index].name,
+                                      docs: ExercisesCubit.getInstance(context).exercisesList[index].docs,
+                                      id: ExercisesCubit.getInstance(context).exercisesList[index].id,
+                                      image: ExercisesCubit.getInstance(context).exercisesList[index].image,
+                                      isCustom: ExercisesCubit.getInstance(context).exercisesList[index].isCustom,
+                                      video: ExercisesCubit.getInstance(context).exercisesList[index].video,
                                       muscleName: widget.muscleName,
                                     ),
                                   ),
@@ -133,7 +158,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                       borderRadius: BorderRadius.circular(5)
                                     ),
                                     child: Image.network(
-                                      ExercisesCubit.getInstance(context).exercises[index].image,
+                                      ExercisesCubit.getInstance(context).exercisesList[index].image[0],
                                       errorBuilder: (context, error, stackTrace) => MyText(
                                         text: 'Failed to load image',
                                         fontWeight: FontWeight.bold,
@@ -141,7 +166,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                     ),
                                   ),
                                   title: MyText(
-                                    text: ExercisesCubit.getInstance(context).exercises[index].name,
+                                    text: ExercisesCubit.getInstance(context).exercisesList[index].name,
                                     fontSize: 20,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -155,37 +180,31 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                           const SizedBox(
                             height: 16,
                           ),
-                          itemCount: ExercisesCubit.getInstance(context).exercises.length),
+                          itemCount: ExercisesCubit.getInstance(context).exercisesList.length),
                     ),
                   ),
-                ),
-              if(ExercisesCubit.getInstance(context).currentIndex == 2)
-                Expanded(
-                  child: RefreshIndicator(
-                    color: Colors.white,
-                    backgroundColor: Colors.red[400],
-                    onRefresh: () async{
-                      await ExercisesCubit.getInstance(context).getCustomExercises(
-                        context,
-                        uId: CacheHelper.getInstance().uId,
-                        muscle: widget.muscleName,
-                      );
-                      return Future(() => null);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 22,
-                      ),
+                if(ExercisesCubit.getInstance(context).currentIndex == 2)
+                  Expanded(
+                    child: RefreshIndicator(
+                      color: Colors.white,
+                      backgroundColor: Colors.red[400],
+                      onRefresh: () async{
+                        await ExercisesCubit.getInstance(context).getCustomExercises(
+                          context,
+                          uId: CacheHelper.getInstance().uId,
+                          muscle: widget.muscleName,
+                        );
+                        return Future(() => null);
+                      },
                       child: Column(
                         children: [
-                          if(ExercisesCubit.getInstance(context).customExercises.isEmpty)
+                          if(ExercisesCubit.getInstance(context).customExercisesList.isEmpty)
                             Expanded(
                                 child: Center(
                                   child: MyText(text: 'No Custom Exercises Yet',fontSize: 20,fontWeight: FontWeight.w500),
                                 ),
                             ),
-                          if(ExercisesCubit.getInstance(context).customExercises.isNotEmpty)
+                          if(ExercisesCubit.getInstance(context).customExercisesList.isNotEmpty)
                             Expanded(
                               child: ListView.separated(
                                   itemBuilder: (context, index) => InkWell(
@@ -196,12 +215,12 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                           builder: (context) =>
                                               SpecificExercise(
                                                 exercise: Exercises(
-                                                  name: ExercisesCubit.getInstance(context).customExercises[index].name,
-                                                  docs: ExercisesCubit.getInstance(context).customExercises[index].docs,
-                                                  id: ExercisesCubit.getInstance(context).customExercises[index].id,
-                                                  image: ExercisesCubit.getInstance(context).customExercises[index].image,
-                                                  isCustom: ExercisesCubit.getInstance(context).customExercises[index].isCustom,
-                                                  video: ExercisesCubit.getInstance(context).customExercises[index].video,
+                                                  name: ExercisesCubit.getInstance(context).customExercisesList[index].name,
+                                                  docs: ExercisesCubit.getInstance(context).customExercisesList[index].docs,
+                                                  id: ExercisesCubit.getInstance(context).customExercisesList[index].id,
+                                                  image: ExercisesCubit.getInstance(context).customExercisesList[index].image,
+                                                  isCustom: ExercisesCubit.getInstance(context).customExercisesList[index].isCustom,
+                                                  video: ExercisesCubit.getInstance(context).customExercisesList[index].video,
                                                   muscleName: widget.muscleName,
                                                 ),
                                                 index: index,
@@ -219,7 +238,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                                 borderRadius: BorderRadius.circular(5)
                                             ),
                                             child: Image.network(
-                                              ExercisesCubit.getInstance(context).customExercises[index].image,
+                                              ExercisesCubit.getInstance(context).customExercisesList[index].image[0],
                                               errorBuilder: (context, error, stackTrace) => MyText(
                                                 text: 'Failed to load image',
                                                 fontWeight: FontWeight.bold,
@@ -227,7 +246,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                             ),
                                           ),
                                           title: MyText(
-                                            text: ExercisesCubit.getInstance(context).customExercises[index].name,
+                                            text: ExercisesCubit.getInstance(context).customExercisesList[index].name,
                                             fontSize: 20,
                                             fontWeight: FontWeight.w500,
                                           ),
@@ -261,7 +280,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                     height: 16,
                                   ),
                                   itemCount:
-                                  ExercisesCubit.getInstance(context).customExercises.length),
+                                  ExercisesCubit.getInstance(context).customExercisesList.length),
                             ),
                           InkWell(
                             onTap: () {
@@ -289,8 +308,8 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                       ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         );
       },

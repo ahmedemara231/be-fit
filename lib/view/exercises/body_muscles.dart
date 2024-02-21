@@ -54,44 +54,30 @@ class BodyMuscles extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 25.0,horizontal: 0),
-                  child: TFF(
-                    obscureText: false,
-                    controller: searchCont,
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constants.appColor),
-                        borderRadius: BorderRadius.circular(25)
-                    ),
-                    hintText: 'Search for Muscle',
-                    prefixIcon: const Icon(Icons.search),
-                    onChanged: (newLetter)
-                    {
-                      ExercisesCubit.getInstance(context).search(newLetter);
-                    },
-                  ),
-                ),
-                ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: ()
-                      {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ExercisesForMuscle(
-                              muscleName: ExercisesCubit.getInstance(context).musclesList[index].text,
-                              numberOfExercises: ExercisesCubit.getInstance(context).musclesList[index].numberOfExercises,
+                  padding: const EdgeInsets.symmetric(vertical: 30.0),
+                  child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) => InkWell(
+                        onTap: ()
+                        {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ExercisesForMuscle(
+                                muscleName: ExercisesCubit.getInstance(context).musclesList[index].text,
+                                numberOfExercises: ExercisesCubit.getInstance(context).musclesList[index].numberOfExercises,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: ExercisesCubit.getInstance(context).musclesList[index],
-                    ),
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 16,
-                    ),
-                    itemCount: ExercisesCubit.getInstance(context).musclesList.length
+                          );
+                        },
+                        child: ExercisesCubit.getInstance(context).musclesList[index],
+                      ),
+                      separatorBuilder: (context, index) => const SizedBox(
+                        height: 16,
+                      ),
+                      itemCount: ExercisesCubit.getInstance(context).musclesList.length
+                  ),
                 ),
               ],
             ),

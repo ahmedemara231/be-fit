@@ -27,16 +27,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     emit(ChangeBody());
   }
 
-  List<ExerciseModel> exerciseModel = [
-    ExerciseModel(imageUrl: 'aps', text: 'Aps',numberOfExercises: 2),
-    ExerciseModel(imageUrl: 'back', text: 'Back',numberOfExercises: 4),
-    ExerciseModel(imageUrl: 'chest', text: 'chest',numberOfExercises: 5),
-    ExerciseModel(imageUrl: 'biceps', text: 'biceps',numberOfExercises: 5),
-    ExerciseModel(imageUrl: 'triceps', text: 'triceps',numberOfExercises: 5),
-    ExerciseModel(imageUrl: 'Legs', text: 'legs',numberOfExercises: 5),
-    ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
-  ];
-
   List<ExerciseModel> musclesList = [
     ExerciseModel(imageUrl: 'aps', text: 'Aps',numberOfExercises: 2),
     ExerciseModel(imageUrl: 'back', text: 'Back',numberOfExercises: 4),
@@ -46,19 +36,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     ExerciseModel(imageUrl: 'Legs', text: 'legs',numberOfExercises: 5),
     ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
   ];
-
-  void search(String pattern)
-  {
-    if(pattern == '')
-      {
-        musclesList = List.from(exerciseModel);
-        emit(NewSearchState());
-      }
-    else{
-      musclesList = exerciseModel.where((element) => element.text.contains(pattern)).toList();
-      emit(NewSearchState());
-    }
-  }
 
   List<Exercises> exercises = [];
   Future<void> getExercisesForSpecificMuscle(context,{
@@ -85,12 +62,44 @@ class ExercisesCubit extends Cubit<ExercisesStates>
             ),
           );
         });
+
+        exercisesList = List.from(exercises);
         emit(GetExercisesSuccessState());
       });
     } on Exception catch(e)
     {
       emit(GetExercisesErrorState());
       MyMethods.handleError(context, e);
+    }
+  }
+
+
+  late List<Exercises> exercisesList;
+  void exerciseSearch(String pattern)
+  {
+    if(pattern.isEmpty)
+      {
+        exercisesList = List.from(exercises);
+        emit(NewExerciseSearchState());
+      }
+    else{
+      exercisesList = exercises.where((element) => element.name.contains(pattern)).toList();
+      emit(NewExerciseSearchState());
+    }
+  }
+
+  List<CustomExercises> customExercisesList = [];
+
+  void customExerciseSearch(String pattern)
+  {
+    if(pattern.isEmpty)
+    {
+      customExercisesList = List.from(customExercises);
+      emit(NewExerciseSearchState());
+    }
+    else{
+      customExercisesList = customExercises.where((element) => element.name.contains(pattern)).toList();
+      emit(NewExerciseSearchState());
     }
   }
 
@@ -262,7 +271,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
    required context,
 })async
  {
-
    emit(CreateCustomExerciseLoadingState());
    try{
      await FirebaseStorage.instance
@@ -281,7 +289,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
              {
                'muscle' : addCustomExerciseModel.muscle,
                'name' : addCustomExerciseModel.name,
-               'image' : imageUrl,
+               'image' : [imageUrl],
                'description' : addCustomExerciseModel.description,
                'isCustom' : true,
              }).then((value)
@@ -289,7 +297,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
            customExercises.add(
              CustomExercises(
                name: addCustomExerciseModel.name,
-               image: imageUrl,
+               image: [imageUrl],
                docs: addCustomExerciseModel.description,
                id: value.id,
                isCustom: true,
@@ -297,11 +305,13 @@ class ExercisesCubit extends Cubit<ExercisesStates>
              ),
            );
 
+           customExercisesList = List.from(customExercises);
+
            PlanCreationCubit.getInstance(context).addCustomExerciseToMuscles(
              addCustomExerciseModel.muscle,
              CustomExercises(
                  name: addCustomExerciseModel.name,
-                 image: imageUrl,
+                 image: [imageUrl],
                  docs: addCustomExerciseModel.description,
                  id: value.id,
                  isCustom: true,
@@ -316,22 +326,19 @@ class ExercisesCubit extends Cubit<ExercisesStates>
            emit(CreateCustomExerciseSuccessState(
              customExercise: CustomExercises(
                name: addCustomExerciseModel.name,
-               image: imageUrl,
+               image: [imageUrl],
                docs: addCustomExerciseModel.description,
                id: value.id,
                isCustom: true,
                video: '',
              ),
            ));
-         }).catchError((error)
-         {
-           emit(CreateCustomExerciseErrorState());
          });
        });
      });
    }on Exception catch(e)
    {
-     emit(GetExercisesErrorState());
+     emit(CreateCustomExerciseErrorState());
      MyMethods.handleError(context, e);
    }
  }
@@ -365,6 +372,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
             ),
           );
         });
+        customExercisesList = List.from(customExercises);
         emit(GetCustomExercisesSuccessState());
       });
     }on Exception catch(e)
@@ -395,6 +403,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
         );
 
         customExercises.remove(customExercises[index]);
+        customExercisesList = List.from(customExercises);
 
         // await FirebaseFirestore.instance
         // .collection('users')
@@ -513,4 +522,13 @@ class ExercisesCubit extends Cubit<ExercisesStates>
       MyMethods.handleError(context, e);
     }
   }
+
+  int dot = 0;
+  void changeDot(int newDot)
+  {
+    dot = newDot;
+    emit(ChangeDotSuccessState());
+  }
 }
+
+

@@ -93,7 +93,7 @@ class DayExercises extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5)
                         ),
                         child: Image.network(
-                          (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).image,
+                          (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).image[0],
                           errorBuilder: (context, error, stackTrace) => MyText(
                             text: 'Failed to load image',
                             fontWeight: FontWeight.bold,

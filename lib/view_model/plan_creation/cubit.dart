@@ -43,7 +43,6 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
       musclesAndItsExercises[muscles[i]] = [];
       muscleExercisesCheckBox[muscles[i]] = [];
     }
-    print(musclesAndItsExercises.length);
 
     emit(GetAllMusclesLoadingState());
     try
@@ -427,9 +426,15 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
 
   void addCustomExerciseToMuscles(String muscleName, CustomExercises exercise)
   {
-    musclesAndItsExercises[muscleName]!.add(exercise);
-    muscleExercisesCheckBox[muscleName]!.add(false);
-    emit(AddCustomExerciseToMuscles());
+    if(musclesAndItsExercises[muscleName] == null)
+      {
+        return;
+      }
+    else{
+      musclesAndItsExercises[muscleName]!.add(exercise);
+      muscleExercisesCheckBox[muscleName]!.add(false);
+      emit(AddCustomExerciseToMuscles());
+    }
   }
 
   void removeCustomExerciseFromMuscles({
@@ -437,10 +442,15 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     required String exerciseId,
   })
   {
-    musclesAndItsExercises[muscleName]!.removeWhere((element) => element.id == exerciseId);
-    muscleExercisesCheckBox[muscleName]!.remove(false);
-
-    emit(RemoveCustomExerciseFromMuscles());
+    if(musclesAndItsExercises[muscleName] == null)
+    {
+      return;
+    }
+    else{
+      musclesAndItsExercises[muscleName]!.removeWhere((element) => element.id == exerciseId);
+      muscleExercisesCheckBox[muscleName]!.remove(false);
+      emit(RemoveCustomExerciseFromMuscles());
+    }
   }
 
 

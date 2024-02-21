@@ -87,23 +87,6 @@ class PlansCubit extends Cubit<PlansStates>
     }
   }
 
-  Future<void> getAllPlans2(context, String uId)async
-  {
-    try{
-      Timer.periodic(const Duration(seconds: 5), (_) {
-        throw TimeoutException('timeout');
-      });
-
-      await getAllPlans(context, uId).then((value) => log('success'));
-
-    } on Exception catch(e)
-    {
-      emit(TimeoutErrorState());
-      log('error : $e');
-      handleErrors(context,e);
-    }
-  }
-
   void handleErrors(context,Exception e)
   {
 
@@ -366,6 +349,13 @@ class PlansCubit extends Cubit<PlansStates>
     } on Exception catch (e) {
       MyMethods.handleError(context, e);
     }
+  }
+
+  int dot = 0;
+  void changeDot(int newDot)
+  {
+    dot = newDot;
+    emit(ChangeDotSuccessState());
   }
 }
 

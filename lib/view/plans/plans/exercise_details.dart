@@ -1,6 +1,12 @@
+import 'dart:developer';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
+import 'package:be_fit/view_model/exercises/cubit.dart';
+import 'package:be_fit/view_model/plans/states.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
@@ -42,6 +48,8 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
 
   @override
   void initState() {
+    PlansCubit.getInstance(context).dot = 0;
+
     PlansCubit.getInstance(context).pickRecordsToMakeChart(
       context,
       uId: CacheHelper.getInstance().uId,
@@ -85,13 +93,35 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                     borderRadius: BorderRadius.circular(16)
                 ),
                 width: double.infinity,
-                child: Image.network(
-                  widget.exercise.image,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) => MyText(
-                    text: 'Failed to load image',
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: CarouselSlider(
+                    items: widget.exercise.image.map((e) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Image.network(
+                        e,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => MyText(
+                          text: 'Failed to load image',
+                          fontWeight: FontWeight.bold,
+                        ),),
+                    )).toList(),
+                    options: CarouselOptions(
+                      onPageChanged: (newDot, reason)
+                      {
+                        PlansCubit.getInstance(context).changeDot(newDot);
+                      },
+                      enableInfiniteScroll: false,
+                      autoPlay: false,
+                    )
+                ),
+              ),
+            ),
+            BlocBuilder<PlansCubit,PlansStates>(
+              builder: (context, state) => DotsIndicator(
+                dotsCount: widget.exercise.image.length,
+                position: PlansCubit.getInstance(context).dot,
+                decorator: const DotsDecorator(
+                  color: Colors.black87, // Inactive color
+                  activeColor: Colors.redAccent,
                 ),
               ),
             ),
@@ -178,7 +208,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                         context: context, message: 'Try again latter');
                     return MyText(text: '');
                   } else {
-                    print('idk : $snapshot');
+                    log('idk : $snapshot');
                     return MyText(text: '');
                   }
                 }),

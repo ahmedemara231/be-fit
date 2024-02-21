@@ -6,6 +6,10 @@ class ChangeBody extends ExercisesStates{}
 
 class ExerInitialState extends ExercisesStates {}
 
+class NewMuscleSearchState extends ExercisesStates{}
+
+class NewExerciseSearchState extends ExercisesStates{}
+
 class NewSearchState extends ExercisesStates{}
 
 class GetExercisesLoadingState extends ExercisesStates {}
@@ -62,3 +66,5 @@ class SetRecordForCustomExerciseErrorState extends ExercisesStates {}
 class DeleteCustomExerciseSuccessState extends ExercisesStates{}
 
 class DeleteCustomExerciseErrorState extends ExercisesStates{}
+
+class ChangeDotSuccessState extends ExercisesStates {}

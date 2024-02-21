@@ -101,7 +101,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                           child: SizedBox(
                                               width: 80,
                                               height: 80,
-                                              child: Image.network(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].image)),
+                                              child: Image.network(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].image[0])),
                                         ),
                                       subtitle: MyText(
                                           text: PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].name,

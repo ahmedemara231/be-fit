@@ -1,6 +1,6 @@
 class Exercises
 {
-  String image;
+  List image;
   String name;
   String docs;
   String id;

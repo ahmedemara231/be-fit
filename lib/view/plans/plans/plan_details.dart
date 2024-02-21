@@ -93,7 +93,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                                       width: 80,
                                       height: 80,
                                       child: Image.network(
-                                        PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].image,
+                                        PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].image[0],
                                         errorBuilder: (context, error, stackTrace) => MyText(
                                           text: 'Failed to load image',
                                           fontWeight: FontWeight.bold,
