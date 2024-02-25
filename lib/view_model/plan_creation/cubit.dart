@@ -453,16 +453,6 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     }
   }
 
-
-  Map<String, List<bool>> _deepCopyMap(Map<String, List<bool>> muscleExercisesCheckBox)
-  {
-    Map<String, List<bool>> newMap = {};
-    muscleExercisesCheckBox.forEach((key, value) {
-      newMap[key] = List.from(value); // Deep copy the list
-    });
-    return newMap;
-  }
-
   // day ,    musclesCheckBox
   Map<String,Map<String, List<bool>>> dayCheckBox = {};
   void initializingDaysCheckBox(int day)

@@ -96,7 +96,25 @@ class Plans extends StatelessWidget {
                               ),
                               child: ListTile(
                                 title: MyText(text: PlansCubit.getInstance(context).allPlans.keys.toList()[index],fontSize: 20,fontWeight: FontWeight.w500,),
-                                trailing: const Icon(Icons.arrow_forward),
+                                trailing:  PopupMenuButton(
+                                  itemBuilder: (context) {
+                                    return [
+                                      PopupMenuItem(
+                                        child: MyText(text: 'Delete'),
+                                        onTap: () async
+                                        {
+                                          await PlansCubit.getInstance(context).deletePlan(
+                                            context,
+                                            index : index,
+                                            uId: CacheHelper.getInstance().uId,
+                                            planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
+                                          );
+                                        },
+                                      )
+                                    ];
+                                  },
+                                  icon: const Icon(Icons.menu),
+                                ),
                               ),
                             ),
                           ),

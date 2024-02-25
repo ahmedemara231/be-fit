@@ -100,22 +100,25 @@ class _SignUpState extends State<SignUp> {
                   if(state is SignUpLoadingState)
                     const CircularProgressIndicator(),
                   if(state is! SignUpLoadingState)
-                    AppButton(
-                      onPressed: ()async
-                    {
-                      if(formKey.currentState!.validate())
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: AppButton(
+                        onPressed: ()async
                       {
-                        await SignUpCubit.getInstance(context).signUp(
-                          user: Trainee(
-                            email: emailCont.text,
-                            password: passCont.text,
-                            name: nameCont.text,
-                            phone: phoneCont.text,
-                          ),
-                          context: context,
-                        );
-                      }
-                    }, text: 'Sign up',
+                        if(formKey.currentState!.validate())
+                        {
+                          await SignUpCubit.getInstance(context).signUp(
+                            user: Trainee(
+                              email: emailCont.text,
+                              password: passCont.text,
+                              name: nameCont.text,
+                              phone: phoneCont.text,
+                            ),
+                            context: context,
+                          );
+                        }
+                      }, text: 'Sign up',
+                      ),
                     ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

@@ -29,7 +29,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     CacheHelper.getInstance().getUserData();
-    BottomNavCubit.getInstance(context).returnToHome(context);
     super.initState();
   }
 
@@ -65,9 +64,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   fontWeight: FontWeight.w500,
                   color: Colors.white70
               ),
-              onTap: (newTap)
+              onTap: (newTap)async
               {
-                BottomNavCubit.getInstance(context).changeScreen(
+                await BottomNavCubit.getInstance(context).changeScreen(
                   context,
                   uId: CacheHelper.getInstance().uId,
                   planCreationCubit: PlanCreationCubit.getInstance(context),
@@ -84,8 +83,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     icon: Icon(Icons.notes),
                     label: 'Plans'),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.person),
-                    label: 'Profile'),
+                    icon: Icon(Icons.settings_suggest),
+                    label: 'Settings'),
               ],
             ),
           ),

@@ -252,10 +252,12 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 
   File? selectedExerciseImage;
   late String exerciseImageName;
- Future<void> pickImageForCustomExercise()async
+ Future<void> pickImageForCustomExercise({
+    required ImageSource source,
+})async
  {
    final ImagePicker picker = ImagePicker();
-   await picker.pickImage(source: ImageSource.gallery).then((value)
+   await picker.pickImage(source: source).then((value)
    {
      selectedExerciseImage = File(value!.path);
      exerciseImageName = Uri.file(value.path).pathSegments.last;
@@ -529,6 +531,13 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     dot = newDot;
     emit(ChangeDotSuccessState());
   }
+
+  void removeSelectedImage()
+  {
+    selectedExerciseImage = null;
+    emit(RemoveSelectedImage());
+  }
 }
+
 
 

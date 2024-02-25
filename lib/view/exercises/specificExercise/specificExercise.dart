@@ -115,13 +115,19 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                     child: CarouselSlider(
                         items: widget.exercise.image.map((e) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Image.network(
-                            e,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) => MyText(
-                            text: 'Failed to load image',
-                            fontWeight: FontWeight.bold,
-                          ),),
+                          child: Container(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16)
+                            ),
+                            child: Image.network(
+                              e,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) => MyText(
+                              text: 'Failed to load image',
+                              fontWeight: FontWeight.bold,
+                            ),),
+                          ),
                         )).toList(),
                         options: CarouselOptions(
                           onPageChanged: (newDot, reason)

@@ -89,29 +89,32 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                   child: const Icon(Icons.delete,color: Colors.white,),
                                 ),
                                 key: ValueKey<Exercises>(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i]),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: context.decoration()
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: ListTile(
-                                      leading: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: SizedBox(
-                                              width: 80,
-                                              height: 80,
-                                              child: Image.network(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].image[0])),
-                                        ),
-                                      subtitle: MyText(
-                                          text: PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].name,
-                                          fontSize: 18,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: context.decoration()
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: ListTile(
+                                        leading: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: SizedBox(
+                                                width: 80,
+                                                height: 80,
+                                                child: Image.network(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].image[0])),
+                                          ),
+                                        subtitle: MyText(
+                                            text: PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].name,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        trailing: MyText(
+                                          text: '${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].reps!} X ${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].sets!}',
                                           fontWeight: FontWeight.w500,
+                                          fontSize: 16,
                                         ),
-                                      trailing: MyText(
-                                        text: '${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].reps!} X ${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].sets!}',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
                                       ),
                                     ),
                                   ),

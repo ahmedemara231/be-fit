@@ -9,11 +9,6 @@ class BottomNavCubit extends Cubit<BottomNavState>
   BottomNavCubit(super.initialState);
   static BottomNavCubit getInstance(context) => BlocProvider.of(context);
 
-  void returnToHome(context)
-  {
-    currentIndex = 0;
-    emit(BottomNavState());
-  }
   int currentIndex = 0;
   Future<void> changeScreen(context,{
     required int newIndex,
@@ -38,6 +33,12 @@ class BottomNavCubit extends Cubit<BottomNavState>
     else{
       return;
     }
+  }
+
+  void returnToFirst()
+  {
+    currentIndex = 0;
+    emit(BottomNavState());
   }
 }
 

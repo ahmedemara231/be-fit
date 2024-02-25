@@ -1,3 +1,5 @@
+import 'package:be_fit/extensions/container_decoration.dart';
+
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
@@ -32,23 +34,34 @@ class _ReportsState extends State<Reports> {
           ),
           body: state is GetAllReportsLoadingState?
           const Center(child: CircularProgressIndicator(),) : 
-          ListView.separated(
-              itemBuilder: (context, index) => ListTile(
-                title: MyText(
-                  text: SettingCubit.getInstance(context).reports[index].problem,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: ListView.separated(
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: context.decoration(),
+                    ),
+                    child: ListTile(
+                      title: MyText(
+                        text: SettingCubit.getInstance(context).reports[index].problem,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                      subtitle: MyText(
+                        text: SettingCubit.getInstance(context).reports[index].dateTime,
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      trailing: MyText(text: 'Waiting...',fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-                subtitle: MyText(
-                  text: SettingCubit.getInstance(context).reports[index].dateTime,
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-                trailing: MyText(text: 'Waiting...',fontWeight: FontWeight.bold),
-              ), 
-              separatorBuilder: (context, index) => const SizedBox(height: 16,),
-              itemCount: SettingCubit.getInstance(context).reports.length
+                separatorBuilder: (context, index) => const SizedBox(height: 16,),
+                itemCount: SettingCubit.getInstance(context).reports.length
+            ),
           ),
         );
       },

@@ -5,6 +5,7 @@ import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/report.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view/setting/Setting/notifications/notifications.dart';
+import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,7 +35,7 @@ class SettingCubit extends Cubit<SettingStates>
       SwitchOption(
         icon: Icons.dark_mode,
         optionName: 'Dark Mode',
-        value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme'),
+        value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme')?? false,
         onChanged: (newMode)async {
           await changeAppTheme(newMode);
         },
@@ -282,6 +283,7 @@ class SettingCubit extends Cubit<SettingStates>
                                   builder: (context) => Login(),
                                 ), (route) => false,
                               );
+                              BottomNavCubit.getInstance(context).returnToFirst();
                               await LoginCubit.getInstance(context).google.disconnect();
                               await CacheHelper.getInstance().kill();
                               await CacheHelper.getInstance().killGoogleUser();
@@ -295,6 +297,7 @@ class SettingCubit extends Cubit<SettingStates>
                                     builder: (context) => Login(),
                                   ), (route) => false,
                                 );
+                                BottomNavCubit.getInstance(context).returnToFirst();
                               });
                             }
                           },

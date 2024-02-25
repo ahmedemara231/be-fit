@@ -68,3 +68,5 @@ class DeleteCustomExerciseSuccessState extends ExercisesStates{}
 class DeleteCustomExerciseErrorState extends ExercisesStates{}
 
 class ChangeDotSuccessState extends ExercisesStates {}
+
+class RemoveSelectedImage extends ExercisesStates{}
