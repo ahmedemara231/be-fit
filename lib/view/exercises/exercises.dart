@@ -3,14 +3,14 @@ import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/widgets/default_custom_buttons.dart';
+import 'package:be_fit/view/specificExercise/specificExercise.dart';
 import '../../../models/widgets/modules/myText.dart';
-import 'package:be_fit/view/exercises/specificExercise/specificExercise.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/widgets/modules/textFormField.dart';
-import 'create_exercise.dart';
+import '../createExercise/create_exercise.dart';
 
 class ExercisesForMuscle extends StatefulWidget {
   String muscleName;
@@ -198,10 +198,8 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                           child: Column(
                             children: [
                               if(ExercisesCubit.getInstance(context).customExercisesList.isEmpty)
-                                Expanded(
-                                    child: Center(
-                                      child: MyText(text: 'No Custom Exercises Yet',fontSize: 20,fontWeight: FontWeight.w500),
-                                    ),
+                                Center(
+                                  child: MyText(text: 'No Custom Exercises Yet',fontSize: 20,fontWeight: FontWeight.w500),
                                 ),
                               if(ExercisesCubit.getInstance(context).customExercisesList.isNotEmpty)
                                 ListView.separated(

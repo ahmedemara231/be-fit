@@ -36,14 +36,7 @@ class GetRecordsErrorState extends ExercisesStates {}
 
 class CreateCustomExerciseLoadingState extends ExercisesStates {}
 
-class CreateCustomExerciseSuccessState extends ExercisesStates
-{
-  CustomExercises? customExercise;
-
-  CreateCustomExerciseSuccessState({
-    required this.customExercise,
-});
-}
+class CreateCustomExerciseSuccessState extends ExercisesStates {}
 
 class CreateCustomExerciseErrorState extends ExercisesStates {}
 

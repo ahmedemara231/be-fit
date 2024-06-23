@@ -18,7 +18,7 @@ import '../../../models/widgets/app_button.dart';
 import '../../../models/widgets/modules/otp_tff.dart';
 import '../../../models/widgets/modules/snackBar.dart';
 import '../../../models/widgets/records_model.dart';
-import '../../exercises/specificExercise/exercise_video.dart';
+import '../../exercises/exercise_video.dart';
 
 class PlanExerciseDetails extends StatefulWidget {
 

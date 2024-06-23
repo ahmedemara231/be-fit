@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:be_fit/constants/constants.dart';
+import 'package:be_fit/model/remote/firebase_service/fireStorage/implementation.dart';
+import 'package:be_fit/model/remote/firebase_service/fireStorage/interface.dart';
+import 'package:be_fit/model/remote/firebase_service/fireStore_service/implementation.dart';
+import 'package:be_fit/model/remote/firebase_service/fireStore_service/interface.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,6 +40,8 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
   ];
 
+  FireStoreService service = FireStoreCall();
+
   List<Exercises> exercises = [];
   Future<void> getExercisesForSpecificMuscle(context,{
     required String muscleName,
@@ -44,33 +49,22 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   {
     exercises = [];
     emit(GetExercisesLoadingState());
-    try {
-      await FirebaseFirestore.instance
-          .collection(muscleName)
-          .get()
-          .then((value)
-      {
-        value.docs.forEach((element) {
-          exercises.add(
-            Exercises(
-                video: element.data()['video'],
-                name: element.data()['name'],
-                image: element.data()['image'],
-                docs: element.data()['docs'],
-                id: element.id,
-                isCustom: element.data()['isCustom']
-            ),
-          );
-        });
+      var result = await service.callFireStore(muscleName);
+      if(result.isSuccess())
+        {
+          result.getOrThrow().get().then((value) {
+            value.docs.forEach((element) {
+              exercises.add(Exercises.fromJson(element as QueryDocumentSnapshot<Map<String, dynamic>>));
+            });
 
-        exercisesList = List.from(exercises);
-        emit(GetExercisesSuccessState());
-      });
-    } on Exception catch(e)
-    {
-      emit(GetExercisesErrorState());
-      MyMethods.handleError(context, e);
-    }
+            exercisesList = List.from(exercises);
+            emit(GetExercisesSuccessState());
+          });
+        }
+      else{
+        service.handleError(context, errorMessage: result.tryGetError()?.message);
+        emit(GetExercisesErrorState());
+      }
   }
 
 
@@ -109,77 +103,76 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 })async
  {
    // set a record for exercise
-
    emit(SetNewRecordLoadingState());
+
    double? reps = double.tryParse(recModel.reps);
    double? weight = double.tryParse(recModel.weight);
-   try{
-     await FirebaseFirestore.instance
-         .collection(recModel.muscleName)
-         .doc(recModel.exerciseId)
-         .collection('records')
-         .add(
-       {
+
+   var result = await service.callFireStore(recModel.muscleName);
+   if(result.isSuccess())
+     {
+       result.getOrThrow().doc(recModel.exerciseId)
+           .collection('records')
+           .add({
          'weight' : weight,
          'reps' : reps,
          'dateTime' : Jiffy().yMMMM,
          'uId' : recModel.uId,
-       },
-     ).then((recordId)async
-     {
-       // set a record for exercise in plans
-       await FirebaseFirestore.instance
-           .collection('users')
-           .doc(recModel.uId)
-           .collection('plans')
-           .get()
-           .then((value)
+       }).then((recordId)async
        {
-         value.docs.forEach((element) async{
-           List<int> lists = [1,2,3,4,5,6];
-           for(int i = 1; i < lists.length; i++)
-           {
-             QuerySnapshot checkCollection = await element.reference
-                 .collection('list$i').get();
-             if(checkCollection.docs.isNotEmpty)
-             {
-               await element.reference
-                   .collection('list$i').doc(recModel.exerciseId)
-                   .get().then((value)
-               {
-                 if(value.exists)
+         var result = await service.callFireStore('users');
+         result.getOrThrow().doc(recModel.uId)
+             .collection('plans')
+             .get().then((value)async {
+
+               for(var doc in value.docs)
                  {
-                   element.reference
-                       .collection('list$i')
-                       .doc(recModel.exerciseId)
-                       .collection('records')
-                       .doc(recordId.id)
-                       .set(
+                   List<int> lists = [1,2,3,4,5,6];
+                   for(int i = 1; i < lists.length; i++)
+                   {
+                     QuerySnapshot checkCollection = await doc.reference
+                         .collection('list$i').get();
+                     if(checkCollection.docs.isNotEmpty)
                      {
-                       'weight' : weight,
-                       'reps' : reps,
-                       'dateTime' : Jiffy().yMMMM
-                     },
-                   );
+                       await doc.reference
+                           .collection('list$i').doc(recModel.exerciseId)
+                           .get().then((value)
+                       {
+                         if(value.exists)
+                         {
+                           doc.reference
+                               .collection('list$i')
+                               .doc(recModel.exerciseId)
+                               .collection('records')
+                               .doc(recordId.id)
+                               .set(
+                             {
+                               'weight' : weight,
+                               'reps' : reps,
+                               'dateTime' : Jiffy().yMMMM
+                             },
+                           );
+                         }
+                         else{
+                           return;
+                         }
+                       });
+                     }
+                     else{
+                       return;
+                     }
+                   }
                  }
-                 else{
-                   return;
-                 }
-               });
-             }
-             else{
-               return;
-             }
-           }
+
+               MyToast.showToast(context, msg: 'Record added');
          });
-         MyToast.showToast(context, msg: 'Record added');
        });
+
        emit(SetNewRecordSuccessState());
-     });
-   } on Exception catch (e)
-   {
+     }
+   else{
+     service.handleError(context);
      emit(GetExercisesErrorState());
-     MyMethods.handleError(context, e);
    }
  }
 
@@ -192,30 +185,31 @@ class ExercisesCubit extends Cubit<ExercisesStates>
  {
    records = [];
    emit(MakeChartForExerciseLoadingState());
-   try{
-     await FirebaseFirestore.instance
-         .collection(muscleName)
-         .doc(exerciseDoc)
-         .collection('records')
-         .where('uId',isEqualTo: uId)
-         .get()
-         .then((value)
-     {
-       value.docs.forEach((element) {
-         records.add(
-           MyRecord(
-             reps: element.data()['reps'],
-             weight: element.data()['weight'],
-           ),
-         );
-       });
-       emit(MakeChartForExerciseSuccessState());
-     });
-   } on Exception catch(e)
-   {
-     emit(GetExercisesErrorState());
-     MyMethods.handleError(context, e);
-   }
+
+     var result = await service.callFireStore(muscleName);
+     if(result.isSuccess())
+       {
+         result.getOrThrow().doc(exerciseDoc)
+             .collection('records')
+             .where('uId',isEqualTo: uId)
+             .get().then((value) {
+               for(var doc in value.docs)
+                 {
+                   records.add(
+                     MyRecord(
+                       reps: doc.data()['reps'],
+                       weight: doc.data()['weight'],
+                     ),
+                   );
+                 }
+         });
+         emit(MakeChartForExerciseSuccessState());
+       }
+     else{
+       service.handleError(context);
+       emit(GetExercisesErrorState());
+     }
+
  }
 
  List<MyRecord> recordsForCustomExercise = [];
@@ -225,28 +219,28 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 })async
  {
    recordsForCustomExercise = [];
-   try{
-     await FirebaseFirestore.instance
-         .collection('users')
-         .doc(uId)
+   var result = await service.callFireStore('users');
+   if(result.isSuccess())
+   {
+     result.getOrThrow() .doc(uId)
          .collection('customExercises')
          .doc(exerciseDoc)
          .collection('records')
-         .get()
-         .then((value)
-     {
-       value.docs.forEach((element) {
-         recordsForCustomExercise.add(
-             MyRecord(
-               reps: element.data()['reps'],
-               weight: element.data()['weight'],
-             ));
-       });
+         .get().then((value) {
+           for(var doc in value.docs)
+             {
+               recordsForCustomExercise.add(
+                   MyRecord(
+                     reps: doc.data()['reps'],
+                     weight: doc.data()['weight'],
+                   ),
+               );
+             }
      });
-   }on Exception catch(e)
-   {
+   }
+   else{
+     service.handleError(context);
      emit(GetExercisesErrorState());
-     MyMethods.handleError(context, e);
    }
  }
 
@@ -268,81 +262,68 @@ class ExercisesCubit extends Cubit<ExercisesStates>
    });
  }
 
+
+ FireStorageService storage = FireStorageCall();
+
  Future<void> uploadPickedImageAndAddCustomExercise({
    required AddCustomExerciseModel addCustomExerciseModel,
    required context,
 })async
  {
    emit(CreateCustomExerciseLoadingState());
-   try{
-     await FirebaseStorage.instance
-         .ref('exerciseImages/')
-         .child(exerciseImageName)
-         .putFile(selectedExerciseImage!)
-         .then((value)
-     {
-       value.ref.getDownloadURL().then((imageUrl)async
+
+     var result = await storage.callFireStorage(refName: 'exerciseImages/', childName: exerciseImageName);
+     if(result.isSuccess())
        {
-         await FirebaseFirestore.instance
-             .collection('users')
-             .doc(addCustomExerciseModel.uId)
-             .collection('customExercises')
-             .add(
-             {
-               'muscle' : addCustomExerciseModel.muscle,
-               'name' : addCustomExerciseModel.name,
-               'image' : [imageUrl],
-               'description' : addCustomExerciseModel.description,
-               'isCustom' : true,
-             }).then((value)
-         {
-           customExercises.add(
-             CustomExercises(
-               name: addCustomExerciseModel.name,
-               image: [imageUrl],
-               docs: addCustomExerciseModel.description,
-               id: value.id,
-               isCustom: true,
-               video: '',
-             ),
-           );
+         result.getOrThrow()
+             .putFile(selectedExerciseImage!)
+             .then((val) {
+           val.ref.getDownloadURL().then((imageUrl)async
+           {
+             var db = await service.callFireStore('users');
+             db.getOrThrow().doc(addCustomExerciseModel.uId)
+                 .collection('customExercises')
+                 .add(addCustomExerciseModel.toJson(imageUrl))
+             .then((value) {
+               customExercises.add(
+                 CustomExercises(
+                   name: addCustomExerciseModel.name,
+                   image: [imageUrl],
+                   docs: addCustomExerciseModel.description,
+                   id: value.id,
+                   isCustom: true,
+                   video: '',
+                 ),
+               );
 
-           customExercisesList = List.from(customExercises);
+               customExercisesList = List.from(customExercises);
 
-           PlanCreationCubit.getInstance(context).addCustomExerciseToMuscles(
-             addCustomExerciseModel.muscle,
-             CustomExercises(
-                 name: addCustomExerciseModel.name,
-                 image: [imageUrl],
-                 docs: addCustomExerciseModel.description,
-                 id: value.id,
-                 isCustom: true,
-                 video: ''
-             ),
-           );
+               PlanCreationCubit.getInstance(context).addCustomExerciseToMuscles(
+                 addCustomExerciseModel.muscle,
+                 CustomExercises(
+                     name: addCustomExerciseModel.name,
+                     image: [imageUrl],
+                     docs: addCustomExerciseModel.description,
+                     id: value.id,
+                     isCustom: true,
+                     video: ''
+                 ),
+               );
 
-           MyToast.showToast(context, msg: 'New Exercise is Ready');
-           Navigator.pop(context);
-           selectedExerciseImage = null;
+               MyToast.showToast(context, msg: 'New Exercise is Ready');
+               Navigator.pop(context);
+               selectedExerciseImage = null;
 
-           emit(CreateCustomExerciseSuccessState(
-             customExercise: CustomExercises(
-               name: addCustomExerciseModel.name,
-               image: [imageUrl],
-               docs: addCustomExerciseModel.description,
-               id: value.id,
-               isCustom: true,
-               video: '',
-             ),
-           ));
+               emit(CreateCustomExerciseSuccessState());
+
+             });
+           });
          });
-       });
-     });
-   }on Exception catch(e)
-   {
-     emit(CreateCustomExerciseErrorState());
-     MyMethods.handleError(context, e);
-   }
+       }
+     else{
+       storage.handleError(context,errorMessage: result.tryGetError()?.message);
+       emit(CreateCustomExerciseErrorState());
+     }
  }
 
  List<CustomExercises> customExercises = [];
@@ -353,6 +334,27 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   {
     customExercises = [];
     emit(GetCustomExercisesLoadingState());
+    var db = await service.callFireStore('users');
+    if(db.isSuccess())
+      {
+        db.getOrThrow().doc(uId)
+            .collection('customExercises')
+            .where('muscle',isEqualTo: muscle)
+            .get().then((value) {
+              for(var doc in value.docs)
+                {
+                  customExercises.add(
+                    CustomExercises.fromJson(doc),
+                  );
+                }
+              customExercisesList = List.from(customExercises);
+              emit(GetCustomExercisesSuccessState());
+        });
+      }
+    else{
+      service.handleError(context,errorMessage: db.tryGetError()?.message);
+      emit(GetExercisesErrorState());
+    }
     try{
       await FirebaseFirestore.instance
           .collection('users')
@@ -363,23 +365,12 @@ class ExercisesCubit extends Cubit<ExercisesStates>
           .then((value)
       {
         value.docs.forEach((element) {
-          customExercises.add(
-            CustomExercises(
-              video: element.data()['video']?? '',
-              name: element.data()['name'],
-              image: element.data()['image'],
-              docs: element.data()['description'],
-              id: element.id,
-              isCustom: element.data()['isCustom'],
-            ),
-          );
+
         });
-        customExercisesList = List.from(customExercises);
-        emit(GetCustomExercisesSuccessState());
+
       });
     }on Exception catch(e)
     {
-      emit(GetExercisesErrorState());
       MyMethods.handleError(context, e);
     }
   }
@@ -390,68 +381,28 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     required String muscleName
 })async
   {
-    try{
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uId)
-          .collection('customExercises')
-          .doc(customExercises[index].id)
-          .delete()
-          .then((value)async
+    var db = await service.callFireStore('users');
+    if(db.isSuccess())
       {
-        PlanCreationCubit.getInstance(context).removeCustomExerciseFromMuscles(
-            muscleName: muscleName,
-            exerciseId: customExercises[index].id
-        );
+        db.getOrThrow().doc(uId)
+            .collection('customExercises')
+            .doc(customExercises[index].id)
+            .delete()
+            .then((value) {
+          PlanCreationCubit.getInstance(context).removeCustomExerciseFromMuscles(
+              muscleName: muscleName,
+              exerciseId: customExercises[index].id
+          );
 
-        customExercises.remove(customExercises[index]);
-        customExercisesList = List.from(customExercises);
+          customExercises.remove(customExercises[index]);
+          customExercisesList = List.from(customExercises);
 
-        // await FirebaseFirestore.instance
-        // .collection('users')
-        // .doc(uId)
-        // .collection('plans')
-        // .get()
-        // .then((value) {
-        //   if (value.docs.isNotEmpty) {
-        //     log('not empty');
-        //     List<int> days = [1,2,3,4,5,6];
-        //     value.docs.forEach((element)async {
-        //       for(int i = 1; i<= days.length; i++)
-        //       {
-        //         var myTargetExercise = await element.reference
-        //             .collection('list$i')
-        //             .doc(customExercises[index].id)
-        //             .get();
-        //         if(myTargetExercise.exists)
-        //         {
-        //           log('$myTargetExercise');
-        //           log('exists ${customExercises[index].id} at ${element.id} and list$i');
-        //           await element.reference
-        //               .collection('list$i')
-        //               .doc(customExercises[index].id)
-        //               .delete();
-        //           log('deleted');
-        //         }
-        //         else{
-        //           log('not exists ${customExercises[index].id} at ${element.id} and list$i');
-        //           return;
-        //         }
-        //       }
-        //     });
-        //   }
-        //   else {
-        //     log('empty');
-        //     return;
-        //   }
-        // });
-
-        emit(DeleteCustomExerciseSuccessState());
-      });
-    }on Exception catch(e)
-    {
-      emit(GetExercisesErrorState());
-      MyMethods.handleError(context, e);
+          emit(DeleteCustomExerciseSuccessState());
+        });
+      }
+    else{
+      service.handleError(context,errorMessage: db.tryGetError()?.message);
+      emit(DeleteCustomExerciseErrorState());
     }
   }
 
@@ -464,64 +415,57 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     double? reps = double.tryParse(setCustomExerciseRecModel.reps);
     double? weight = double.tryParse(setCustomExerciseRecModel.weight);
 
-    try{
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(setCustomExerciseRecModel.uId)
-          .collection('customExercises')
-          .doc(customExercises[setCustomExerciseRecModel.index].id)
-          .collection('records')
-          .add(
-        {
-          'reps' : reps,
-          'weight' : weight,
-          'dateTime' : Jiffy().yMMM
-        },
-      ).then((record)
+    var db = await service.callFireStore('users');
+    if(db.isSuccess())
       {
-
-        FirebaseFirestore.instance
-        .collection('users')
-        .doc(setCustomExerciseRecModel.uId)
-        .collection('plans')
-        .get()
-        .then((value)
-        {
-          List<int> days = [1,2,3,4,5,6];
-          for(int i = 1; i <= days.length; i++)
+        db.getOrThrow().doc(setCustomExerciseRecModel.uId)
+            .collection('customExercises')
+            .doc(customExercises[setCustomExerciseRecModel.index].id)
+            .collection('records').add(
+          {
+            'reps' : reps,
+            'weight' : weight,
+            'dateTime' : Jiffy().yMMM
+          },
+        ).then((record)async {
+          var db = await service.callFireStore('users');
+          db.getOrThrow().doc(setCustomExerciseRecModel.uId)
+              .collection('plans')
+              .get().then((value) async{
+            List<int> days = [1,2,3,4,5,6];
+            for(int i = 1; i <= days.length; i++)
             {
-              value.docs.forEach((element) async{
-               var myCustomExercise = await element.reference.collection('list$i')
-                    .doc(setCustomExerciseRecModel.exerciseDoc)
-                    .get();
-               if(myCustomExercise.exists)
-                 {
-                   await element.reference.collection('list$i')
-                       .doc(setCustomExerciseRecModel.exerciseDoc)
-                       .collection('records')
-                       .doc(record.id)
-                       .set(
-                       {
-                         'reps' : reps,
-                         'weight' : weight,
-                         'dateTime' : Jiffy().yMMM
-                       },
-                   );
-                 }
-               else{
-                 return;
-               }
-              });
-            }
-        });
 
-        emit(SetRecordForCustomExerciseSuccessState());
-        MyToast.showToast(context, msg: 'Record added');
-      });
-    } on Exception catch(e)
-    {
-      emit(GetExercisesErrorState());
-      MyMethods.handleError(context, e);
+              for(var doc in value.docs)
+                {
+                  var myCustomExercise = await doc.reference.collection('list$i')
+                      .doc(setCustomExerciseRecModel.exerciseDoc)
+                      .get();
+                  if(myCustomExercise.exists)
+                  {
+                    await doc.reference.collection('list$i')
+                        .doc(setCustomExerciseRecModel.exerciseDoc)
+                        .collection('records')
+                        .doc(record.id)
+                        .set(
+                      {
+                        'reps' : reps,
+                        'weight' : weight,
+                        'dateTime' : Jiffy().yMMM
+                      },
+                    );
+                  }
+                  else{
+                    return;
+                  }
+                }
+            }
+          });
+        });
+      }
+    else{
+      service.handleError(context,errorMessage: db.tryGetError()?.message);
+      emit(SetRecordForCustomExerciseErrorState());
     }
   }
 
@@ -538,6 +482,3 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     emit(RemoveSelectedImage());
   }
 }
-
-
-

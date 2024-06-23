@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Exercises
 {
   List image;
@@ -21,6 +23,18 @@ class Exercises
     this.reps,
     this.sets,
 });
+
+  factory Exercises.fromJson(QueryDocumentSnapshot<Map<String, dynamic>> element)
+  {
+    return Exercises(
+      video: element.data()['video'],
+      name: element.data()['name'],
+      image: element.data()['image'],
+      docs: element.data()['docs'],
+      id: element.id,
+      isCustom: element.data()['isCustom'],
+    );
+  }
 }
 
 class CustomExercises extends Exercises
@@ -34,4 +48,17 @@ class CustomExercises extends Exercises
     required super.isCustom,
     required super.video,
   });
+
+  factory CustomExercises.fromJson(QueryDocumentSnapshot<Map<String, dynamic>> element)
+  {
+    return CustomExercises(
+      video: element.data()['video'],
+      name: element.data()['name'],
+      image: element.data()['image'],
+      docs: element.data()['docs'],
+      id: element.id,
+      isCustom: element.data()['isCustom'],
+    );
+  }
+
 }

@@ -11,4 +11,16 @@ class AddCustomExerciseModel
     required this.name,
     required this.description,
 });
+
+
+  Map<String,dynamic> toJson(String imageUrl)
+  {
+    return {
+      'muscle' : muscle,
+      'name' : name,
+      'image' : [imageUrl],
+      'description' : description,
+      'isCustom' : true,
+    };
+  }
 }

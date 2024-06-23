@@ -8,7 +8,7 @@ import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../exercises/body_muscles.dart';
+import '../body_muscles/body_muscles.dart';
 
 class BottomNavBar extends StatelessWidget {
   BottomNavBar({super.key});

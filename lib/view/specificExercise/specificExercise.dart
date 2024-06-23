@@ -18,7 +18,7 @@ import '../../../models/widgets/modules/otp_tff.dart';
 import '../../../models/widgets/modules/snackBar.dart';
 import '../../../view_model/exercises/states.dart';
 import '../../../models/widgets/records_model.dart';
-import 'exercise_video.dart';
+import '../exercises/exercise_video.dart';
 
 class SpecificExercise extends StatefulWidget {
 
