@@ -1,10 +1,8 @@
 import 'package:be_fit/view/auth/login/login.dart';
-import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
-import 'package:be_fit/view_model/FCM/FCM.dart';
+import 'package:be_fit/view/BottomNavBar/bottom_nav_bar.dart';
 import 'package:be_fit/view_model/bloc_observer.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
@@ -21,6 +19,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'firebase_options.dart';
+import 'model/local/cache_helper/shared_prefs.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,10 +76,10 @@ class MyApp extends StatelessWidget {
             ThemeData.light():
             ThemeData.dark(),
             debugShowCheckedModeBanner: false,
-            home: CacheHelper.getInstance().shared.getStringList('userData') == null ||
-                  CacheHelper.getInstance().shared.getStringList('userData')!.isEmpty?
+            home: CacheHelper.getInstance().shared.get('userData') == null ||
+                  (CacheHelper.getInstance().shared.get('userData')! as List).isEmpty?
             Login() :
-            const BottomNavBar(),
+            BottomNavBar(),
           );
         },
       ),

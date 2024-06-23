@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
-import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
@@ -10,10 +9,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../../constants/constants.dart';
 import '../../../models/data_types/exercises.dart';
 import '../../../models/widgets/app_button.dart';
 import '../../../models/widgets/modules/otp_tff.dart';
@@ -52,7 +51,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
 
     PlansCubit.getInstance(context).pickRecordsToMakeChart(
       context,
-      uId: CacheHelper.getInstance().uId,
+      uId: Constants.userId,
       planDoc: widget.planDoc,
       listIndex: widget.listIndex,
       exerciseId: widget.exercise.id,
@@ -134,7 +133,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
             StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    .doc(CacheHelper.getInstance().uId)
+                    .doc(Constants.userId)
                     .collection('plans')
                     .doc(widget.planDoc)
                     .collection('list${widget.listIndex}')
@@ -323,7 +322,7 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
                             exercise: widget.exercise,
                             reps: repsCont.text,
                             weight: weightCont.text,
-                            uId: CacheHelper.getInstance().uId,
+                            uId: Constants.userId,
                           ),
                           context: context,
                           muscleName: widget.exercise.muscleName

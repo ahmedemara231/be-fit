@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multiple_result/multiple_result.dart';
-import '../../../models/widgets/modules/toast.dart';
+import '../../../../models/widgets/modules/toast.dart';
 import '../errors.dart';
 
 abstract class AuthService

@@ -6,7 +6,6 @@ import 'package:be_fit/models/widgets/modules/snackBar.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../models/widgets/modules/textFormField.dart';
 import '../../../models/widgets/modules/myText.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
@@ -186,7 +185,7 @@ class CreateExercise extends StatelessWidget {
                             await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
                               context: context,
                               addCustomExerciseModel: AddCustomExerciseModel(
-                                uId: CacheHelper.getInstance().uId,
+                                uId: Constants.userId,
                                 muscle: muscleName,
                                 name: nameCont.text,
                                 description: descriptionCont.text,

@@ -4,10 +4,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multiple_result/src/result.dart';
-import '../../../constants/constants.dart';
-import '../../../models/widgets/modules/toast.dart';
-import '../../../view/BottomNavBar/bottomNavBar.dart';
-import '../../../view_model/cache_helper/shared_prefs.dart';
+import '../../../../constants/constants.dart';
+import '../../../../models/widgets/modules/toast.dart';
+import '../../../../view/BottomNavBar/bottom_nav_bar.dart';
+import '../../../local/cache_helper/shared_prefs.dart';
 import '../errors.dart';
 import 'interface.dart';
 
@@ -50,7 +50,7 @@ class FirebaseRegisterCall extends AuthService
 
     await cacheData(userCredential).whenComplete(()
     {
-      context.removeOldRoute(const BottomNavBar());
+      context.removeOldRoute(BottomNavBar());
 
       MyToast.showToast(
         context,
@@ -62,9 +62,9 @@ class FirebaseRegisterCall extends AuthService
 
   Future<void> cacheData(UserCredential userCredential)async
   {
-    await CacheHelper.getInstance().handleUserData(
-      userData:
-      [
+    await CacheHelper.getInstance().setData(
+      key: 'userData',
+      value: [
         '${userCredential.user?.uid}',
         '${userCredential.user?.email!.split("@").first}',
         '${userCredential.user?.email!}',
@@ -119,12 +119,12 @@ class FirebaseLoginCall extends AuthService
 
   Future<void> cacheData(UserCredential userCredential)async
   {
-    await CacheHelper.getInstance().handleUserData(
-      userData:
-      [
+    await CacheHelper.getInstance().setData(
+      key: 'userData',
+      value: [
         '${userCredential.user?.uid}',
-        '${userCredential.user?.email!}',
         '${userCredential.user?.email!.split("@").first}',
+        '${userCredential.user?.email!}',
       ],
     );
   }
@@ -134,7 +134,7 @@ class FirebaseLoginCall extends AuthService
 
     cacheData(userCredential);
 
-    context.removeOldRoute(const BottomNavBar());
+    context.removeOldRoute(BottomNavBar());
 
     MyToast.showToast(
       context,

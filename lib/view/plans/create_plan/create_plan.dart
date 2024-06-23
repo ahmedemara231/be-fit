@@ -1,6 +1,5 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
 import '../../../../models/widgets/modules/myText.dart';
@@ -8,6 +7,7 @@ import 'package:be_fit/view/plans/create_plan/continue_planning.dart';
 import 'package:be_fit/view/plans/create_plan/number_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../models/widgets/modules/snackBar.dart';
 import '../../../models/widgets/modules/textFormField.dart';
 

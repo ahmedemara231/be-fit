@@ -3,12 +3,11 @@ import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/make_plan.dart';
-import 'package:be_fit/view/BottomNavBar/bottomNavBar.dart';
+import 'package:be_fit/view/BottomNavBar/bottom_nav_bar.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import '../../../../models/widgets/modules/myText.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'choose_exercises/choose_exercises.dart';
@@ -151,22 +150,22 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                     {
                       await PlanCreationCubit.getInstance(context).createNewPlan(
                         context,
-                        uId: CacheHelper.getInstance().uId,
+                        uId: Constants.userId,
                         makePlanModel: MakePlanModel(
                             daysNumber: widget.daysNumber,
                             name: widget.name,
-                            uId: CacheHelper.getInstance().uId,
+                            uId: Constants.userId,
                         ),
                       ).then((value) async
                       {
                         await PlansCubit.getInstance(context).getAllPlans(
-                            context, CacheHelper.getInstance().uId
+                            context, Constants.userId
                         ).then((value)
                         {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const BottomNavBar(),
+                                builder: (context) => BottomNavBar(),
                               ), (route) => false,
                           );
                         });

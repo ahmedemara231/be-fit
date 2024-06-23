@@ -1,5 +1,5 @@
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:flutter/material.dart';
+import '../../model/local/cache_helper/shared_prefs.dart';
 import 'modules/myText.dart';
 
 class ContactingUsModel extends StatelessWidget {

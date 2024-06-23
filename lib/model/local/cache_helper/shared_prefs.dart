@@ -70,25 +70,25 @@ class CacheHelper
     await shared.setBool('appTheme', newMode);
   }
 
-   Future<void> handleUserData({
-    required List<String> userData
-})async
-  {
-    await shared.setStringList('userData', userData)
-        .then((value)
-    {
-      getUserData();
-      return value;
-    });
-  }
-
-   late String uId;
-   late String userName;
-   void getUserData()
-  {
-    uId = shared.getStringList('userData')![0];
-    userName = shared.getStringList('userData')![1];
-  }
+//    Future<void> handleUserData({
+//     required List<String> userData
+// })async
+//   {
+//     await shared.setStringList('userData', userData)
+//         .then((value)
+//     {
+//       getUserData();
+//       return value;
+//     });
+//   }
+//
+//    late String uId;
+//    late String userName;
+//    void getUserData()
+//   {
+//     uId = shared.getStringList('userData')![0];
+//     userName = shared.getStringList('userData')![1];
+//   }
 
   Future<void> setNotificationsOnEveryDay({
     required bool everyday,

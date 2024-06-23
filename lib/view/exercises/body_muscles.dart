@@ -1,6 +1,5 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/view/exercises/exercises.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';

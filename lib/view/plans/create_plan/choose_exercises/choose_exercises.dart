@@ -1,7 +1,6 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view/plans/create_plan/choose_exercises/reps_sets.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +34,7 @@ class ChooseExercises extends StatelessWidget {
             color: Colors.white,
             onRefresh: ()async
             {
-              await PlanCreationCubit.getInstance(context).getMuscles(context,uId: CacheHelper.getInstance().uId);
+              await PlanCreationCubit.getInstance(context).getMuscles(context,uId: Constants.userId);
               return Future(() => null);
             },
             child: Padding(

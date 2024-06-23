@@ -14,12 +14,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../model/local/cache_helper/shared_prefs.dart';
 import '../../models/widgets/modules/myText.dart';
 import '../../models/widgets/setting_model.dart';
 import '../../view/auth/login/login.dart';
 import '../../view/setting/Setting/report_problem/reports.dart';
 import '../../view/setting/Setting/report_problem/report_problem.dart';
-import '../cache_helper/shared_prefs.dart';
 
 class SettingCubit extends Cubit<SettingStates>
 {
@@ -205,15 +205,13 @@ class SettingCubit extends Cubit<SettingStates>
   Future<void> setNewUserData({String? userName, String? email})async
   {
     emit(ChangePersonalDataLoadingState());
-    await CacheHelper.getInstance().handleUserData(
-        userData: [
-          userName?? CacheHelper.getInstance().userName,
-          email?? ''
-        ],
-    ).then((value)
-    {
-      emit(ChangePersonalDataSuccessState());
-    });
+
+    await CacheHelper.getInstance().setData(
+        key: 'userData',
+        value: [userName?? Constants.userName,email?? '']
+    );
+
+    emit(ChangePersonalDataSuccessState());
   }
 
   Future<void> logout(context) async

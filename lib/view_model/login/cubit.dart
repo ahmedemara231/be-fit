@@ -1,11 +1,7 @@
 import 'dart:io';
 import 'package:be_fit/constants/constants.dart';
-import 'package:be_fit/model/firebase_service/auth_service/implementation.dart';
-import 'package:be_fit/model/firebase_service/auth_service/interface.dart';
-import 'package:be_fit/model/firebase_service/errors.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/modules/toast.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,8 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:multiple_result/multiple_result.dart';
+import '../../model/local/cache_helper/shared_prefs.dart';
+import '../../model/remote/firebase_service/auth_service/implementation.dart';
+import '../../model/remote/firebase_service/auth_service/interface.dart';
+import '../../model/remote/firebase_service/errors.dart';
 import '../../models/widgets/modules/snackBar.dart';
-import '../../view/BottomNavBar/bottomNavBar.dart';
+import '../../view/BottomNavBar/bottom_nav_bar.dart';
 
 class LoginCubit extends Cubit<LoginStates>
 {
@@ -151,18 +151,17 @@ class LoginCubit extends Cubit<LoginStates>
           },
         ).then((value) async
         {
-          await CacheHelper.getInstance().handleUserData(
-            userData:
-            [
+          await CacheHelper.getInstance().setData(
+            key: 'userData',
+            value: [
               user.user!.uid,
               user.user!.displayName!
             ],
-          ).then((value)
-          {
+          ).whenComplete(() {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const BottomNavBar(),
+                builder: (context) => BottomNavBar(),
               ), (route) => false,
             );
 

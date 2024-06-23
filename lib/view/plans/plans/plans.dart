@@ -3,7 +3,6 @@ import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:flutter/cupertino.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/plan_details.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +29,7 @@ class Plans extends StatelessWidget {
             {
               await PlansCubit.getInstance(context).getAllPlans(
                   context,
-                  CacheHelper.getInstance().uId
+                  Constants.userId
               );
               return Future(() => null);
             },
@@ -70,7 +69,7 @@ class Plans extends StatelessWidget {
                                       await PlansCubit.getInstance(context).deletePlan(
                                         context,
                                         index : index,
-                                        uId: CacheHelper.getInstance().uId,
+                                        uId: Constants.userId,
                                         planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
                                       );
                                     },
@@ -106,7 +105,7 @@ class Plans extends StatelessWidget {
                                           await PlansCubit.getInstance(context).deletePlan(
                                             context,
                                             index : index,
-                                            uId: CacheHelper.getInstance().uId,
+                                            uId: Constants.userId,
                                             planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
                                           );
                                         },

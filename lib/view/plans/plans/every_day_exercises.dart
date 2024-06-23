@@ -1,10 +1,10 @@
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
 import '../../../../models/widgets/modules/myText.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../constants/constants.dart';
 import '../../../models/data_types/exercises.dart';
 import '../../../view_model/plans/cubit.dart';
 import 'exercise_details.dart';
@@ -56,7 +56,7 @@ class DayExercises extends StatelessWidget {
                             deleteFromPlanModel: DeleteFromPlanModel(
                               exerciseIndex: index,
                               planName: planName,
-                              uId: CacheHelper.getInstance().uId,
+                              uId: Constants.userId,
                               planDoc: planDoc,
                               listIndex: listIndex,
                               exerciseDoc: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).id,

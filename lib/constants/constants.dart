@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
+import '../model/local/cache_helper/shared_prefs.dart';
 import '../models/widgets/modules/snackBar.dart';
-import '../view_model/cache_helper/shared_prefs.dart';
 
 class Constants
 {

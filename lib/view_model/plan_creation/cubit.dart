@@ -1,15 +1,15 @@
 import 'dart:developer';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import '../../constants/constants.dart';
+import '../../model/local/cache_helper/shared_prefs.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/make_plan.dart';
 import '../../models/widgets/modules/toast.dart';
-import '../../view/BottomNavBar/bottomNavBar.dart';
+import '../../view/BottomNavBar/bottom_nav_bar.dart';
 
 class PlanCreationCubit extends Cubit<PlanCreationStates>
 {
@@ -709,7 +709,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const BottomNavBar(),
+            builder: (context) => BottomNavBar(),
           ), (route) => false,
         );
         emit(CreateNewPlanSuccessState());

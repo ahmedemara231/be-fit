@@ -5,7 +5,6 @@ import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -56,14 +55,14 @@ class _SpecificExerciseState extends State<SpecificExercise> {
           context,
           muscleName: widget.exercise.muscleName!,
           exerciseDoc: widget.exercise.id,
-          uId: CacheHelper.getInstance().uId,
+          uId: Constants.userId
         );
       }
     else
     {
       ExercisesCubit.getInstance(context).pickRecordsForCustomExerciseToMakeChart(
         context,
-        uId: CacheHelper.getInstance().uId,
+        uId: Constants.userId,
         exerciseDoc: widget.exercise.id,
       );
     }
@@ -151,8 +150,8 @@ class _SpecificExerciseState extends State<SpecificExercise> {
             ),
                 StreamBuilder(
                   stream: widget.exercise.isCustom == false?
-                  FirebaseFirestore.instance.collection(widget.exercise.muscleName!).doc(widget.exercise.id).collection('records').where('uId',isEqualTo: CacheHelper.getInstance().uId).orderBy('dateTime').snapshots() :
-                  FirebaseFirestore.instance.collection('users').doc(CacheHelper.getInstance().uId).collection('customExercises').doc(widget.exercise.id).collection('records').orderBy('dateTime').snapshots(),
+                  FirebaseFirestore.instance.collection(widget.exercise.muscleName!).doc(widget.exercise.id).collection('records').where('uId',isEqualTo: Constants.userId).orderBy('dateTime').snapshots() :
+                  FirebaseFirestore.instance.collection('users').doc(Constants.userId).collection('customExercises').doc(widget.exercise.id).collection('records').orderBy('dateTime').snapshots(),
                   builder: (context, snapshot)
                   {
                     if(snapshot.hasData)
@@ -342,7 +341,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                 exerciseId: widget.exercise.id,
                                 weight: weightCont.text,
                                 reps: repsCont.text,
-                                uId: CacheHelper.getInstance().uId,
+                                uId: Constants.userId
                               ),
                               context: context,
                             ).then((value)
@@ -359,7 +358,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                 index: widget.index!,
                                 reps: repsCont.text,
                                 weight: weightCont.text,
-                                uId: CacheHelper.getInstance().uId,
+                                uId: Constants.userId
                               ),
                             ).then((value)
                             {

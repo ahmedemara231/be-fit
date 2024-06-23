@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:be_fit/constants/constants.dart';
-import 'package:be_fit/model/firebase_service/auth_service/implementation.dart';
-import 'package:be_fit/model/firebase_service/auth_service/interface.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multiple_result/multiple_result.dart';
-import '../../model/firebase_service/errors.dart';
+import '../../model/remote/firebase_service/auth_service/implementation.dart';
+import '../../model/remote/firebase_service/auth_service/interface.dart';
+import '../../model/remote/firebase_service/errors.dart';
 import '../../models/data_types/user.dart';
 import '../../models/widgets/modules/snackBar.dart';
 

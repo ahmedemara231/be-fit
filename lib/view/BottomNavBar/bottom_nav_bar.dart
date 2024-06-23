@@ -4,33 +4,21 @@ import 'package:be_fit/view/plans/plans/plans.dart';
 import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../exercises/body_muscles.dart';
 
-class BottomNavBar extends StatefulWidget {
-    const BottomNavBar({super.key});
+class BottomNavBar extends StatelessWidget {
+  BottomNavBar({super.key});
 
-  @override
-  State<BottomNavBar> createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<BottomNavBar> {
   final List<Widget> mainScreens =
    [
      BodyMuscles(),
      const Plans(),
      const Setting(),
   ];
-
-  @override
-  void initState() {
-    CacheHelper.getInstance().getUserData();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +56,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               {
                 await BottomNavCubit.getInstance(context).changeScreen(
                   context,
-                  uId: CacheHelper.getInstance().uId,
+                  uId: Constants.userId,
                   planCreationCubit: PlanCreationCubit.getInstance(context),
                   plansCubit: PlansCubit.getInstance(context),
                   newIndex: newTap,

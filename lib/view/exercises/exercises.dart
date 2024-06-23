@@ -5,7 +5,6 @@ import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/widgets/default_custom_buttons.dart';
 import '../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/exercises/specificExercise/specificExercise.dart';
-import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +38,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
     );
     ExercisesCubit.getInstance(context).getCustomExercises(
       context,
-      uId: CacheHelper.getInstance().uId,
+      uId: Constants.userId,
       muscle: widget.muscleName,
     );
     super.initState();
@@ -191,7 +190,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                           onRefresh: () async{
                             await ExercisesCubit.getInstance(context).getCustomExercises(
                               context,
-                              uId: CacheHelper.getInstance().uId,
+                              uId: Constants.userId,
                               muscle: widget.muscleName,
                             );
                             return Future(() => null);
@@ -258,7 +257,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                                                     onTap: () async {
                                                       await ExercisesCubit.getInstance(context).deleteCustomExercise(
                                                         context,
-                                                        uId: CacheHelper.getInstance().uId,
+                                                        uId: Constants.userId,
                                                         muscleName: widget.muscleName,
                                                         index: index,
                                                       );
