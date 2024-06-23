@@ -1,4 +1,4 @@
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/setting/Setting/report_problem/reports.dart';

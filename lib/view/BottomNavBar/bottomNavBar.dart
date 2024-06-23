@@ -1,4 +1,4 @@
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view/plans/plans/plans.dart';
 import 'package:be_fit/view/setting/setting.dart';

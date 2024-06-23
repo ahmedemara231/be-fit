@@ -2,12 +2,18 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'models/widgets/modules/snackBar.dart';
+import '../models/widgets/modules/snackBar.dart';
+import '../view_model/cache_helper/shared_prefs.dart';
 
 class Constants
 {
   static var appColor = HexColor('#D84D4D');
   static var scaffoldBackGroundColor = HexColor('#242424');
+
+  // user
+  static String userId = CacheHelper.getInstance().getData('userData')[0];
+  static String userName = CacheHelper.getInstance().getData('userData')[1];
+  static String userEmail = CacheHelper.getInstance().getData('userData')[2];
 }
 
 class MyMethods

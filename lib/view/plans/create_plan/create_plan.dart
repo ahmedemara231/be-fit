@@ -1,4 +1,4 @@
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
@@ -56,7 +56,7 @@ class CreatePlan extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false ?
+                              color: CacheHelper.getInstance().shared.getBool('appTheme') == false ?
                               Colors.grey[300] :
                               Colors.grey[700]
                             ),

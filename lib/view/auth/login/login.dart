@@ -1,4 +1,4 @@
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
@@ -87,9 +87,9 @@ class Login extends StatelessWidget {
                         )),
                       ),
                     ),
-                    if(state is LoginLoadingState || state is SetPasswordVisibility)
+                    if(state is LoginLoadingState)
                       const CircularProgressIndicator(),
-                    if(state is! LoginLoadingState && state is! SetPasswordVisibility)
+                    if(state is! LoginLoadingState)
                       AppButton(onPressed: ()async
                       {
                         if(formKey.currentState!.validate())
@@ -140,7 +140,7 @@ class Login extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
-                            color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+                            color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
                             Colors.grey[200]:
                             HexColor('#333333'),
                           ),

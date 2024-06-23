@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

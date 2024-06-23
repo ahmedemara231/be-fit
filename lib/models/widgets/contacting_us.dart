@@ -18,7 +18,7 @@ class ContactingUsModel extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+        backgroundColor: CacheHelper.getInstance().shared.getBool('appTheme') == false?
         Colors.grey[200] :
         Colors.grey[700],
           child: Container(child: icon,),

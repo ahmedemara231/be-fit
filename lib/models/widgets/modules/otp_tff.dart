@@ -1,4 +1,4 @@
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class OtpTff extends StatelessWidget {

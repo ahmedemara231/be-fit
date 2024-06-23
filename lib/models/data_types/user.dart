@@ -1,16 +1,10 @@
 class Trainee
 {
-  String? name;
-  String? email;
-  String? phone;
-  String? password;
-  String? id;
+  String email;
+  String password;
 
   Trainee({
-    this.name,
-    this.email,
-    this.phone,
-    this.password,
-    this.id,
+    required this.email,
+    required this.password,
 });
 }

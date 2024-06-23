@@ -1,11 +1,12 @@
 import 'dart:io';
-import 'package:be_fit/constants.dart';
-import 'package:be_fit/view/auth/login/login.dart';
+import 'package:be_fit/constants/constants.dart';
+import 'package:be_fit/model/firebase_service/auth_service/implementation.dart';
+import 'package:be_fit/model/firebase_service/auth_service/interface.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multiple_result/multiple_result.dart';
+import '../../model/firebase_service/errors.dart';
 import '../../models/data_types/user.dart';
 import '../../models/widgets/modules/snackBar.dart';
 
@@ -14,53 +15,26 @@ class SignUpCubit extends Cubit<SignUpStates>
   SignUpCubit(super.initialState);
   static SignUpCubit getInstance(context) => BlocProvider.of(context);
 
+  AuthService signUpService = FirebaseRegisterCall();
   Future<void> signUp({
     required Trainee user,
     required context,
 })async
   {
-    try {
-      emit(SignUpLoadingState());
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-        email: user.email!,
-        password: user.password!,
-      ).then((value)async
-      {
-        if(value.user == null)
-          {
-            MySnackBar.showSnackBar(
-                context: context,
-                message: 'Please try again later',
-            );
-            emit(SignUpErrorState());
-          }
-        else{
+    emit(SignUpLoadingState());
 
-          await FirebaseFirestore.instance
-          .collection('users')
-          .doc(value.user?.uid)
-          .set(
-              {
-                'name' : user.name,
-                'email' : user.email,
-                'phone' : user.phone,
-              },
-          ).then((value)
-          {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Login(),
-              ), (route) => false,
-            );
-            emit(SignUpSuccessState());
-          });
-        }
-      });
-    } on Exception catch (e) {
+    Result<UserCredential,FirebaseError> result = await signUpService.callFirebaseAuth(
+        email: user.email, password: user.password,
+    );
+
+    if(result.isSuccess())
+      {
+        signUpService.handleSuccess(context, userCredential: result.getOrThrow());
+        emit(SignUpSuccessState());
+      }
+    else{
+      signUpService.handleError(context, result.tryGetError()?.message);
       emit(SignUpErrorState());
-      handleErrors(context, e);
     }
   }
 

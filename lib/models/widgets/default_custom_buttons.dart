@@ -2,7 +2,7 @@ import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
+import '../../constants/constants.dart';
 import 'modules/myText.dart';
 
 class DefaultAndCustomButtons extends StatelessWidget {

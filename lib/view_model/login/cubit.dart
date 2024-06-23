@@ -1,5 +1,8 @@
 import 'dart:io';
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
+import 'package:be_fit/model/firebase_service/auth_service/implementation.dart';
+import 'package:be_fit/model/firebase_service/auth_service/interface.dart';
+import 'package:be_fit/model/firebase_service/errors.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/modules/toast.dart';
 import 'package:be_fit/view_model/cache_helper/shared_prefs.dart';
@@ -9,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:multiple_result/multiple_result.dart';
 import '../../models/widgets/modules/snackBar.dart';
 import '../../view/BottomNavBar/bottomNavBar.dart';
 
@@ -17,58 +21,27 @@ class LoginCubit extends Cubit<LoginStates>
   LoginCubit(super.initialState);
   static LoginCubit getInstance(context) => BlocProvider.of(context);
 
+  AuthService loginService = FirebaseLoginCall();
+
   Future<void> login({
-    required Trainee user,
     required context,
+    required Trainee user
   })async
   {
     emit(LoginLoadingState());
-    try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: user.email!,
-        password: user.password!,
-      ). then((value)async
-      {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(value.user?.uid)
-            .get()
-            .then((value)async
-        {
-      user = Trainee(
-        email: value.data()?['email'],
-        name: value.data()?['name'],
-        phone: value.data()?['phone'],
-        id: value.id,
-      );
-      await CacheHelper.getInstance().handleUserData(
-          userData:
-          [
-            user.id!,
-            user.name!,
-          ],
-      ).then((value)
-      {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BottomNavBar(),
-            ), (route) => false,
-        );
+    Result<UserCredential,FirebaseError> result = await loginService.callFirebaseAuth(
+        email: user.email,
+        password: user.password
+    );
 
-        MyToast.showToast(
-          context,
-          msg: 'Welcome Coach!',
-          color: Constants.appColor,
-        );
+    if(result.isSuccess())
+      {
+        loginService.handleSuccess(context, userCredential: result.getOrThrow());
         emit(LoginSuccessState());
-      });
-    });
-  });
-    }on Exception catch(e)
-    {
+      }
+    else{
+      loginService.handleError(context, result.tryGetError()?.message);
       emit(LoginErrorState());
-      handleLoginErrors(context, e);
     }
   }
 

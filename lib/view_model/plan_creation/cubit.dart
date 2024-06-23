@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
-import '../../constants.dart';
+import '../../constants/constants.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/make_plan.dart';
 import '../../models/widgets/modules/toast.dart';
@@ -522,7 +522,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     MyToast.showToast(
         context,
         msg: 'Preparing tour plan',
-        color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+        color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
         Colors.grey[200]:
         HexColor('#333333'),
     );

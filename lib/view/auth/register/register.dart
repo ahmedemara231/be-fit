@@ -1,3 +1,4 @@
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
@@ -17,13 +18,11 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 
-  final nameCont = TextEditingController();
-
   final emailCont = TextEditingController();
 
   final passCont = TextEditingController();
 
-  final phoneCont = TextEditingController();
+  final confirmPassCont = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -35,24 +34,21 @@ class _SignUpState extends State<SignUp> {
     [
       AuthTFF(
         obscureText: false,
-        controller: nameCont,
-        hintText: 'name',
-      ),
-      AuthTFF(
-        obscureText: false,
         controller: emailCont,
         keyboardType: TextInputType.emailAddress,
-        hintText: 'ahmed@example.com',
+        hintText: 'name@example.com',
       ),
-      AuthTFF(
-        obscureText: false,
-        controller: phoneCont,
-        hintText: 'phone',
-      ),
+
       AuthTFF(
         obscureText: false,
         controller: passCont,
         hintText: 'Password',
+      ),
+
+      AuthTFF(
+        obscureText: false,
+        controller: confirmPassCont,
+        hintText: 'Confirm password',
       ),
     ];
     super.initState();
@@ -60,10 +56,9 @@ class _SignUpState extends State<SignUp> {
 
   @override
   void dispose() {
-    nameCont.dispose();
     emailCont.dispose();
     passCont.dispose();
-    phoneCont.dispose();
+    confirmPassCont.dispose();
     super.dispose();
   }
   @override
@@ -98,7 +93,10 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   if(state is SignUpLoadingState)
-                    const CircularProgressIndicator(),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 14.0),
+                      child: CircularProgressIndicator(),
+                    ),
                   if(state is! SignUpLoadingState)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -111,8 +109,6 @@ class _SignUpState extends State<SignUp> {
                             user: Trainee(
                               email: emailCont.text,
                               password: passCont.text,
-                              name: nameCont.text,
-                              phone: phoneCont.text,
                             ),
                             context: context,
                           );
@@ -127,12 +123,7 @@ class _SignUpState extends State<SignUp> {
                       TextButton(
                           onPressed: ()
                           {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Login(),
-                              ), (route) => false,
-                            );
+                            context.removeOldRoute(Login());
                           }, child: MyText(text: 'sign in')),
                     ],
                   ),

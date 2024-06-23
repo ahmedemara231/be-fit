@@ -62,7 +62,7 @@ class AuthTFF extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-              color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+              color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
               Colors.black :
               Colors.white,
           )

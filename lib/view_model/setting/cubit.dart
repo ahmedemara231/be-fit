@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:be_fit/constants.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/report.dart';
@@ -35,7 +35,7 @@ class SettingCubit extends Cubit<SettingStates>
       SwitchOption(
         icon: Icons.dark_mode,
         optionName: 'Dark Mode',
-        value: CacheHelper.getInstance().sharedPreferences.getBool('appTheme')?? false,
+        value: CacheHelper.getInstance().shared.getBool('appTheme')?? false,
         onChanged: (newMode)async {
           await changeAppTheme(newMode);
         },
@@ -76,7 +76,7 @@ class SettingCubit extends Cubit<SettingStates>
       SwitchOption(
         icon: Icons.notifications,
         optionName: 'notifications everyday',
-        value: CacheHelper.getInstance().sharedPreferences.getBool('notificationsEveryDay')?? false,
+        value: CacheHelper.getInstance().shared.getBool('notificationsEveryDay')?? false,
         onChanged: (value) async
         {
           await setNotificationsOnEveryDay(value);
@@ -85,7 +85,7 @@ class SettingCubit extends Cubit<SettingStates>
       SwitchOption(
         icon: Icons.notifications,
         optionName: 'notification on workout days',
-        value: CacheHelper.getInstance().sharedPreferences.getBool('notificationsOnWorkoutDays')?? false,
+        value: CacheHelper.getInstance().shared.getBool('notificationsOnWorkoutDays')?? false,
         onChanged: (value) async
         {
           await setNotificationsOnWorkoutDays(value);
@@ -225,7 +225,7 @@ class SettingCubit extends Cubit<SettingStates>
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: Container(
             decoration: BoxDecoration(
-                color: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+                color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
                 Colors.grey[300]:
                 Constants.scaffoldBackGroundColor,
 
@@ -275,7 +275,7 @@ class SettingCubit extends Cubit<SettingStates>
                           {
                             Navigator.pop(context);
 
-                            if(CacheHelper.getInstance().sharedPreferences.getBool('isGoogleUser') == true)
+                            if(CacheHelper.getInstance().shared.getBool('isGoogleUser') == true)
                             {
                               Navigator.pushAndRemoveUntil(
                                 context,

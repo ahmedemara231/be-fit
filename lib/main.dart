@@ -31,9 +31,9 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await HandleNotifications.getInstance().getToken();
-  await HandleNotifications.getInstance().handleOnForeGround();
-  HandleNotifications.getInstance().handleOnBackGround();
+  // await HandleNotifications.getInstance().getToken();
+  // await HandleNotifications.getInstance().handleOnForeGround();
+  // HandleNotifications.getInstance().handleOnBackGround();
 
   Bloc.observer = MyBlocObserver();
   runApp(const MyApp());
@@ -73,12 +73,12 @@ class MyApp extends StatelessWidget {
         builder: (context, state)
         {
           return MaterialApp(
-            theme: CacheHelper.getInstance().sharedPreferences.getBool('appTheme') == false?
+            theme: CacheHelper.getInstance().shared.getBool('appTheme') == false?
             ThemeData.light():
             ThemeData.dark(),
             debugShowCheckedModeBanner: false,
-            home: CacheHelper.getInstance().sharedPreferences.getStringList('userData') == null ||
-                  CacheHelper.getInstance().sharedPreferences.getStringList('userData')!.isEmpty?
+            home: CacheHelper.getInstance().shared.getStringList('userData') == null ||
+                  CacheHelper.getInstance().shared.getStringList('userData')!.isEmpty?
             Login() :
             const BottomNavBar(),
           );
