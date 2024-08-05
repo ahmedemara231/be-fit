@@ -4,6 +4,9 @@ import 'package:be_fit/model/remote/firebase_service/fireStorage/implementation.
 import 'package:be_fit/model/remote/firebase_service/fireStorage/interface.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStore_service/implementation.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStore_service/interface.dart';
+import 'package:be_fit/models/data_types/permission_process_model.dart';
+import 'package:be_fit/models/methods/check_permission.dart';
+import 'package:be_fit/models/widgets/modules/snackBar.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -97,84 +100,108 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     }
   }
 
- Future<void> setRecord({
-   required SetRecModel recModel,
-   required context,
-})async
- {
-   // set a record for exercise
-   emit(SetNewRecordLoadingState());
+  Future<void> setRecord({
+    required SetRecModel recModel,
+    required context,
+  })async
+  {
+    emit(SetNewRecordLoadingState());
+    double? reps = double.tryParse(recModel.reps);
+    double? weight = double.tryParse(recModel.weight);
 
-   double? reps = double.tryParse(recModel.reps);
-   double? weight = double.tryParse(recModel.weight);
+      await FirebaseFirestore.instance
+          .collection(recModel.muscleName)
+          .doc(recModel.exerciseId)
+          .collection('records')
+          .add(
+        {  'weight' : weight,
+          'reps' : reps,
+          'dateTime' : Jiffy().yMMMM,
+          'uId' : recModel.uId,
+        },
+      ).then((recordId)async
+      {
+        // set a record for exercise in plans
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(recModel.uId)
+            .collection('plans')
+            .get()
+            .then((value) {
+          value.docs.forEach((element) async {
+            List<int> lists = [1, 2, 3, 4, 5, 6];
+            for (int i = 1; i < lists.length; i++) {
+              QuerySnapshot checkCollection = await element.reference
+                  .collection('list$i').get();
+              if (checkCollection.docs.isNotEmpty) {
+                await element.reference
+                    .collection('list$i').doc(recModel.exerciseId)
+                    .get().then((value) {
+                  if (value.exists) {
+                    element.reference
+                        .collection('list$i')
+                        .doc(recModel.exerciseId)
+                        .collection('records')
+                        .doc(recordId.id)
+                        .set({
+                      'weight': weight,
+                      'reps': reps,
+                      'dateTime': Jiffy().yMMMM
+                    },
+                    );
+                  }
+                  else {
+                    return;
+                  }
+                });
+              }
+              else {
+                return;
+              }
+            }
+          });
+          MyToast.showToast(context, msg: 'Record added');
+        });
+        emit(SetNewRecordSuccessState());
+      });
+  }
 
-   var result = await service.callFireStore(recModel.muscleName);
-   if(result.isSuccess())
-     {
-       result.getOrThrow().doc(recModel.exerciseId)
-           .collection('records')
-           .add({
-         'weight' : weight,
-         'reps' : reps,
-         'dateTime' : Jiffy().yMMMM,
-         'uId' : recModel.uId,
-       }).then((recordId)async
-       {
-         var result = await service.callFireStore('users');
-         result.getOrThrow().doc(recModel.uId)
-             .collection('plans')
-             .get().then((value)async {
 
-               for(var doc in value.docs)
-                 {
-                   List<int> lists = [1,2,3,4,5,6];
-                   for(int i = 1; i < lists.length; i++)
-                   {
-                     QuerySnapshot checkCollection = await doc.reference
-                         .collection('list$i').get();
-                     if(checkCollection.docs.isNotEmpty)
-                     {
-                       await doc.reference
-                           .collection('list$i').doc(recModel.exerciseId)
-                           .get().then((value)
-                       {
-                         if(value.exists)
-                         {
-                           doc.reference
-                               .collection('list$i')
-                               .doc(recModel.exerciseId)
-                               .collection('records')
-                               .doc(recordId.id)
-                               .set(
-                             {
-                               'weight' : weight,
-                               'reps' : reps,
-                               'dateTime' : Jiffy().yMMMM
-                             },
-                           );
-                         }
-                         else{
-                           return;
-                         }
-                       });
-                     }
-                     else{
-                       return;
-                     }
-                   }
-                 }
 
-               MyToast.showToast(context, msg: 'Record added');
-         });
-       });
 
-       emit(SetNewRecordSuccessState());
-     }
-   else{
-     service.handleError(context);
-     emit(GetExercisesErrorState());
-   }
- }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  List<MyRecord> records = [];
  Future<void> pickRecordsToMakeChart(context,{
@@ -246,20 +273,28 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 
   File? selectedExerciseImage;
   late String exerciseImageName;
- Future<void> pickImageForCustomExercise({
+ Future<void> pickImageForCustomExercise(BuildContext context,{
     required ImageSource source,
 })async
  {
-   final ImagePicker picker = ImagePicker();
-   await picker.pickImage(source: source).then((value)
-   {
-     selectedExerciseImage = File(value!.path);
-     exerciseImageName = Uri.file(value.path).pathSegments.last;
-     emit(PickCustomExerciseImageSuccessState());
-   }).catchError((error)
-   {
-     emit(PickCustomExerciseImageErrorState());
-   });
+   checkPermission(PermissionProcessModel(
+     permissionClient: PermissionClient.camera,
+     onPermissionGranted: ()async {
+       final ImagePicker picker = ImagePicker();
+       await picker.pickImage(source: source).then((value)
+       {
+         selectedExerciseImage = File(value!.path);
+         exerciseImageName = Uri.file(value.path).pathSegments.last;
+         emit(PickCustomExerciseImageSuccessState());
+       }).catchError((error)
+       {
+         emit(PickCustomExerciseImageErrorState());
+       });
+   },
+     onPermissionDenied: () => MySnackBar.showSnackBar(
+       context: context,
+       message:  'Can\'t access Camera please enable it from settings',)),
+   );
  }
 
 
@@ -310,7 +345,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
                  ),
                );
 
-               MyToast.showToast(context, msg: 'New Exercise is Ready');
+               MyToast.showToast(context, msg: 'Ready Now');
                Navigator.pop(context);
                selectedExerciseImage = null;
 

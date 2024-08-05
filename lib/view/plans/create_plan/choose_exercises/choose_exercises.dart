@@ -65,7 +65,10 @@ class ChooseExercises extends StatelessWidget {
                                   fontWeight: FontWeight.w500,
                                 ),
                                 trailing: Checkbox(
-                                  value: PlanCreationCubit.getInstance(context).muscleExercisesCheckBox[PlanCreationCubit.getInstance(context).muscleExercisesCheckBox.keys.toList()[index]]?[i],
+                                  value:
+                                  PlanCreationCubit.getInstance(context).dayCheckBox['day$day']?[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]?[i],
+
+                                  // PlanCreationCubit.getInstance(context).muscleExercisesCheckBox[PlanCreationCubit.getInstance(context).muscleExercisesCheckBox.keys.toList()[index]]?[i],
                                   onChanged: (value)
                                   {
                                     if(value == true)

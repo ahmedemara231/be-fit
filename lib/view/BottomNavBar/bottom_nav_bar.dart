@@ -31,7 +31,6 @@ class BottomNavBar extends StatelessWidget {
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(10))
             ),
-            height: context.setHeight(9),
             child: BottomNavigationBar(
               backgroundColor: Constants.appColor,
               selectedIconTheme: const IconThemeData(

@@ -6,7 +6,9 @@ import 'package:be_fit/models/data_types/report.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view/setting/Setting/notifications/notifications.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
+import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
+import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,8 @@ import 'package:jiffy/jiffy.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
+import '../../models/data_types/permission_process_model.dart';
+import '../../models/methods/check_permission.dart';
 import '../../models/widgets/modules/myText.dart';
 import '../../models/widgets/setting_model.dart';
 import '../../view/auth/login/login.dart';
@@ -35,7 +39,7 @@ class SettingCubit extends Cubit<SettingStates>
       SwitchOption(
         icon: Icons.dark_mode,
         optionName: 'Dark Mode',
-        value: CacheHelper.getInstance().shared.getBool('appTheme')?? false,
+        value: CacheHelper.getInstance().shared.getBool('appTheme')?? true,
         onChanged: (newMode)async {
           await changeAppTheme(newMode);
         },
@@ -43,7 +47,6 @@ class SettingCubit extends Cubit<SettingStates>
       OtherOptions(icon: Icons.notifications, optionName: 'Notifications'),
       OtherOptions(icon: Icons.contact_phone_sharp, optionName: 'About Us & Contacting'),
       OtherOptions(icon: Icons.report_gmailerrorred_sharp, optionName: 'Report a problem'),
-      OtherOptions(icon: Icons.tips_and_updates, optionName: 'Tips'),
       OtherOptions(icon: Icons.share, optionName: 'Share the app'),
       OtherOptions(icon: Icons.logout, optionName: 'Logout'),
     ];
@@ -53,7 +56,7 @@ class SettingCubit extends Cubit<SettingStates>
   Future<void> changeAppTheme(bool newMode)async
   {
     darkMode = newMode;
-    await CacheHelper.getInstance().setAppTheme(darkMode);
+    await CacheHelper.getInstance().setData(key: 'appTheme', value: darkMode);
     emit(ChangeAppThemeSuccessState());
   }
 
@@ -96,13 +99,13 @@ class SettingCubit extends Cubit<SettingStates>
 
   Future<void> setNotificationsOnEveryDay(bool value)async
   {
-    await CacheHelper.getInstance().setNotificationsOnEveryDay(everyday: value);
+    await CacheHelper.getInstance().setData(key: 'notificationsEveryDay', value: value);
     emit(ChangeNotificationEveryDayState());
   }
 
   Future<void> setNotificationsOnWorkoutDays(bool value)async
   {
-    await CacheHelper.getInstance().setNotificationsOnWorkoutDays(onWorkoutDays: value);
+    await CacheHelper.getInstance().setData(key: 'notificationsOnWorkoutDays', value: value);
     emit(ChangeNotificationsOnWorkoutDays());
   }
 
@@ -119,8 +122,16 @@ class SettingCubit extends Cubit<SettingStates>
 
   Future<void> contactingPhoneClick({required String phone})async
   {
-    Uri mobileNumber = Uri.parse(phone);
-    launchUrl(mobileNumber);
+    checkPermission(
+      PermissionProcessModel(
+        permissionClient: PermissionClient.contacts,
+        onPermissionGranted: () {
+          Uri mobileNumber = Uri.parse(phone);
+          launchUrl(mobileNumber);
+        },
+        onPermissionDenied: () {},
+      ),
+    );
   }
 
   Future<void> contactingEmailClick({required String emailAddress})async
@@ -226,7 +237,6 @@ class SettingCubit extends Cubit<SettingStates>
                 color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
                 Colors.grey[300]:
                 Constants.scaffoldBackGroundColor,
-
                 border: context.decoration()
             ),
             child: Padding(
@@ -271,32 +281,15 @@ class SettingCubit extends Cubit<SettingStates>
                           ),
                           onPressed: () async
                           {
-                            Navigator.pop(context);
+
+                            makeLogout(context);
 
                             if(CacheHelper.getInstance().shared.getBool('isGoogleUser') == true)
                             {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Login(),
-                                ), (route) => false,
-                              );
-                              BottomNavCubit.getInstance(context).returnToFirst();
-                              await LoginCubit.getInstance(context).google.disconnect();
-                              await CacheHelper.getInstance().kill();
-                              await CacheHelper.getInstance().killGoogleUser();
+                              await finishLogoutWhenGoogleUser(context);
                             }
                             else{
-                              await CacheHelper.getInstance().kill().then((value)
-                              {
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Login(),
-                                  ), (route) => false,
-                                );
-                                BottomNavCubit.getInstance(context).returnToFirst();
-                              });
+                              await finishLogoutWhenNormalUser();
                             }
                           },
                           child: MyText(text: 'Yes, Logout',fontSize: 14),
@@ -311,5 +304,43 @@ class SettingCubit extends Cubit<SettingStates>
         ),
       ),
     );
+  }
+
+  Future<void> emptyCache()async
+  {
+    await CacheHelper.getInstance().setData(key: 'userData', value: <String>[]);
+  }
+
+  Future<void> finishLogoutWhenNormalUser()async
+  {
+    await emptyCache();
+  }
+
+  Future<void> emptyGoogleUserCache()async
+  {
+    await CacheHelper.getInstance().setData(key: 'isGoogleUser', value: false);
+    await emptyCache();
+  }
+
+  Future<void> finishLogoutWhenGoogleUser(context)async
+  {
+    await LoginCubit.getInstance(context).google.disconnect();
+    await emptyGoogleUserCache();
+  }
+
+  void makeLogout(context)
+  {
+    Navigator.pop(context);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Login(),
+      ), (route) => false,
+    );
+    BottomNavCubit.getInstance(context).returnToFirst();
+
+    PlansCubit.getInstance(context).allPlans.clear();
+    ExercisesCubit.getInstance(context).customExercises.clear();
+
   }
 }

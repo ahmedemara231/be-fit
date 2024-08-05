@@ -82,7 +82,13 @@ class ReportProblem extends StatelessWidget {
                   vertical: 12,
                   horizontal: context.setWidth(3)
                 ),
-                child: MyText(text: 'Submit',color: Colors.white,fontSize: 16,),
+                child: FittedBox(
+                    child: MyText(
+                      text: 'Submit',
+                      color: Colors.white,
+                      fontSize: 16,
+                    )
+                ),
               ),
             )
           ],

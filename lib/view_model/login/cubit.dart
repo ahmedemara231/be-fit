@@ -49,27 +49,11 @@ class LoginCubit extends Cubit<LoginStates>
   {
     if(e is FirebaseAuthException)
     {
-      if(e.code == 'invalid-credential') {
-        MySnackBar.showSnackBar(
-          context: context,
-          message: 'Wrong email or password',
-          color: Constants.appColor,
-        );
-      }
-      else if(e.code == 'network-request-failed'){
-        MySnackBar.showSnackBar(
-          context: context,
-          message: 'Check your internet connection and try again',
-          color: Constants.appColor,
-        );
-      }
-      else{
-        MySnackBar.showSnackBar(
-          context: context,
-          message: 'Try again later',
-          color: Constants.appColor,
-        );
-      }
+      MySnackBar.showSnackBar(
+        context: context,
+        message: 'Try again later',
+        color: Constants.appColor,
+      );
     }
     else if(e is SocketException) {
       MySnackBar.showSnackBar(
@@ -151,11 +135,14 @@ class LoginCubit extends Cubit<LoginStates>
           },
         ).then((value) async
         {
+          CacheHelper.getInstance().setData(key: 'isGoogleUser', value: true);
+
           await CacheHelper.getInstance().setData(
             key: 'userData',
             value: [
               user.user!.uid,
-              user.user!.displayName!
+              user.user!.displayName!,
+              user.user!.email
             ],
           ).whenComplete(() {
             Navigator.pushAndRemoveUntil(
@@ -164,7 +151,6 @@ class LoginCubit extends Cubit<LoginStates>
                 builder: (context) => BottomNavBar(),
               ), (route) => false,
             );
-
             MyToast.showToast(
               context,
               msg: 'Welcome Coach!',
@@ -172,8 +158,6 @@ class LoginCubit extends Cubit<LoginStates>
             );
             emit(LoginSuccessState());
           });
-
-          CacheHelper.getInstance().googleUser();
         });
       }
     } on Exception catch(e)

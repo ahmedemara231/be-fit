@@ -51,76 +51,72 @@ class Contacting extends StatelessWidget {
       appBar: AppBar(
         title: MyText(text: 'Contact us'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: MyText(
-                  text: 'You can get touch with us through these platforms, out team will reach out to you as soon as it could be possible',
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  maxLines: 3,
-              ),
-            ),
-
-            Container(
-              decoration: BoxDecoration(
-                border: context.decoration()
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height/5,
-                  child: ListView.separated(
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: ()
-                      {
-                        switch(index)
-                        {
-                          case 0:
-                            SettingCubit.getInstance(context).contactingPhoneClick(
-                              phone: 'tel:${customerSupport[index].value}',
-                            );
-                            break;
-                          case 1:
-                            SettingCubit.getInstance(context).contactingEmailClick(
-                                emailAddress: 'mailto:${customerSupport[index].value}'
-                            );
-                        }
-                      },
-                      child: customerSupport[index],
-                    ),
-                    separatorBuilder: (context, index) => const SizedBox(height: 12,),
-                    itemCount: customerSupport.length,
-                  ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: MyText(
+                    text: 'You can get touch with us through these platforms, out team will reach out to you as soon as it could be possible',
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    maxLines: 3,
                 ),
               ),
-            ),
-            const SizedBox(height: 20,),
 
-            Container(
-              decoration: BoxDecoration(
-                border: context.decoration()
-              ),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height/3,
+              Container(
+                decoration: BoxDecoration(
+                  border: context.decoration()
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: ListView.separated(
-                    itemBuilder: (context, index) => socialMedia[index],
-                    separatorBuilder: (context, index) => const SizedBox(
-                      height: 12,
+                  child: Column(
+                    children: List.generate(
+                      customerSupport.length,
+                          (index) => InkWell(
+                        onTap: ()
+                        {
+                          switch(index)
+                          {
+                            case 0:
+                              SettingCubit.getInstance(context).contactingPhoneClick(
+                                phone: 'tel:${customerSupport[index].value}',
+                              );
+                              break;
+                            case 1:
+                              SettingCubit.getInstance(context).contactingEmailClick(
+                                  emailAddress: 'mailto:${customerSupport[index].value}'
+                              );
+                          }
+                        },
+                        child: customerSupport[index],
+                      ),
                     ),
-                    itemCount: socialMedia.length,
                   ),
                 ),
               ),
-            )
 
-          ],
+              const SizedBox(height: 20),
+
+              Container(
+                decoration: BoxDecoration(
+                  border: context.decoration()
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: List.generate(
+                      socialMedia.length,
+                          (index) => socialMedia[index],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

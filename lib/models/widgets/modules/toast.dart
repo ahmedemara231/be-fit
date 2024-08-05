@@ -18,7 +18,7 @@ class MyToast
             color: color?? Colors.green,
           ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 28),
+              padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 20),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

@@ -31,10 +31,12 @@ class AppButton extends StatelessWidget {
             horizontal: context.setWidth(3.5),
             vertical: 10,
           ),
-          child: MyText(
-            text: text,
-            color: Colors.white,
-            fontSize: 18,
+          child: FittedBox(
+            child: MyText(
+              text: text,
+              color: Colors.white,
+              fontSize: 18,
+            ),
           ),
         ),
       ),

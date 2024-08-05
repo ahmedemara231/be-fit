@@ -37,12 +37,9 @@ class Setting extends StatelessWidget {
                       SettingCubit.getInstance(context).reportProblem(context);
                       break;
                     case 4:
-                      SettingCubit.getInstance(context).tips();
-                      break;
-                    case 5:
                       SettingCubit.getInstance(context).share();
                       break;
-                    case 6:
+                    case 5:
                       SettingCubit.getInstance(context).logout(context);
                       break;
                   }

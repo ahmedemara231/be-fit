@@ -279,32 +279,32 @@ class _PlanExerciseDetailsState extends State<PlanExerciseDetails> {
               ),
             ),
             Container(
-              height: context.setHeight(5),
               decoration: BoxDecoration(
                   border: context.decoration()
               ),
               child: Center(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20.0),
-                      child: MyText(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: Column(
+                    children: [
+                      MyText(
                         text: Jiffy().yMMMMEEEEd,
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       ),
-                    ),
-                    Form(
-                      key: formKey,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          OtpTff(controller: weightCont, hintText: 'weight'),
-                          OtpTff(controller: repsCont, hintText: 'reps'),
-                        ],
-                      ),
-                    )
-                  ],
+                      const SizedBox(height: 20),
+                      Form(
+                        key: formKey,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            OtpTff(controller: weightCont, hintText: 'weight'),
+                            OtpTff(controller: repsCont, hintText: 'reps'),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -87,31 +87,6 @@ class PlansCubit extends Cubit<PlansStates>
     }
   }
 
-  void handleErrors(context,Exception e)
-  {
-
-    if(e is FirebaseException)
-      {
-        MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
-
-      }
-    else if(e is SocketException)
-      {
-        MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
-
-      }
-    else if(e is TimeoutException)
-    {
-      MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
-
-    }
-    else{
-      MySnackBar.showSnackBar(context: context, message: 'Timed out',color: Constants.appColor);
-
-    }
-
-  }
-
   void finishPlansForCurrentUser(int index,String planName)
   {
     plan.removeWhere((key, value) => value.isEmpty);

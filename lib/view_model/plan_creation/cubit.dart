@@ -459,10 +459,9 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
   {
     for(int i = 1; i <= day; day--)
     {
-      dayCheckBox['day$day'] = Map.from(muscleExercisesCheckBox);
-      // dayCheckBox['day$day'] = {...muscleExercisesCheckBox};
-      // dayCheckBox['day$day'] = jsonDecode(jsonEncode(muscleExercisesCheckBox));
-      // dayCheckBox['day$day'] = _deepCopyMap(muscleExercisesCheckBox);
+      dayCheckBox['day$day'] = muscleExercisesCheckBox
+          .map((key, value) => MapEntry(key, List<bool>.from(value)));
+
       log('test2 ${identical(dayCheckBox['day$day'], muscleExercisesCheckBox)}');
 
     }

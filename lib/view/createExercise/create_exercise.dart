@@ -51,42 +51,47 @@ class CreateExercise extends StatelessWidget {
                         scaffoldKey.currentState?.showBottomSheet(
                               (context) => SizedBox(
                             height: MediaQuery.of(context).size.height/4,
-                            child: AlertDialog(
-                              title: MyText(text: 'Choose image from?'),
-                              actions: [
-                                ElevatedButton(
-                                  onPressed: ()async
-                                  {
-                                    await ExercisesCubit.getInstance(context).pickImageForCustomExercise(
-                                        source: ImageSource.gallery
-                                    ).then((value)
+                            width: double.infinity,
+                            child: FittedBox(
+                              child: AlertDialog(
+                                title: MyText(text: 'Choose image from?'),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: ()async
                                     {
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Constants.appColor
-                                  ),
-                                  child: MyText(text: 'Gallery'),
+                                      await ExercisesCubit.getInstance(context).pickImageForCustomExercise(
+                                        context,
+                                        source: ImageSource.gallery,
+                                      ).then((value)
+                                      {
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Constants.appColor
+                                    ),
+                                    child: MyText(text: 'Gallery', color: Colors.white),
 
-                                ),
-                                ElevatedButton(
-                                  onPressed: ()async
-                                  {
-                                    await ExercisesCubit.getInstance(context).pickImageForCustomExercise(
-                                        source: ImageSource.camera
-                                    ).then((value)
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: ()async
                                     {
-                                      Navigator.pop(context);
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Constants.appColor
-                                  ),
-                                  child: MyText(text: 'Camera'),
+                                      await ExercisesCubit.getInstance(context).pickImageForCustomExercise(
+                                          context,
+                                          source: ImageSource.camera
+                                      ).then((value)
+                                      {
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Constants.appColor
+                                    ),
+                                    child: MyText(text: 'Camera', color: Colors.white,),
 
-                                ),
-                              ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );

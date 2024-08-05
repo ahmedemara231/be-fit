@@ -35,7 +35,9 @@ class _ReportsState extends State<Reports> {
           const Center(child: CircularProgressIndicator(),) : 
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: ListView.separated(
+            child: SettingCubit.getInstance(context).reports.isEmpty?
+            Center(child: MyText(text: 'No Reports Yet', fontSize: 16,),) :
+            ListView.separated(
                 itemBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 2),
                   child: Container(
