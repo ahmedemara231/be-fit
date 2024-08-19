@@ -1,13 +1,11 @@
 import 'package:be_fit/constants/constants.dart';
-import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view/plans/plans/plans.dart';
 import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
-import 'package:be_fit/view_model/plan_creation/cubit.dart';
-import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../model/local/cache_helper/shared_prefs.dart';
 import '../body_muscles/body_muscles.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -55,9 +53,7 @@ class BottomNavBar extends StatelessWidget {
               {
                 await BottomNavCubit.getInstance(context).changeScreen(
                   context,
-                  uId: Constants.userId,
-                  planCreationCubit: PlanCreationCubit.getInstance(context),
-                  plansCubit: PlansCubit.getInstance(context),
+                  uId: CacheHelper.getInstance().getData('userData')[0],
                   newIndex: newTap,
                 );
               },

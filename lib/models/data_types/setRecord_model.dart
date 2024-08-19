@@ -1,36 +1,27 @@
 import 'package:be_fit/models/data_types/exercises.dart';
 
+import 'controllers.dart';
+
 class SetRecModel
 {
   String muscleName;
   String exerciseId;
-  String weight;
-  String reps;
-  String uId;
+  Controllers controllers;
 
   SetRecModel({
     required this.muscleName,
     required this.exerciseId,
-    required this.weight,
-    required this.reps,
-    required this.uId,
-});
+    required this.controllers,
+  });
 }
 
-class SetCustomExerciseRecModel
+class SetCustomExerciseRecModel extends SetRecModel
 {
-  int index;
-  String reps;
-  String weight;
-  String uId;
-  String exerciseDoc;
 
   SetCustomExerciseRecModel({
-    required this.index,
-    required this.reps,
-    required this.weight,
-    required this.uId,
-    required this.exerciseDoc,
+    required super.exerciseId,
+    required super.muscleName,
+    required super.controllers,
 });
 }
 

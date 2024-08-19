@@ -39,8 +39,6 @@ class _SplashState extends State<Splash> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     Timer(
         const Duration(seconds: 2), () {
-      CheckInternetConnection.getInstance().startInternetInterceptor(context);
-
       if(CacheHelper.getInstance().shared.getBool('finishOnBoarding') == true)
         {
           if(userLoginState)
@@ -58,6 +56,11 @@ class _SplashState extends State<Splash> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    CheckInternetConnection.getInstance().startInternetInterceptor(context);
+    super.didChangeDependencies();
+  }
   @override
   void dispose() {
     SystemChrome.setEnabledSystemUIMode(

@@ -22,10 +22,16 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
-    namespace "com.example.be_fit"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    namespace "com.app.be_fit"
+    compileSdkVersion 34
+    ndkVersion "25.1.8937393"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -42,7 +48,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.be_fit"
+        applicationId "com.app.be_fit"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         // minSdkVersion flutter.minSdkVersion
@@ -53,11 +59,24 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -68,6 +87,8 @@ flutter {
 
 dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
+    implementation 'com.google.firebase:firebase-analytics'
+
 //    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0'
 //    FirebaseApp.initializeApp(/context=/ this);
 //    FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance(); firebaseAppCheck.installAppCheckProviderFactory( SafetyNetAppCheckProviderFactory.getInstance());

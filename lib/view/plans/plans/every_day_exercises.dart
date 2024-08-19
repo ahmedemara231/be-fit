@@ -1,27 +1,34 @@
 import 'package:be_fit/extensions/container_decoration.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
+import 'package:be_fit/view/plans/plans/specific_exercise/stream.dart';
+import 'package:be_fit/view/specificExercise/specific_exercise.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../constants/constants.dart';
+import '../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../models/data_types/exercises.dart';
 import '../../../view_model/plans/cubit.dart';
-import 'exercise_details.dart';
+import 'specific_exercise/exercise_details.dart';
 
-class DayExercises extends StatelessWidget {
+class DayExercises extends StatefulWidget {
 
-  String planName;
-  int listIndex;
+  const DayExercises({super.key});
 
-  String planDoc;
+  @override
+  State<DayExercises> createState() => _DayExercisesState();
+}
 
-  DayExercises({super.key,
-    required this.planName,
-    required this.listIndex,
-    required this.planDoc,
-  });
+class _DayExercisesState extends State<DayExercises> {
+  // planName: PlansCubit.getInstance(context).roadToPlanExercise['planName'],
 
+  late PlansCubit plansCubit;
+  @override
+  void initState() {
+    plansCubit = PlansCubit.getInstance(context);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlansCubit,PlansStates>(
@@ -29,7 +36,7 @@ class DayExercises extends StatelessWidget {
       {
         return Scaffold(
           appBar: AppBar(
-            title: MyText(text: 'Day$listIndex exercises',),
+            title: MyText(text: 'Day${plansCubit.roadToPlanExercise['listIndex']} exercises',),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -53,13 +60,12 @@ class DayExercises extends StatelessWidget {
                         {
                           await PlansCubit.getInstance(context).deleteExerciseFromPlan(
                             context,
-                            deleteFromPlanModel: DeleteFromPlanModel(
+                            inputs: DeleteFromPlanModel(
                               exerciseIndex: index,
-                              planName: planName,
-                              uId: Constants.userId,
-                              planDoc: planDoc,
-                              listIndex: listIndex,
-                              exerciseDoc: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).id,
+                              planName: plansCubit.roadToPlanExercise['planName'],
+                              planDoc: plansCubit.roadToPlanExercise['planDoc'],
+                              listIndex: plansCubit.roadToPlanExercise['listIndex'],
+                              exerciseDoc: (PlansCubit.getInstance(context).allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).id,
                             ),
                           );
                         },
@@ -69,15 +75,16 @@ class DayExercises extends StatelessWidget {
                 },
                 onTap: ()
                 {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlanExerciseDetails(
-                        planDoc: planDoc,
-                        listIndex: listIndex,
-                        exercise: PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index]
-                      ),
-                    ),
+                  Exercises exercise = PlansCubit.getInstance(context).allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index];
+                  context.normalNewRoute(
+                    SpecificExercise(
+                        exercise: exercise,
+                        stream: MyPlanStream(
+                            exercise: exercise,
+                            planDoc: plansCubit.roadToPlanExercise['planDoc'],
+                            listIndex: plansCubit.roadToPlanExercise['listIndex']
+                        )
+                    )
                   );
                 },
                 child: Container(
@@ -93,7 +100,7 @@ class DayExercises extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5)
                         ),
                         child: Image.network(
-                          (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).image[0],
+                          (PlansCubit.getInstance(context).allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).image[0],
                           errorBuilder: (context, error, stackTrace) => MyText(
                             text: 'Failed to load image',
                             fontWeight: FontWeight.bold,
@@ -101,7 +108,7 @@ class DayExercises extends StatelessWidget {
                         ),
                       ),
                       title: MyText(
-                        text: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'][index] as Exercises).name,
+                        text: (PlansCubit.getInstance(context).allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                       ),
@@ -111,7 +118,7 @@ class DayExercises extends StatelessWidget {
                 ),
               ),
               separatorBuilder: (context, index) => const SizedBox(height: 16,),
-              itemCount: (PlansCubit.getInstance(context).allPlans[planName]['list$listIndex'] as List<Exercises>).length,
+              itemCount: (PlansCubit.getInstance(context).allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'] as List<Exercises>).length,
             ),
           ),
         );

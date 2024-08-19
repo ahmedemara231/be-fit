@@ -17,20 +17,15 @@ class MyToast
             borderRadius: BorderRadius.circular(20),
             color: color?? Colors.green,
           ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 20),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  MyText(
-                    text: msg,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0,horizontal: 28),
+            child: MyText(
+              text: msg,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
+        ),
       ),
       toastDuration: const Duration(seconds: 2),
       positionedToastBuilder: (context, child)

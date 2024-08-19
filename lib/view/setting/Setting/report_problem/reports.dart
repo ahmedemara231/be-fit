@@ -1,5 +1,5 @@
 import 'package:be_fit/extensions/container_decoration.dart';
-import '../../../../constants/constants.dart';
+import '../../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
@@ -18,7 +18,7 @@ class _ReportsState extends State<Reports> {
   @override
   void initState() {
     SettingCubit.getInstance(context).getAllReports(
-        uId: Constants.userId
+        uId: CacheHelper.getInstance().getData('userData')[0]
     );
     super.initState();
   }

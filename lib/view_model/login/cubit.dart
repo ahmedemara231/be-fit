@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/modules/toast.dart';
@@ -47,28 +46,11 @@ class LoginCubit extends Cubit<LoginStates>
 
   void handleLoginErrors(context,Exception e)
   {
-    if(e is FirebaseAuthException)
-    {
-      MySnackBar.showSnackBar(
-        context: context,
-        message: 'Try again later',
-        color: Constants.appColor,
-      );
-    }
-    else if(e is SocketException) {
-      MySnackBar.showSnackBar(
-        context: context,
-        message: 'Check your internet connection and try again',
-        color: Constants.appColor,
-      );
-    }
-    else {
-      MySnackBar.showSnackBar(
-        context: context,
-        message: 'Try again later',
-        color: Constants.appColor,
-      );
-    }
+    MySnackBar.showSnackBar(
+      context: context,
+      message: 'Try again later',
+      color: Constants.appColor,
+    );
   }
 
   bool isVisible = true;
@@ -88,28 +70,19 @@ class LoginCubit extends Cubit<LoginStates>
         emit(ForgotPasswordSuccessState());
         MyToast.showToast(context, msg: 'Check your email now');
       });
-    } on FirebaseAuthException
+    } on FirebaseAuthException catch(e)
     {
       emit(ForgotPasswordErrorState());
-      MySnackBar.showSnackBar(
-          context: context,
-          message: 'Check your internet connection and try again',
-          color: Constants.appColor
-      );
+      handleLoginErrors(context, e);
     }
   }
 
   GoogleSignIn google = GoogleSignIn();
   Future<void> signInWithGoogle(context) async {
-
     emit(LoginLoadingState());
-
     try{
-      // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await google.signIn();
 
-
-      // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
       if(googleUser == null)

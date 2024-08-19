@@ -18,14 +18,9 @@ class FireStoreCall extends FireStoreService
       case ConnectivityResult.ethernet:
       case ConnectivityResult.bluetooth:
       case ConnectivityResult.vpn:
-        try{
           CollectionReference collection = FirebaseFirestore.instance.collection(collectionName);
-
           return Result.success(collection);
 
-        } on FirebaseException catch (e) {
-          return Result.error(FirebaseStoreException(e.code));
-        }
       default:
         return Result.error(NetworkException('Please Check your connection and try again'));
     }
@@ -33,6 +28,10 @@ class FireStoreCall extends FireStoreService
 
   @override
   void handleError(BuildContext context, {String? errorMessage}) {
-    MyToast.showToast(context, msg: errorMessage??'Try Again Later',color: Constants.appColor);
+    MyToast.showToast(
+        context,
+        msg: errorMessage??'Try Again Later',
+        color: Constants.appColor
+    );
   }
 }

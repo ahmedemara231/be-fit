@@ -10,6 +10,7 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../model/local/cache_helper/shared_prefs.dart';
 import '../../models/data_types/add_custom_exercise.dart';
 
 class CreateExercise extends StatelessWidget {
@@ -43,7 +44,10 @@ class CreateExercise extends StatelessWidget {
                 child: Column(
                   children: [
                     if(state is CreateCustomExerciseLoadingState)
-                      const LinearProgressIndicator(),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        child: LinearProgressIndicator(),
+                      ),
                     if(ExercisesCubit.getInstance(context).selectedExerciseImage == null)
                     IconButton(
                       onPressed: ()
@@ -190,7 +194,7 @@ class CreateExercise extends StatelessWidget {
                             await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
                               context: context,
                               addCustomExerciseModel: AddCustomExerciseModel(
-                                uId: Constants.userId,
+                                uId: CacheHelper.getInstance().getData('userData')[0],
                                 muscle: muscleName,
                                 name: nameCont.text,
                                 description: descriptionCont.text,

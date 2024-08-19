@@ -11,9 +11,9 @@ import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
@@ -156,7 +156,7 @@ class SettingCubit extends Cubit<SettingStates>
         .add(
         {
           'problem' : problem,
-          'dateTime' : Jiffy().yMMMMEEEEdjm,
+          'dateTime' : Constants.dataTime,
           'uId' : uId,
         },
     ).then((value)
@@ -182,14 +182,14 @@ class SettingCubit extends Cubit<SettingStates>
         .get()
         .then((value)
     {
-      value.docs.forEach((element) {
+      for (var element in value.docs) {
         reports.add(
           Report(
             problem: element.data()['problem'],
             dateTime: element.data()['dateTime'],
           ),
         );
-      });
+      }
       emit(GetAllReportsSuccessState());
     }).catchError((error)
     {
@@ -211,18 +211,6 @@ class SettingCubit extends Cubit<SettingStates>
   void personalData(BuildContext context, Widget newRoute)
   {
     context.normalNewRoute(newRoute);
-  }
-
-  Future<void> setNewUserData({String? userName, String? email})async
-  {
-    emit(ChangePersonalDataLoadingState());
-
-    await CacheHelper.getInstance().setData(
-        key: 'userData',
-        value: [userName?? Constants.userName,email?? '']
-    );
-
-    emit(ChangePersonalDataSuccessState());
   }
 
   Future<void> logout(context) async
@@ -270,7 +258,7 @@ class SettingCubit extends Cubit<SettingStates>
                           {
                             Navigator.pop(context);
                           },
-                          child: MyText(text: 'Cancel',fontSize: 14,),
+                          child: MyText(text: 'Cancel',fontSize: 14,color: Colors.black,),
                         ),
                         const SizedBox(
                           width: 22,
@@ -283,6 +271,7 @@ class SettingCubit extends Cubit<SettingStates>
                           {
 
                             makeLogout(context);
+                            await Future.delayed(const Duration(milliseconds: 250));
 
                             if(CacheHelper.getInstance().shared.getBool('isGoogleUser') == true)
                             {
@@ -292,7 +281,7 @@ class SettingCubit extends Cubit<SettingStates>
                               await finishLogoutWhenNormalUser();
                             }
                           },
-                          child: MyText(text: 'Yes, Logout',fontSize: 14),
+                          child: MyText(text: 'Yes, Logout',fontSize: 14,color: Colors.white),
                         ),
                       ],
                     ),
@@ -313,6 +302,7 @@ class SettingCubit extends Cubit<SettingStates>
 
   Future<void> finishLogoutWhenNormalUser()async
   {
+    FirebaseAuth.instance.signOut();
     await emptyCache();
   }
 
@@ -328,19 +318,12 @@ class SettingCubit extends Cubit<SettingStates>
     await emptyGoogleUserCache();
   }
 
-  void makeLogout(context)
+  void makeLogout(BuildContext context)
   {
     Navigator.pop(context);
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Login(),
-      ), (route) => false,
-    );
+    context.removeOldRoute(Login());
     BottomNavCubit.getInstance(context).returnToFirst();
-
     PlansCubit.getInstance(context).allPlans.clear();
     ExercisesCubit.getInstance(context).customExercises.clear();
-
   }
 }

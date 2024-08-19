@@ -1,4 +1,5 @@
 import 'package:be_fit/constants/constants.dart';
+import 'package:be_fit/model/local/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view/exercises/exercises.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
@@ -23,7 +24,7 @@ class BodyMuscles extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: MyText(
-                    text: 'Good morning, ${Constants.userName}',
+                    text: 'Hello, ${CacheHelper.getInstance().getData('userData')[1]}',
                     fontSize: 18,
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,

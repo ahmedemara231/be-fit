@@ -1,7 +1,3 @@
-import 'package:be_fit/view/BottomNavBar/bottom_nav_bar.dart';
-import 'package:be_fit/view/auth/login/login.dart';
-import 'package:be_fit/view/onBoarding/page_view.dart';
-import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view/splash.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
@@ -31,8 +27,6 @@ class BeFitApp extends StatefulWidget {
 }
 
 class _BeFitAppState extends State<BeFitApp> {
-
-
   @override
   void initState() {
     checkPermission(
@@ -71,15 +65,15 @@ class _BeFitAppState extends State<BeFitApp> {
           create: (context) => SettingCubit(SettingInitialState()),
         ),
       ],
-      child: BlocBuilder<SettingCubit,SettingStates>(
-        builder: (context, state)
-        {
+      child: BlocBuilder<SettingCubit, SettingStates>(
+        builder: (context, state) {
           return MaterialApp(
-            theme: CacheHelper.getInstance().shared.getBool('appTheme') == false?
-            ThemeData.light():
-            ThemeData.dark(),
-            debugShowCheckedModeBanner: false,
-            home: BottomNavBar()
+              theme: CacheHelper.getInstance().shared.getBool('appTheme') == false
+                      ? ThemeData.light()
+                      : ThemeData.dark(),
+              debugShowCheckedModeBanner: false,
+              home: const Splash()
+              // const Splash()
           );
         },
       ),

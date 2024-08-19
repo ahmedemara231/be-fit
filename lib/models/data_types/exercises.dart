@@ -27,12 +27,15 @@ class Exercises
   factory Exercises.fromJson(QueryDocumentSnapshot<Map<String, dynamic>> element)
   {
     return Exercises(
-      video: element.data()['video'],
       name: element.data()['name'],
       image: element.data()['image'],
       docs: element.data()['docs'],
       id: element.id,
+      muscleName: element.data()['muscle'],
       isCustom: element.data()['isCustom'],
+      video: element.data()['video'],
+      reps: element.data()['reps'],
+      sets: element.data()['sets'],
     );
   }
 }
@@ -52,10 +55,10 @@ class CustomExercises extends Exercises
   factory CustomExercises.fromJson(QueryDocumentSnapshot<Map<String, dynamic>> element)
   {
     return CustomExercises(
-      video: element.data()['video'],
+      video: element.data()['video']??'',
       name: element.data()['name'],
       image: element.data()['image'],
-      docs: element.data()['docs'],
+      docs: element.data()['description'],
       id: element.id,
       isCustom: element.data()['isCustom'],
     );

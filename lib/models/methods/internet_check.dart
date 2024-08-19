@@ -15,6 +15,7 @@ class CheckInternetConnection
   {
     Connectivity connectivity = Connectivity();
     connectivity.onConnectivityChanged.listen((newState) {
+      print('start');
       if(newState == ConnectivityResult.none)
       {
         MySnackBar.showSnackBar(

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../constants/constants.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
-import '../../models/widgets/modules/myText.dart';
 
 class OnBoarding extends StatefulWidget {
   const OnBoarding({super.key});

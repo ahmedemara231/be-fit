@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:475086150559:android:4354a4b71a6a3148c2bbaa",
+        "mobilesdk_app_id": "1:475086150559:android:87b263b7ecd059a7c2bbaa",
         "android_client_info": {
-          "package_name": "com.example.be_fit"
+          "package_name": "com.app.be_fit"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "475086150559-ltrfkoq1tg75cmaobp5mg0csl82ep02f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.be_fit",
+            "certificate_hash": "b65f2f90a8823ee2bae880972cc1f4597930abb5"
+          }
+        },
+        {
+          "client_id": "475086150559-h0mnc3d9sf7kqlt1jump0n187vgs2ng4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBQS40xTReoWeDQDWXF7DqTs35YjRuU83E"
@@ -20,7 +33,63 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475086150559-h0mnc3d9sf7kqlt1jump0n187vgs2ng4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "475086150559-f1p6205l856b54c8lks0ddjahsaed0q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.beFit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475086150559:android:4354a4b71a6a3148c2bbaa",
+        "android_client_info": {
+          "package_name": "com.example.be_fit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475086150559-u67lp0q0qnbsjipeqfsj28p3dng5v9k6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.be_fit",
+            "certificate_hash": "b65f2f90a8823ee2bae880972cc1f4597930abb5"
+          }
+        },
+        {
+          "client_id": "475086150559-h0mnc3d9sf7kqlt1jump0n187vgs2ng4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQS40xTReoWeDQDWXF7DqTs35YjRuU83E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475086150559-h0mnc3d9sf7kqlt1jump0n187vgs2ng4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "475086150559-f1p6205l856b54c8lks0ddjahsaed0q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.beFit"
+              }
+            }
+          ]
         }
       }
     }

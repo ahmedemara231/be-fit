@@ -1,5 +1,6 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
+import '../../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/setting/Setting/report_problem/reports.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
@@ -66,7 +67,7 @@ class ReportProblem extends StatelessWidget {
                     await SettingCubit.getInstance(context).report(
                       context,
                       problem: problemCont.text,
-                      uId:Constants.userId
+                      uId: CacheHelper.getInstance().getData('userData')[0]
 
                     );
                   }

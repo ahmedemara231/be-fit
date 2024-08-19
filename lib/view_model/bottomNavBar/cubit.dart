@@ -12,8 +12,6 @@ class BottomNavCubit extends Cubit<BottomNavState>
   int currentIndex = 0;
   Future<void> changeScreen(context,{
     required int newIndex,
-    required PlanCreationCubit planCreationCubit,
-    required PlansCubit plansCubit,
     required uId,
 })async
   {
@@ -21,18 +19,13 @@ class BottomNavCubit extends Cubit<BottomNavState>
     emit(BottomNavState());
     if(newIndex == 1)
       {
-        if(plansCubit.allPlans.isNotEmpty || planCreationCubit.musclesAndItsExercises.isNotEmpty)
+        if(PlansCubit.getInstance(context).allPlans.isEmpty ||
+            PlanCreationCubit.getInstance(context).musclesAndItsExercises.isEmpty)
         {
-          return;
-        }
-        else{
-          await plansCubit.getAllPlans(context, uId);
-          await planCreationCubit.getMuscles(context, uId: uId);
+          await PlansCubit.getInstance(context).getAllPlans(context, uId);
+          await PlanCreationCubit.getInstance(context).getMuscles(context, uId: uId);
         }
       }
-    else{
-      return;
-    }
   }
 
   void returnToFirst()

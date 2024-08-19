@@ -1,4 +1,5 @@
 import 'package:be_fit/extensions/container_decoration.dart';
+import 'package:be_fit/extensions/routes.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/every_day_exercises.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
@@ -9,24 +10,18 @@ import '../../../constants/constants.dart';
 
 class PlanDetails extends StatefulWidget {
 
-  String planName;
-  String planDoc;
+  PlanDetails({super.key});
 
-  PlanDetails({super.key,
-    required this.planName,
-    required this.planDoc,
-  });
 
   @override
   State<PlanDetails> createState() => _PlanDetailsState();
 }
 class _PlanDetailsState extends State<PlanDetails> {
-
   late List<String> planLists;
 
   @override
   void initState() {
-    planLists = PlansCubit.getInstance(context).allPlans[widget.planName].keys.toList();
+    planLists = PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).roadToPlanExercise['planName']].keys.toList();
     super.initState();
   }
   @override
@@ -36,7 +31,7 @@ class _PlanDetailsState extends State<PlanDetails> {
       {
         return Scaffold(
           appBar: AppBar(
-            title: MyText(text: widget.planName),
+            title: MyText(text: PlansCubit.getInstance(context).roadToPlanExercise['planName']),
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -46,15 +41,9 @@ class _PlanDetailsState extends State<PlanDetails> {
                     InkWell(
                       onTap: ()
                       {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DayExercises(
-                              planName: widget.planName,
-                              planDoc: widget.planDoc,
-                              listIndex: index + 1,
-                            ),
-                          ),
+                        PlansCubit.getInstance(context).roadToPlanExercise['listIndex'] = index + 1;
+                        context.normalNewRoute(
+                          const DayExercises(),
                         );
                       },
                       child: Card(
@@ -66,7 +55,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                             fontWeight: FontWeight.w500,
                           ),
                           trailing: MyText(
-                            text: '${PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']?.length} exercises',
+                            text: '${PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).roadToPlanExercise['planName']]['list${index+1}']?.length} exercises',
                             fontSize: 20,
                           ),
                         ),
@@ -76,7 +65,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: List.generate(
-                          PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']!.length, (i) =>  Container(
+                          PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).roadToPlanExercise['planName']]['list${index+1}']!.length, (i) =>  Container(
                           decoration: BoxDecoration(
                               border: context.decoration()
                           ),
@@ -93,7 +82,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                                       width: 80,
                                       height: 80,
                                       child: Image.network(
-                                        PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].image[0],
+                                        PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).roadToPlanExercise['planName']]['list${index+1}']![i].image[0] as String,
                                         errorBuilder: (context, error, stackTrace) => MyText(
                                           text: 'Failed to load image',
                                           fontWeight: FontWeight.bold,
@@ -102,12 +91,12 @@ class _PlanDetailsState extends State<PlanDetails> {
                                   ),
                                 ),
                                 subtitle: MyText(
-                                  text: PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].name,
+                                  text: PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).roadToPlanExercise['planName']]['list${index+1}']![i].name,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 ),
                               trailing: MyText(
-                                  text: '${PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].reps} X ${PlansCubit.getInstance(context).allPlans[widget.planName]['list${index+1}']![i].sets}',
+                                  text: '${PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).roadToPlanExercise['planName']]['list${index+1}']![i].reps} X ${PlansCubit.getInstance(context).allPlans[PlansCubit.getInstance(context).roadToPlanExercise['planName']]['list${index+1}']![i].sets}',
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500
                               ),
