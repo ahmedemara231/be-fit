@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'dart:developer';
+import 'package:be_fit/extensions/routes.dart';
+import 'package:be_fit/model/local/cache_helper/shared_prefs.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStore_service/implementation.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStore_service/interface.dart';
 import 'package:be_fit/models/widgets/modules/snackBar.dart';
@@ -6,13 +9,12 @@ import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hexcolor/hexcolor.dart';
 import '../../constants/constants.dart';
-import '../../model/local/cache_helper/shared_prefs.dart';
+import '../../model/remote/repositories/plan_creation/implementation.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/make_plan.dart';
-import '../../models/widgets/modules/toast.dart';
 import '../../view/BottomNavBar/bottom_nav_bar.dart';
+import '../plans/cubit.dart';
 
 class PlanCreationCubit extends Cubit<PlanCreationStates>
 {
@@ -47,71 +49,56 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     }
 
     emit(GetAllMusclesLoadingState());
-    FireStoreService service = FireStoreCall();
-    final result = await service.callFireStore('Chest');
-
-    if(result.isSuccess())
-      {
-        try
+    try
+    {
+      for(int i = 0; i < muscles.length; i++) // 1
+          {
+        await FirebaseFirestore.instance
+            .collection(muscles[i])
+            .get()
+            .then((value)
         {
-          for(int i = 0; i < muscles.length; i++) // 1
-              {
-            await FirebaseFirestore.instance
-                .collection(muscles[i])
-                .get()
-                .then((value)
+          value.docs.forEach((element)async{ // 2
+
+            // 5 times
+            switch(muscles[i])
             {
-              value.docs.forEach((element)async{ // 2
+              case 'chest':
+                await getChestExercises(element: element, i: i, uId: uId);
+                break;
 
-                // 5 times
-                switch(muscles[i])
-                {
-                  case 'chest':
-                    await getChestExercises(element: element, i: i, uId: uId);
-                    break;
+              case 'Back' :
+                await getBackExercises(element: element, i: i, uId: uId);
+                break;
 
-                  case 'Back' :
-                    await getBackExercises(element: element, i: i, uId: uId);
-                    break;
+              case 'biceps':
+                await getBicepsExercises(element: element, i: i, uId: uId);
+                break;
 
-                  case 'biceps':
-                    await getBicepsExercises(element: element, i: i, uId: uId);
-                    break;
+              case 'triceps' :
+                await getTricepsExercises(element: element, i: i, uId: uId);
+                break;
 
-                  case 'triceps' :
-                    await getTricepsExercises(element: element, i: i, uId: uId);
-                    break;
+              case 'Aps' :
+                await getApsExercises(element: element, i: i, uId: uId);
+                break;
 
-                  case 'Aps' :
-                    await getApsExercises(element: element, i: i, uId: uId);
-                    break;
+              case 'legs' :
+                await getLegsExercises(element: element, i: i, uId: uId);
+                break;
 
-                  case 'legs' :
-                    await getLegsExercises(element: element, i: i, uId: uId);
-                    break;
-
-                  case 'Shoulders' :
-                    await getShouldersExercises(element: element, i: i, uId: uId);
-                    break;
-                }
-              });
-            });
-          }
-
-          emit(GetAllMusclesSuccessState());
-
-        } on Exception catch(e){
-          emit(GetAllMusclesErrorState());
-          MyMethods.handleError(context, e);
-        }
+              case 'Shoulders' :
+                await getShouldersExercises(element: element, i: i, uId: uId);
+                break;
+            }
+          });
+        });
       }
-    else{
-      emit(GetAllMusclesErrorState());
 
-      MySnackBar.showSnackBar(
-          context: context,
-          message: result.tryGetError()!.message!
-      );
+      emit(GetAllMusclesSuccessState());
+
+    } on FirebaseException catch(e){
+      emit(GetAllMusclesErrorState());
     }
   }
 
@@ -476,11 +463,19 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     {
       dayCheckBox['day$day'] = muscleExercisesCheckBox
           .map((key, value) => MapEntry(key, List<bool>.from(value)));
-
-      log('test2 ${identical(dayCheckBox['day$day'], muscleExercisesCheckBox)}');
-
     }
-    log('$dayCheckBox');
+  }
+
+  Future<void> finishGettingMuscles(BuildContext context, {required int day})async
+  {
+    if(musclesAndItsExercises.isEmpty || musclesAndItsExercises.isEmpty)
+    {
+      await getMuscles(
+          context,
+          uId: CacheHelper.getInstance().shared.getStringList('userData')![0]
+      );
+    }
+    initializingDaysCheckBox(day);
   }
 
   void newChangeCheckBoxValue({
@@ -509,232 +504,245 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
   void addToPlanExercises(int day,Exercises exercise)
   {
     lists['list$day']!.add(exercise);
-    log('$lists');
     emit(AddToExercisePlanList());
   }
 
   void removeFromPlanExercises(int day,Exercises exercise)
   {
     lists['list$day']!.remove(exercise);
-    log('$lists');
     emit(RemoveFromExercisePlanList());
   }
 
-  int currentIndex = 1;
+  Future<void> createPlan(BuildContext context, MakePlanModel model)async
+  {
+    emit(CreateNewPlanLoadingState());
+    await PlanCreationRepo().createNewPlan(context, makePlanModel: model)
+        .then((result) async{
+      if(result.isSuccess())
+      {
+        emit(CreateNewPlanSuccessState());
+      }
+      else{
+        emit(CreateNewPlanErrorState());
+      }
+    });
 
+  }
+
+  int currentIndex = 1;
   void changeDaysNumber(int newValue)
   {
     currentIndex = newValue;
     emit(ChangeDaysNumber());
   }
 
-  Future<void> createNewPlan(context,{
-    required MakePlanModel makePlanModel,
-    required String uId,
-  })async
-  {
-    MyToast.showToast(
-        context,
-        msg: 'Preparing tour plan...',
-        color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
-        Colors.grey[200]:
-        HexColor('#333333'),
-    );
-    emit(CreateNewPlanLoadingState());
-
-    FireStoreService service = FireStoreCall();
-    final result = await service.callFireStore('chest');
-    if(result.isSuccess())
-      {
-        try {
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(makePlanModel.uId)
-              .collection('plans')
-              .add(
-            {
-              'name' : makePlanModel.name,
-              'daysNumber' : makePlanModel.daysNumber,
-            },
-          ).then((planDoc)
-          {
-            List<String> listsKeys = lists.keys.toList();
-            log('half made');
-
-            for(int index = 0; index <= ( makePlanModel.daysNumber! - 1 ); index++)
-            {
-              // list1
-              lists[listsKeys[index]]!.forEach((element)async {
-
-                DocumentReference planExerciseDoc = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(makePlanModel.uId)
-                    .collection('plans')
-                    .doc(planDoc.id)
-                    .collection(listsKeys[index])
-                    .doc(element.id); // 1st exercise in list1 in the plan
-
-                // check if this exercise has a records or not for this user
-
-                if(element.isCustom == true)
-                {
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(uId)
-                      .collection('customExercises')
-                      .doc(planExerciseDoc.id)
-                      .collection('records')
-                      .get()
-                      .then((value)async
-                  {
-                    if(value.docs.isNotEmpty)
-                    {
-                      DocumentReference<Map<String, dynamic>> planExercise = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(uId)
-                          .collection('plans')
-                          .doc(planDoc.id)
-                          .collection(listsKeys[index])
-                          .doc(planExerciseDoc.id);
-
-                      await planExercise.set({
-                        'name' : element.name,
-                        'docs' : element.docs,
-                        'image' : element.image,
-                        'muscle' : element.muscleName,
-                        'video' : element.video,
-                        'sets' : element.sets,
-                        'reps' : element.reps,
-                        'isCustom' : true,
-                      });
-
-                      value.docs.forEach((element)async {
-                        await planExercise.collection('records')
-                            .doc(element.id)
-                            .set({
-                          'dateTime': element.data()['dateTime'],
-                          'reps': element.data()['reps'],
-                          'weight': element.data()['weight'],
-                        });
-                      });
-
-                    }
-                    else {
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(uId)
-                          .collection('plans')
-                          .doc(planDoc.id)
-                          .collection(listsKeys[index])
-                          .doc(planExerciseDoc.id)
-                          .set({
-                        'name' : element.name,
-                        'docs' : element.docs,
-                        'image' : element.image,
-                        'muscle' : element.muscleName,
-                        'video' : element.video,
-                        'sets' : element.sets,
-                        'reps' : element.reps,
-                        'isCustom' : true,
-                      });
-                    }
-                  });
-                }
-                else{
-                  for(int i = 0; i <= (muscles.length - 1); i++)
-                  {
-                    var checkCollection = await FirebaseFirestore.instance
-                        .collection(muscles[i])
-                        .doc(element.id)
-                        .collection('records')
-                        .where('uId',isEqualTo: makePlanModel.uId)
-                        .get();
-
-                    if(checkCollection.docs.isNotEmpty)
-                    {
-                      DocumentReference exerciseDoc = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(makePlanModel.uId)
-                          .collection('plans')
-                          .doc(planDoc.id)
-                          .collection(listsKeys[index])
-                          .doc(planExerciseDoc.id);
-
-                      await exerciseDoc.set(
-                        {
-                          'name' : element.name,
-                          'docs' : element.docs,
-                          'image' : element.image,
-                          'muscle' : element.muscleName,
-                          'video' : element.video,
-                          'sets' : element.sets,
-                          'reps' : element.reps,
-                          'isCustom' : false,
-                        },
-                      );
-                      checkCollection.docs.forEach((element)async {
-                        await exerciseDoc.collection('records')
-                            .doc(element.id)
-                            .set(
-                          {
-                            'dateTime': element.data()['dateTime'],
-                            'reps': element.data()['reps'],
-                            'weight': element.data()['weight'],
-                          },
-                        );
-                      });
-                    }
-                    else{
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(makePlanModel.uId)
-                          .collection('plans')
-                          .doc(planDoc.id)
-                          .collection(listsKeys[index])
-                          .doc(planExerciseDoc.id)
-                          .set(
-                        {
-                          'name' : element.name,
-                          'docs' : element.docs,
-                          'image' : element.image,
-                          'muscle' : element.muscleName,
-                          'video' : element.video,
-                          'sets' : element.sets,
-                          'reps' : element.reps,
-                          'isCustom' : false,
-                        },
-                      );
-                    }
-                  }
-                }
-              });
-            }
-            MyToast.showToast(
-              context,
-              msg: 'Plan is Ready',
-              color: Colors.green,
-            );
-
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BottomNavBar(),
-              ), (route) => false,
-            );
-            emit(CreateNewPlanSuccessState());
-          });
-        } on Exception catch(e)
-        {
-          emit(CreateNewPlanErrorState());
-          MyMethods.handleError(context, e);
-        }
-      }
-    else{
-      emit(CreateNewPlanErrorState());
-      MySnackBar.showSnackBar(
-          context: context,
-          message: result.tryGetError()!.message!
-      );
-    }
-  }
+  // Future<void> createNewPlan(context,{
+  //   required MakePlanModel makePlanModel,
+  //   required String uId,
+  // })async
+  // {
+  //   MyToast.showToast(
+  //       context,
+  //       msg: 'Preparing tour plan...',
+  //       color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
+  //       Colors.grey[200]:
+  //       HexColor('#333333'),
+  //   );
+  //   emit(CreateNewPlanLoadingState());
+  //
+  //   FireStoreService service = FireStoreCall();
+  //   final result = await service.callFireStore('chest');
+  //   if(result.isSuccess())
+  //     {
+  //       try {
+  //         await FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(makePlanModel.uId)
+  //             .collection('plans')
+  //             .add(
+  //           {
+  //             'name' : makePlanModel.name,
+  //             'daysNumber' : makePlanModel.daysNumber,
+  //           },
+  //         ).then((planDoc)
+  //         {
+  //           List<String> listsKeys = lists.keys.toList();
+  //           log('half made');
+  //
+  //           for(int index = 0; index <= ( makePlanModel.daysNumber! - 1 ); index++)
+  //           {
+  //             // list1
+  //             lists[listsKeys[index]]!.forEach((element)async {
+  //
+  //               DocumentReference planExerciseDoc = FirebaseFirestore.instance
+  //                   .collection('users')
+  //                   .doc(makePlanModel.uId)
+  //                   .collection('plans')
+  //                   .doc(planDoc.id)
+  //                   .collection(listsKeys[index])
+  //                   .doc(element.id); // 1st exercise in list1 in the plan
+  //
+  //               // check if this exercise has a records or not for this user
+  //
+  //               if(element.isCustom == true)
+  //               {
+  //                 await FirebaseFirestore.instance
+  //                     .collection('users')
+  //                     .doc(uId)
+  //                     .collection('customExercises')
+  //                     .doc(planExerciseDoc.id)
+  //                     .collection('records')
+  //                     .get()
+  //                     .then((value)async
+  //                 {
+  //                   if(value.docs.isNotEmpty)
+  //                   {
+  //                     DocumentReference<Map<String, dynamic>> planExercise = FirebaseFirestore.instance
+  //                         .collection('users')
+  //                         .doc(uId)
+  //                         .collection('plans')
+  //                         .doc(planDoc.id)
+  //                         .collection(listsKeys[index])
+  //                         .doc(planExerciseDoc.id);
+  //
+  //                     await planExercise.set({
+  //                       'name' : element.name,
+  //                       'docs' : element.docs,
+  //                       'image' : element.image,
+  //                       'muscle' : element.muscleName,
+  //                       'video' : element.video,
+  //                       'sets' : element.sets,
+  //                       'reps' : element.reps,
+  //                       'isCustom' : true,
+  //                     });
+  //
+  //                     value.docs.forEach((element)async {
+  //                       await planExercise.collection('records')
+  //                           .doc(element.id)
+  //                           .set({
+  //                         'dateTime': element.data()['dateTime'],
+  //                         'reps': element.data()['reps'],
+  //                         'weight': element.data()['weight'],
+  //                       });
+  //                     });
+  //
+  //                   }
+  //                   else {
+  //                     await FirebaseFirestore.instance
+  //                         .collection('users')
+  //                         .doc(uId)
+  //                         .collection('plans')
+  //                         .doc(planDoc.id)
+  //                         .collection(listsKeys[index])
+  //                         .doc(planExerciseDoc.id)
+  //                         .set({
+  //                       'name' : element.name,
+  //                       'docs' : element.docs,
+  //                       'image' : element.image,
+  //                       'muscle' : element.muscleName,
+  //                       'video' : element.video,
+  //                       'sets' : element.sets,
+  //                       'reps' : element.reps,
+  //                       'isCustom' : true,
+  //                     });
+  //                   }
+  //                 });
+  //               }
+  //               else{
+  //                 for(int i = 0; i <= (muscles.length - 1); i++)
+  //                 {
+  //                   var checkCollection = await FirebaseFirestore.instance
+  //                       .collection(muscles[i])
+  //                       .doc(element.id)
+  //                       .collection('records')
+  //                       .where('uId',isEqualTo: makePlanModel.uId)
+  //                       .get();
+  //
+  //                   if(checkCollection.docs.isNotEmpty)
+  //                   {
+  //                     DocumentReference exerciseDoc = FirebaseFirestore.instance
+  //                         .collection('users')
+  //                         .doc(makePlanModel.uId)
+  //                         .collection('plans')
+  //                         .doc(planDoc.id)
+  //                         .collection(listsKeys[index])
+  //                         .doc(planExerciseDoc.id);
+  //
+  //                     await exerciseDoc.set(
+  //                       {
+  //                         'name' : element.name,
+  //                         'docs' : element.docs,
+  //                         'image' : element.image,
+  //                         'muscle' : element.muscleName,
+  //                         'video' : element.video,
+  //                         'sets' : element.sets,
+  //                         'reps' : element.reps,
+  //                         'isCustom' : false,
+  //                       },
+  //                     );
+  //                     checkCollection.docs.forEach((element)async {
+  //                       await exerciseDoc.collection('records')
+  //                           .doc(element.id)
+  //                           .set(
+  //                         {
+  //                           'dateTime': element.data()['dateTime'],
+  //                           'reps': element.data()['reps'],
+  //                           'weight': element.data()['weight'],
+  //                         },
+  //                       );
+  //                     });
+  //                   }
+  //                   else{
+  //                     await FirebaseFirestore.instance
+  //                         .collection('users')
+  //                         .doc(makePlanModel.uId)
+  //                         .collection('plans')
+  //                         .doc(planDoc.id)
+  //                         .collection(listsKeys[index])
+  //                         .doc(planExerciseDoc.id)
+  //                         .set(
+  //                       {
+  //                         'name' : element.name,
+  //                         'docs' : element.docs,
+  //                         'image' : element.image,
+  //                         'muscle' : element.muscleName,
+  //                         'video' : element.video,
+  //                         'sets' : element.sets,
+  //                         'reps' : element.reps,
+  //                         'isCustom' : false,
+  //                       },
+  //                     );
+  //                   }
+  //                 }
+  //               }
+  //             });
+  //           }
+  //           MyToast.showToast(
+  //             context,
+  //             msg: 'Plan is Ready',
+  //             color: Colors.green,
+  //           );
+  //
+  //           Navigator.pushAndRemoveUntil(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => BottomNavBar(),
+  //             ), (route) => false,
+  //           );
+  //           emit(CreateNewPlanSuccessState());
+  //         });
+  //       } on Exception catch(e)
+  //       {
+  //         emit(CreateNewPlanErrorState());
+  //         MyMethods.handleError(context, e);
+  //       }
+  //     }
+  //   else{
+  //     emit(CreateNewPlanErrorState());
+  //     MySnackBar.showSnackBar(
+  //         context: context,
+  //         message: result.tryGetError()!.message!
+  //     );
+  //   }
+  // }
 }

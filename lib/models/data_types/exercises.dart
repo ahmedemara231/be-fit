@@ -38,6 +38,22 @@ class Exercises
       sets: element.data()['sets'],
     );
   }
+
+  Map<String, dynamic> toJson()
+  {
+    return
+      {
+        'name' : name,
+        'docs' : docs,
+        'image' : image,
+        'muscle' : muscleName,
+        'video' : video,
+        'sets' : sets,
+        'reps' : reps,
+        'isCustom' : false,
+      };
+  }
+
 }
 
 class CustomExercises extends Exercises
@@ -50,6 +66,8 @@ class CustomExercises extends Exercises
     required super.id,
     required super.isCustom,
     required super.video,
+    super.sets,
+    super.reps,
   });
 
   factory CustomExercises.fromJson(QueryDocumentSnapshot<Map<String, dynamic>> element)
@@ -61,7 +79,26 @@ class CustomExercises extends Exercises
       docs: element.data()['description'],
       id: element.id,
       isCustom: element.data()['isCustom'],
+      muscleName: element.data()['muscleName'],
+      reps: element.data()['reps'],
+      sets: element.data()['sets'],
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson()
+  {
+    return
+      {
+        'name' : name,
+        'docs' : docs,
+        'image' : image,
+        'muscle' : muscleName,
+        'video' : video,
+        'sets' : sets,
+        'reps' : reps,
+        'isCustom' : true,
+      };
   }
 
 }

@@ -1,5 +1,4 @@
 import 'package:be_fit/view_model/bloc_observer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,21 +8,17 @@ import 'model/local/cache_helper/shared_prefs.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-
+  Bloc.observer = MyBlocObserver();
   await CacheHelper.getInstance().initCache();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  // FirebaseFirestore.instance.settings = const Settings(
-  //   persistenceEnabled: false,
-  // );
 
   // await HandleNotifications.getInstance().getToken();
   // await HandleNotifications.getInstance().handleOnForeGround();
   // HandleNotifications.getInstance().handleOnBackGround();
 
-  Bloc.observer = MyBlocObserver();
   runApp(const BeFitApp());
+
+  // DependencyInjection.init();
 }

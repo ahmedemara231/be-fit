@@ -1,4 +1,5 @@
 import 'package:be_fit/constants/constants.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/model/local/cache_helper/shared_prefs.dart';
 import 'package:be_fit/view/exercises/exercises.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
@@ -6,11 +7,28 @@ import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/widgets/modules/myText.dart';
+import '../../models/methods/intercept_internet_connection/internet_check.dart';
 
-class BodyMuscles extends StatelessWidget {
-  BodyMuscles({super.key});
+class BodyMuscles extends StatefulWidget {
+  const BodyMuscles({super.key});
 
-  final searchCont = TextEditingController();
+  @override
+  State<BodyMuscles> createState() => _BodyMusclesState();
+}
+
+class _BodyMusclesState extends State<BodyMuscles> {
+
+  late TextEditingController searchCont;
+  @override
+  void initState() {
+    searchCont  = TextEditingController();
+    super.initState();
+  }
+  @override
+  void dispose() {
+    searchCont.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +78,10 @@ class BodyMuscles extends StatelessWidget {
                       itemBuilder: (context, index) => InkWell(
                         onTap: ()
                         {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ExercisesForMuscle(
-                                muscleName: ExercisesCubit.getInstance(context).musclesList[index].text,
-                                numberOfExercises: ExercisesCubit.getInstance(context).musclesList[index].numberOfExercises,
-                              ),
+                          context.normalNewRoute(
+                            ExercisesForMuscle(
+                              muscleName: ExercisesCubit.getInstance(context).musclesList[index].text,
+                              numberOfExercises: ExercisesCubit.getInstance(context).musclesList[index].numberOfExercises,
                             ),
                           );
                         },

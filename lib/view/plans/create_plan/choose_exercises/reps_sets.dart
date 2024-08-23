@@ -78,7 +78,7 @@ class RepsAnaSets extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Constants.appColor,
               ),
-              child: MyText(text: 'Conform',color: Colors.white),
+              child: MyText(text: 'Confirm',color: Colors.white),
             ),
           ],
         ),

@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/report.dart';
+import 'package:be_fit/models/widgets/modules/snackBar.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view/setting/Setting/notifications/notifications.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
@@ -14,6 +16,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
@@ -61,14 +64,9 @@ class SettingCubit extends Cubit<SettingStates>
   }
 
   bool isEnabled = false;
-  void notifications(context)
+  void notifications(BuildContext context)
   {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Notifications(),
-        ),
-    );
+    context.normalNewRoute(const Notifications());
   }
 
   List<SwitchOption> notificationOptions = [];
@@ -110,14 +108,9 @@ class SettingCubit extends Cubit<SettingStates>
   }
 
   // Contacting
-  void contacting(context)
+  void contacting(BuildContext context)
   {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Contacting(),
-        ),
-    );
+    context.normalNewRoute(Contacting());
   }
 
   Future<void> contactingPhoneClick({required String phone})async
@@ -197,14 +190,16 @@ class SettingCubit extends Cubit<SettingStates>
     });
   }
 
-  void tips() {}
-
-  Future<void> share()async
+  Future<void> share(context)async
   {
-    final result = await Share.shareWithResult('check out my website https://example.com');
+    final result = await Share.shareWithResult('https://play.google.com/store/apps/details?id=com.app.be_fit&pcampaignid=web_share');
 
     if (result.status == ShareResultStatus.success) {
-      log('Thank you for sharing my app!');
+      AnimatedSnackBar.material(
+        'Thank you for sharing the app!',
+        type: AnimatedSnackBarType.info,
+        mobileSnackBarPosition: MobileSnackBarPosition.bottom
+      ).show(context);
     }
   }
 
@@ -215,83 +210,29 @@ class SettingCubit extends Cubit<SettingStates>
 
   Future<void> logout(context) async
   {
-    showDialog(
-      context: context,
-      builder: (context) => Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Container(
-            decoration: BoxDecoration(
-                color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
-                Colors.grey[300]:
-                Constants.scaffoldBackGroundColor,
-                border: context.decoration()
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  MyText(
-                    text: 'Logout',
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: MyText(
-                      text: 'Are you sure to logout?',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                          ),
-                          onPressed: ()
-                          {
-                            Navigator.pop(context);
-                          },
-                          child: MyText(text: 'Cancel',fontSize: 14,color: Colors.black,),
-                        ),
-                        const SizedBox(
-                          width: 22,
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Constants.appColor,
-                          ),
-                          onPressed: () async
-                          {
+    PanaraConfirmDialog.show(
+      context,
+      color: Constants.appColor,
+      message: 'Are you sure to logout ?',
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "Cancel",
+      onTapCancel: () {
+        Navigator.pop(context);
+      },
+      onTapConfirm: ()async {
+        makeLogout(context);
+        await Future.delayed(const Duration(milliseconds: 250));
 
-                            makeLogout(context);
-                            await Future.delayed(const Duration(milliseconds: 250));
-
-                            if(CacheHelper.getInstance().shared.getBool('isGoogleUser') == true)
-                            {
-                              await finishLogoutWhenGoogleUser(context);
-                            }
-                            else{
-                              await finishLogoutWhenNormalUser();
-                            }
-                          },
-                          child: MyText(text: 'Yes, Logout',fontSize: 14,color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+        if(CacheHelper.getInstance().shared.getBool('isGoogleUser') == true)
+        {
+          await finishLogoutWhenGoogleUser(context);
+        }
+        else{
+          await finishLogoutWhenNormalUser();
+        }
+      },
+      panaraDialogType: PanaraDialogType.custom,
+      barrierDismissible: false, // optional parameter (default is true)
     );
   }
 
@@ -321,7 +262,7 @@ class SettingCubit extends Cubit<SettingStates>
   void makeLogout(BuildContext context)
   {
     Navigator.pop(context);
-    context.removeOldRoute(Login());
+    context.removeOldRoute(const Login());
     BottomNavCubit.getInstance(context).returnToFirst();
     PlansCubit.getInstance(context).allPlans.clear();
     ExercisesCubit.getInstance(context).customExercises.clear();

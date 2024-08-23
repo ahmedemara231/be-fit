@@ -5,7 +5,7 @@ import '../errors.dart';
 
 abstract class FireStorageService
 {
-  Future<Result<Reference,FirebaseError>> callFireStorage({
+  Future<Result<Reference,FirebaseError2>> callFireStorage({
     required String refName,
     required String childName,
 });

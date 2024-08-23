@@ -1,11 +1,12 @@
 import 'dart:developer';
-
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:animation_list/animation_list.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../constants/constants.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
 import '../../models/widgets/modules/myText.dart';
@@ -15,7 +16,7 @@ import '../../models/widgets/records_model.dart';
 class MyStream extends StatelessWidget {
 
   final Exercises exercise;
-  const MyStream({super.key,
+   MyStream({super.key,
     required this.exercise,
   });
 
@@ -42,51 +43,57 @@ class MyStream extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      const RecordsModel(),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: RecordsModel(),
+                      ),
                       Expanded(
-                        child: ListView.builder(
-                          itemBuilder: (context, index) => Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                const Spacer(),
-                                SizedBox(
-                                  width: 100,
-                                  child: Column(
-                                    children: [
-                                      MyText(
-                                        text: snapshot.data?.docs[index].data()['dateTime'],
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ],
+                        child:  AnimationList(
+                            duration: 1000,
+                            reBounceDepth: 10.0,
+                            children: List.generate(
+                              snapshot.data!.docs.length, (index) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        const Spacer(),
+                                        SizedBox(
+                                          width: 100,
+                                          child: Column(
+                                            children: [
+                                              MyText(
+                                                text: snapshot.data?.docs[index].data()['dateTime'],
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Column(
+                                          children: [
+                                            MyText(
+                                              text: '${snapshot.data?.docs[index].data()['weight']}',
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ],
+                                        ),
+                                        const Spacer(),
+                                        Column(
+                                          children: [
+                                            MyText(
+                                              text: '${snapshot.data?.docs[index].data()['reps']}',
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ],
+                                        ),
+                                        const Spacer(),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const Spacer(),
-                                Column(
-                                  children: [
-                                    MyText(
-                                      text: '${snapshot.data?.docs[index].data()['weight']}',
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                Column(
-                                  children: [
-                                    MyText(
-                                      text: '${snapshot.data?.docs[index].data()['reps']}',
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                              ],
-                            ),
-                          ),
-                          itemCount: snapshot.data?.docs.length,
+                            )
                         ),
                       ),
                     ],
@@ -98,12 +105,11 @@ class MyStream extends StatelessWidget {
         }
         else if(snapshot.hasError)
         {
-          log('error : ${snapshot.error.toString()}');
-          MySnackBar.showSnackBar(
-            context: context,
-            message: 'Try again latter',
-            color: Constants.appColor,
-          );
+          AnimatedSnackBar.material(
+              'Try Again Later',
+              type: AnimatedSnackBarType.error,
+              mobileSnackBarPosition: MobileSnackBarPosition.bottom
+          ).show(context);
           return MyText(text: '');
         }
         else {return MyText(text: '');}

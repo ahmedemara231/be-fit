@@ -10,7 +10,7 @@ import 'package:multiple_result/src/result.dart';
 class FireStoreCall extends FireStoreService
 {
   @override
-  Future<Result<CollectionReference, FirebaseError>> callFireStore(String collectionName) async{
+  Future<Result<CollectionReference, FirebaseError2>> callFireStore(String collectionName) async{
     final connectivityResult = await Connectivity().checkConnectivity();
     switch(connectivityResult) {
       case ConnectivityResult.wifi:

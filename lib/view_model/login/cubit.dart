@@ -1,4 +1,6 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/modules/toast.dart';
 import 'package:be_fit/view_model/login/states.dart';
@@ -28,7 +30,7 @@ class LoginCubit extends Cubit<LoginStates>
   })async
   {
     emit(LoginLoadingState());
-    Result<UserCredential,FirebaseError> result = await loginService.callFirebaseAuth(
+    Result<UserCredential,FirebaseError2> result = await loginService.callFirebaseAuth(
         email: user.email,
         password: user.password
     );
@@ -46,11 +48,11 @@ class LoginCubit extends Cubit<LoginStates>
 
   void handleLoginErrors(context,Exception e)
   {
-    MySnackBar.showSnackBar(
-      context: context,
-      message: 'Try again later',
-      color: Constants.appColor,
-    );
+    AnimatedSnackBar.material(
+        'Try again later',
+        type: AnimatedSnackBarType.error,
+        mobileSnackBarPosition: MobileSnackBarPosition.bottom
+    ).show(context);
   }
 
   bool isVisible = true;
@@ -78,7 +80,7 @@ class LoginCubit extends Cubit<LoginStates>
   }
 
   GoogleSignIn google = GoogleSignIn();
-  Future<void> signInWithGoogle(context) async {
+  Future<void> signInWithGoogle(BuildContext context) async {
     emit(LoginLoadingState());
     try{
       final GoogleSignInAccount? googleUser = await google.signIn();
@@ -118,12 +120,7 @@ class LoginCubit extends Cubit<LoginStates>
               user.user!.email
             ],
           ).whenComplete(() {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BottomNavBar(),
-              ), (route) => false,
-            );
+            context.removeOldRoute(const BottomNavBar());
             MyToast.showToast(
               context,
               msg: 'Welcome Coach!',

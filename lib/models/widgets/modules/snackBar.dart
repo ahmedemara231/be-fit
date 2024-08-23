@@ -5,7 +5,7 @@ import 'myText.dart';
 class MySnackBar
 {
   static void showSnackBar({
-    required context,
+    required BuildContext context,
     required String message,
     Color? color
 })

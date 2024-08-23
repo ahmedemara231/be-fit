@@ -1,6 +1,7 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/make_plan.dart';
 import 'package:be_fit/view/BottomNavBar/bottom_nav_bar.dart';
@@ -10,7 +11,6 @@ import 'package:be_fit/view_model/plans/cubit.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../model/local/cache_helper/shared_prefs.dart';
 import 'choose_exercises/choose_exercises.dart';
 
 class ContinuePlanning extends StatefulWidget {
@@ -28,10 +28,13 @@ class ContinuePlanning extends StatefulWidget {
 
 class _ContinuePlanningState extends State<ContinuePlanning> {
 
+  late PlanCreationCubit planCreationCubit;
+
   @override
   void initState() {
-    PlanCreationCubit.getInstance(context).makeListForEachDay(widget.daysNumber);
-    PlanCreationCubit.getInstance(context).initializingDaysCheckBox(widget.daysNumber!);
+    planCreationCubit = PlanCreationCubit.getInstance(context);
+    planCreationCubit.makeListForEachDay(widget.daysNumber);
+    planCreationCubit.finishGettingMuscles(context, day: widget.daysNumber!);
     super.initState();
   }
   @override
@@ -62,13 +65,9 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                 trailing: IconButton(
                                   onPressed: ()
                                   {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        maintainState: false,
-                                        builder: (context) => ChooseExercises(
-                                          day: index + 1,
-                                        ),
+                                    context.normalNewRoute(
+                                      ChooseExercises(
+                                        day: index + 1,
                                       ),
                                     );
                                   },
@@ -81,14 +80,14 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                           padding: const EdgeInsets.all(10.0),
                           child: Column(
                             children: List.generate(
-                              PlanCreationCubit.getInstance(context).lists['list${index+1}']!.length, (i)
+                              planCreationCubit.lists['list${index+1}']!.length, (i)
                             {
                               return Dismissible(
                                 background: Container(
                                   color: Colors.red,
                                   child: const Icon(Icons.delete,color: Colors.white,),
                                 ),
-                                key: ValueKey<Exercises>(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i]),
+                                key: ValueKey<Exercises>(planCreationCubit.lists['list${index+1}']![i]),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Container(
@@ -103,17 +102,29 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                             child: SizedBox(
                                                 width: 80,
                                                 height: 80,
-                                                child: Image.network(PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].image[0])),
+                                                child: Image.network(planCreationCubit.lists['list${index+1}']![i].image[0])),
                                           ),
                                         subtitle: MyText(
-                                            text: PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].name,
+                                            text: planCreationCubit.lists['list${index+1}']![i].name,
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500,
                                           ),
-                                        trailing: MyText(
-                                          text: '${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].reps!} X ${PlanCreationCubit.getInstance(context).lists['list${index+1}']![i].sets!}',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
+                                        trailing: Column(
+                                          children: [
+                                            FittedBox(
+                                              child: MyText(
+                                                text: 'Sets X Reps',
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 7),
+                                            MyText(
+                                              text: '${planCreationCubit.lists['list${index+1}']![i].sets!} X ${planCreationCubit.lists['list${index+1}']![i].reps!}',
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -121,9 +132,9 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                 ),
                                 onDismissed: (direction)
                                 {
-                                  PlanCreationCubit.getInstance(context).removeFromPlanExercises(
+                                  planCreationCubit.removeFromPlanExercises(
                                       index + 1,
-                                      PlanCreationCubit.getInstance(context).lists['list${index+1}']![i],
+                                      planCreationCubit.lists['list${index+1}']![i],
                                   );
                                 },
                               );
@@ -146,30 +157,19 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                         backgroundColor: Colors.red[400]
                     ),
                     onPressed: state is CreateNewPlanLoadingState? ||
-                    PlanCreationCubit.getInstance(context).lists.entries.every((element) => element.value.isEmpty)?
+                    planCreationCubit.lists.entries.every((element) => element.value.isEmpty)?
                     null : () async
                     {
-                      await PlanCreationCubit.getInstance(context).createNewPlan(
-                        context,
-                        uId: CacheHelper.getInstance().getData('userData')[0],
-                        makePlanModel: MakePlanModel(
-                            daysNumber: widget.daysNumber,
-                            name: widget.name,
-                            uId: CacheHelper.getInstance().getData('userData')[0],
-                        ),
-                      ).then((value) async
-                      {
-                        await PlansCubit.getInstance(context).getAllPlans(
-                            context, CacheHelper.getInstance().getData('userData')[0]
-                        ).then((value)
-                        {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BottomNavBar(),
-                              ), (route) => false,
-                          );
-                        });
+                      await planCreationCubit.createPlan(
+                          context,
+                          MakePlanModel(
+                              daysNumber: widget.daysNumber,
+                              name: widget.name,
+                              lists: planCreationCubit.lists
+                          )
+                      ).whenComplete(()async {
+                        context.removeOldRoute(const BottomNavBar());
+                        await PlansCubit.getInstance(context).getAllPlans(context);
                       });
                     },
                     child: Padding(

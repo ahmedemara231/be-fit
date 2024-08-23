@@ -5,7 +5,7 @@ import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/controllers.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
-import 'package:be_fit/view/specificExercise/carousel_slider.dart';
+import 'package:be_fit/models/widgets/carousel_slider.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +13,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/widgets/modules/myText.dart';
 import '../../../view_model/exercises/states.dart';
 import '../../constants/constants.dart';
-import '../../models/widgets/app_button.dart';
-import '../../models/widgets/docs_video.dart';
-import '../../models/widgets/modules/otp_tff.dart';
+import 'app_button.dart';
+import 'docs_video.dart';
+import 'modules/otp_tff.dart';
 
 class SpecificExercise extends StatefulWidget {
 
-  Exercises exercise;
-  Widget stream;
+  final Exercises exercise;
+  final Widget stream;
 
-  SpecificExercise({super.key,
+  const SpecificExercise({super.key,
     required this.exercise,
     required this.stream,
   });
@@ -44,7 +44,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
 
   late Controllers controllers;
 
-  late MainFunctions exercisesType;
+  late ExercisesMain exercisesType;
 
   @override
   void initState() {
@@ -146,34 +146,37 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: AppButton(
-                    onPressed: ()async
-                    {
-                      if(formKey.currentState!.validate())
+                  child: BlocBuilder<ExercisesCubit, ExercisesStates>(
+                    builder: (context, state) => AppButton(
+                      onPressed: state is SetNewRecordLoadingState? null : ()async
                       {
-                        controllers = Controllers(
-                            weight: weightCont.text,
-                            reps: repsCont.text
-                        );
-
-                        if(widget.exercise.isCustom)
+                        if(formKey.currentState!.validate())
                         {
-                          exercisesType = CustomExercisesImpl();
+                          controllers = Controllers(
+                              weight: double.tryParse(weightCont.text),
+                              reps: double.tryParse(repsCont.text)
+                          );
+
+                          if(widget.exercise.isCustom)
+                          {
+                            exercisesType = CustomExercisesImpl();
+                          }
+                          else{
+                            exercisesType = DefaultExercisesImpl.getInstance();
+                          }
+                          await ExercisesCubit.getInstance(context).setRecord(
+                              exerciseType: exercisesType,
+                              model: SetRecModel(
+                                  muscleName: widget.exercise.muscleName!,
+                                  exerciseId: widget.exercise.id,
+                                  controllers: controllers
+                              )
+                          );
+                          _clearCont(weightCont, repsCont);
                         }
-                        else{
-                          exercisesType = DefaultExercisesImpl();
-                        }
-                        ExercisesCubit.getInstance(context).setRecord(
-                            exerciseType: exercisesType,
-                            model: SetRecModel(
-                                muscleName: widget.exercise.muscleName!,
-                                exerciseId: widget.exercise.id,
-                                controllers: controllers
-                            )
-                        );
-                      }
-                    },
-                    text: 'Add',
+                      },
+                      text: 'Add',
+                    ),
                   ),
                 ),
               ],
@@ -182,5 +185,11 @@ class _SpecificExerciseState extends State<SpecificExercise> {
         ),
       ),
     );
+  }
+
+  void _clearCont(TextEditingController weightCont, TextEditingController repsCont)
+  {
+    weightCont.clear();
+    repsCont.clear();
   }
 }

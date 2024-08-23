@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 
 class Controllers
 {
-  String weight;
-  String reps;
+  double? weight;
+  double? reps;
 
   Controllers({
     required this.weight,

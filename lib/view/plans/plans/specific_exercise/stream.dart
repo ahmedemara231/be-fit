@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:animation_list/animation_list.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
@@ -32,6 +34,7 @@ class MyPlanStream extends StatelessWidget {
             .collection('list$listIndex')
             .doc(exercise.id)
             .collection('records')
+            .orderBy('dateTime')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -50,49 +53,52 @@ class MyPlanStream extends StatelessWidget {
                       children: [
                         const RecordsModel(),
                         Expanded(
-                          child: ListView.builder(
-                            itemBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  const Spacer(),
-                                  SizedBox(
-                                    width: 100,
-                                    child: Column(
+                          child: AnimationList(
+                              duration: 1000,
+                              reBounceDepth: 10.0,
+                              children: List.generate(
+                                snapshot.data!.docs.length, (index) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    const Spacer(),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          MyText(
+                                            text: snapshot.data?.docs[index].data()['dateTime'],
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Column(
                                       children: [
                                         MyText(
-                                          text: snapshot.data?.docs[index].data()['dateTime'],
+                                          text: '${snapshot.data?.docs[index].data()['weight']}',
                                           fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  const Spacer(),
-                                  Column(
-                                    children: [
-                                      MyText(
-                                        text: '${snapshot.data?.docs[index].data()['weight']}',
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  Column(
-                                    children: [
-                                      MyText(
-                                        text: '${snapshot.data?.docs[index].data()['reps']}',
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                ],
+                                    const Spacer(),
+                                    Column(
+                                      children: [
+                                        MyText(
+                                          text: '${snapshot.data?.docs[index].data()['reps']}',
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                  ],
+                                ),
                               ),
-                            ),
-                            itemCount: snapshot.data?.docs.length,
+                              )
                           ),
                         ),
                       ],
@@ -102,8 +108,11 @@ class MyPlanStream extends StatelessWidget {
               ),
             );
           } else if (snapshot.hasError) {
-            MySnackBar.showSnackBar(
-                context: context, message: 'Try again latter');
+            AnimatedSnackBar.material(
+                'Try Again Later',
+                type: AnimatedSnackBarType.error,
+                mobileSnackBarPosition: MobileSnackBarPosition.bottom
+            ).show(context);
             return MyText(text: '');
           } else {
             log('idk : $snapshot');

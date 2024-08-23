@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
@@ -85,10 +86,11 @@ class CreatePlan extends StatelessWidget {
                         {
                           if(PlanCreationCubit.getInstance(context).currentIndex == 0)
                           {
-                            MySnackBar.showSnackBar(
-                              context: context,
-                              message: 'Days must be more than 0',
-                            );
+                            AnimatedSnackBar.material(
+                                'Days must be more than 0',
+                                type: AnimatedSnackBarType.info,
+                                mobileSnackBarPosition: MobileSnackBarPosition.bottom
+                            ).show(context);
                           }
                           else{
                             Navigator.push(

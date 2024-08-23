@@ -20,7 +20,7 @@ class SignUpCubit extends Cubit<SignUpStates>
   {
     emit(SignUpLoadingState());
 
-    Result<UserCredential,FirebaseError> result = await signUpService.callFirebaseAuth(
+    Result<UserCredential,FirebaseError2> result = await signUpService.callFirebaseAuth(
         email: user.email, password: user.password,
     );
 

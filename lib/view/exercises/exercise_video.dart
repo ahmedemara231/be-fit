@@ -1,7 +1,11 @@
 import 'dart:developer';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import '../../../models/widgets/modules/myText.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../constants/constants.dart';
 
 class ExerciseVideo extends StatefulWidget {
 
@@ -56,7 +60,11 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                 aspectRatio: _controller.value.aspectRatio,
                 child: VideoPlayer(_controller),
               )
-            : const Center(child: CircularProgressIndicator(),)
+            : Center(child: SpinKitCircle(
+            color: Constants.appColor,
+            size: 50.0,
+          ),
+        )
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

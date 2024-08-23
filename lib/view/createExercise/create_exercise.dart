@@ -1,9 +1,10 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/models/widgets/modules/snackBar.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:be_fit/view/createExercise/choose_image_source.dart';
 import '../../../models/widgets/modules/textFormField.dart';
 import '../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
@@ -15,7 +16,7 @@ import '../../models/data_types/add_custom_exercise.dart';
 
 class CreateExercise extends StatelessWidget {
 
-  String muscleName;
+  final String muscleName;
    CreateExercise({super.key,
      required this.muscleName,
    });
@@ -44,60 +45,18 @@ class CreateExercise extends StatelessWidget {
                 child: Column(
                   children: [
                     if(state is CreateCustomExerciseLoadingState)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: LinearProgressIndicator(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: LinearProgressIndicator(
+                          color: Constants.appColor,
+                        ),
                       ),
                     if(ExercisesCubit.getInstance(context).selectedExerciseImage == null)
                     IconButton(
                       onPressed: ()
                       {
                         scaffoldKey.currentState?.showBottomSheet(
-                              (context) => SizedBox(
-                            height: MediaQuery.of(context).size.height/4,
-                            width: double.infinity,
-                            child: FittedBox(
-                              child: AlertDialog(
-                                title: MyText(text: 'Choose image from?'),
-                                actions: [
-                                  ElevatedButton(
-                                    onPressed: ()async
-                                    {
-                                      await ExercisesCubit.getInstance(context).pickImageForCustomExercise(
-                                        context,
-                                        source: ImageSource.gallery,
-                                      ).then((value)
-                                      {
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Constants.appColor
-                                    ),
-                                    child: MyText(text: 'Gallery', color: Colors.white),
-
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: ()async
-                                    {
-                                      await ExercisesCubit.getInstance(context).pickImageForCustomExercise(
-                                          context,
-                                          source: ImageSource.camera
-                                      ).then((value)
-                                      {
-                                        Navigator.pop(context);
-                                      });
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Constants.appColor
-                                    ),
-                                    child: MyText(text: 'Camera', color: Colors.white,),
-
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                              (context) => const ChooseImageSource()
                         );
                       },
                       icon: Padding(
@@ -185,10 +144,11 @@ class CreateExercise extends StatelessWidget {
                         {
                           if(ExercisesCubit.getInstance(context).selectedExerciseImage == null)
                             {
-                              MySnackBar.showSnackBar(
-                                  context: context,
-                                  message: 'Please select exercise photo',
-                              );
+                              AnimatedSnackBar.material(
+                                  'Please select exercise photo',
+                                  type: AnimatedSnackBarType.warning,
+                                  mobileSnackBarPosition: MobileSnackBarPosition.bottom
+                              ).show(context);
                             }
                           else{
                             await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(

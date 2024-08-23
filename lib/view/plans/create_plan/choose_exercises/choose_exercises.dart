@@ -1,39 +1,68 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
-import 'package:be_fit/view/BottomNavBar/invalid_connection_screen.dart';
+import 'package:be_fit/models/widgets/invalid_connection_screen.dart';
 import 'package:be_fit/view/plans/create_plan/choose_exercises/reps_sets.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../../models/widgets/modules/myText.dart';
 
-class ChooseExercises extends StatelessWidget {
+class ChooseExercises extends StatefulWidget {
 
-  int day;
-  ChooseExercises({super.key,
+  final int day;
+  const ChooseExercises({super.key,
     required this.day,
   });
 
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  final formKey = GlobalKey<FormState>();
-  final repsCont = TextEditingController();
-  final setsCont = TextEditingController();
+  @override
+  State<ChooseExercises> createState() => _ChooseExercisesState();
+}
 
+class _ChooseExercisesState extends State<ChooseExercises> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final formKey = GlobalKey<FormState>();
+
+  late TextEditingController repsCont;
+
+  late TextEditingController setsCont;
+
+  late PlanCreationCubit planCreationCubit;
+
+  @override
+  void initState() {
+    repsCont = TextEditingController();
+    setsCont = TextEditingController();
+    planCreationCubit = PlanCreationCubit.getInstance(context);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    repsCont.dispose();
+    setsCont.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: MyText(text: 'Choose your exercises',fontWeight: FontWeight.w500),
+        title: MyText(text: 'Choose Exercises',fontWeight: FontWeight.w500),
       ),
       body: RefreshIndicator(
         backgroundColor: Constants.appColor,
         color: Colors.white,
         onRefresh: ()async
         {
-          await PlanCreationCubit.getInstance(context).getMuscles(context,uId: CacheHelper.getInstance().getData('userData')[0]);
+          print('ahmed');
+          await planCreationCubit.getMuscles(
+              context,
+              uId: CacheHelper.getInstance().getData('userData')[0]
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(5.0),
@@ -42,8 +71,11 @@ class ChooseExercises extends StatelessWidget {
             {
               if(state is GetAllMusclesLoadingState)
                 {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    child: SpinKitCircle(
+                      color: Constants.appColor,
+                      size: 50.0,
+                    ),
                   );
                 }
               if(state is GetAllMusclesErrorState)
@@ -51,7 +83,9 @@ class ChooseExercises extends StatelessWidget {
                   return ErrorBuilder(
                       msg: 'Try Again Later',
                       onPressed: ()async =>
-                      await PlanCreationCubit.getInstance(context).getMuscles(context,uId: CacheHelper.getInstance().getData('userData')[0])
+                      await planCreationCubit.getMuscles(
+                          context,uId: CacheHelper.getInstance().getData('userData')[0]
+                      )
                   );
                 }
               else{
@@ -59,30 +93,39 @@ class ChooseExercises extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ListView.separated(
-                          itemBuilder: (context, index) => Card(
-                            color: Constants.appColor,
+                          itemBuilder: (context, index) => Container(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            decoration: BoxDecoration(
+                              color: Constants.appColor,
+                              borderRadius: BorderRadius.circular(12)
+                            ),
                             child: ExpansionTile(
                               title: MyText(
-                                text: PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
+                                text: planCreationCubit.musclesAndItsExercises.keys.toList()[index],
                                 fontSize: 20,
                               ),
+                              subtitle: MyText(
+                                text: 'Choose Now From ${planCreationCubit.musclesAndItsExercises.keys.toList()[index]} collection',
+                                fontSize: 13,
+                              ),
                               children: List.generate(
-                                PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]!.length,
+                                planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]!.length,
                                     (i) => ListTile(
                                   leading: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Image.network(
-                                        PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].image[0]
+                                        planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].image[0]
                                     ),
                                   ),
                                   title: MyText(
-                                    text: PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].name,
+                                    text: planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].name,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   trailing: Checkbox(
+                                    tristate: true,
                                     value:
-                                    PlanCreationCubit.getInstance(context).dayCheckBox['day$day']?[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]?[i],
+                                    planCreationCubit.dayCheckBox['day${widget.day}']?[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]?[i],
 
                                     onChanged: (value)
                                     {
@@ -104,18 +147,18 @@ class ChooseExercises extends StatelessWidget {
                                                 {
                                                   if(formKey.currentState!.validate())
                                                   {
-                                                    PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].reps = repsCont.text;
-                                                    PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i].sets = setsCont.text;
+                                                    planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].reps = repsCont.text;
+                                                    planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].sets = setsCont.text;
 
-                                                    PlanCreationCubit.getInstance(context).addToPlanExercises(
-                                                        day,
-                                                        PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
+                                                    planCreationCubit.addToPlanExercises(
+                                                        widget.day,
+                                                        planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i]
                                                     );
 
-                                                    PlanCreationCubit.getInstance(context).newChangeCheckBoxValue(
+                                                    planCreationCubit.newChangeCheckBoxValue(
                                                       value: value!,
-                                                      dayIndex: day,
-                                                      muscle: PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
+                                                      dayIndex: widget.day,
+                                                      muscle: planCreationCubit.musclesAndItsExercises.keys.toList()[index],
                                                       exerciseIndex: i,
                                                     );
 
@@ -129,15 +172,15 @@ class ChooseExercises extends StatelessWidget {
                                         ));
                                       }
                                       else{
-                                        PlanCreationCubit.getInstance(context).removeFromPlanExercises(
-                                            day,
-                                            PlanCreationCubit.getInstance(context).musclesAndItsExercises[PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index]]![i]
+                                        planCreationCubit.removeFromPlanExercises(
+                                            widget.day,
+                                            planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i]
                                         );
 
-                                        PlanCreationCubit.getInstance(context).newChangeCheckBoxValue(
+                                        planCreationCubit.newChangeCheckBoxValue(
                                           value: value!,
-                                          dayIndex: day,
-                                          muscle: PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList()[index],
+                                          dayIndex: widget.day,
+                                          muscle: planCreationCubit.musclesAndItsExercises.keys.toList()[index],
                                           exerciseIndex: i,
                                         );
                                       }
@@ -148,18 +191,18 @@ class ChooseExercises extends StatelessWidget {
                             ),
                           ),
                           separatorBuilder: (context, index) => const SizedBox(height: 16,),
-                          itemCount: PlanCreationCubit.getInstance(context).musclesAndItsExercises.keys.toList().length
+                          itemCount: planCreationCubit.musclesAndItsExercises.keys.toList().length
                       ),
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.symmetric(vertical: 7.0),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Constants.appColor,
                         ),
                         onPressed:
-                        PlanCreationCubit.getInstance(context).lists['list$day']!.isEmpty?
+                        planCreationCubit.lists['list${widget.day}']!.isEmpty?
                         null : ()
                         {
                           Navigator.pop(context);

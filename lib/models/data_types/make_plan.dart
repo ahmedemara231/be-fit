@@ -1,12 +1,14 @@
+import 'exercises.dart';
+
 class MakePlanModel
 {
   int? daysNumber;
   String name;
-  String uId;
+  Map<String,List<Exercises>> lists = {};
 
   MakePlanModel({
     required this.daysNumber,
     required this.name,
-    required this.uId,
+    required this.lists,
 });
 }

@@ -8,7 +8,7 @@ class GetAllPlansSuccessState extends PlansStates {}
 
 class GetAllPlansErrorState extends PlansStates {}
 
-class DeletePlanSuccessState extends PlansStates{}
+class DeletePlanState extends PlansStates{}
 
 class DeletePlanErrorState extends PlansStates{}
 

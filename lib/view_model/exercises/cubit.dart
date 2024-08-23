@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/implementation.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/interface.dart';
-import 'package:be_fit/model/remote/firebase_service/fireStore_service/implementation.dart';
-import 'package:be_fit/model/remote/firebase_service/fireStore_service/interface.dart';
+import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
 import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/delete_custom_exercise.dart';
 import 'package:be_fit/models/data_types/permission_process_model.dart';
@@ -20,6 +20,7 @@ import '../../models/data_types/exercises.dart';
 import '../../models/widgets/exercise_model.dart';
 import '../../models/widgets/modules/toast.dart';
 import '../plan_creation/cubit.dart';
+import '../plans/cubit.dart';
 
 class ExercisesCubit extends Cubit<ExercisesStates>
 {
@@ -43,7 +44,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
   ];
 
-  FireStoreService service = FireStoreCall();
   List<Exercises> exercises = [];
 
   Future<void> getExercises(BuildContext context,{
@@ -51,10 +51,22 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     required String muscleName
   })async
   {
+    exercises = [];
+    customExercises = [];
+
     emit(GetExercisesLoadingState());
     final result = await exercisesType.getExercises(context, muscleName);
     if(result.isSuccess())
       {
+        if(exercisesType is DefaultExercisesImpl)
+          {
+            exercises = result.getOrThrow();
+            exercisesList = List.from(exercises);
+          }
+        else{
+          customExercises = result.getOrThrow();
+          customExercisesList = List.from(customExercises);
+        }
         emit(GetExercisesSuccessState());
       }
     else{
@@ -63,32 +75,22 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   }
 
   late List<Exercises> exercisesList;
-  void exerciseSearch(String pattern)
-  {
-    if(pattern.isEmpty)
-      {
-        exercisesList = List.from(exercises);
-        emit(NewExerciseSearchState());
-      }
-    else{
-      exercisesList = exercises.where((element) => element.name.contains(pattern)).toList();
-      emit(NewExerciseSearchState());
-    }
-  }
-
   List<Exercises> customExercisesList = [];
 
-  void customExerciseSearch(String pattern)
+  void exerciseSearch({
+    required ExercisesMain exercisesType,
+    required String pattern
+  })
   {
-    if(pattern.isEmpty)
-    {
-      customExercisesList = List.from(customExercises);
-      emit(NewExerciseSearchState());
-    }
+    final List<Exercises> filteredList = exercisesType.search(pattern);
+    if(exercisesType is DefaultExercisesImpl)
+      {
+        exercisesList = filteredList;
+      }
     else{
-      customExercisesList = customExercises.where((element) => element.name.contains(pattern)).toList();
-      emit(NewExerciseSearchState());
+      customExercisesList = filteredList;
     }
+    emit(NewSearchState());
   }
 
   List<Exercises> customExercises = [];
@@ -98,16 +100,31 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     required ExercisesMain exerciseType
   })async
   {
+    finishDeleting(context, exercise: inputs.exercise);
+    emit(DeleteCustomExerciseSuccessState());
+
     await exerciseType.deleteExercise(
         context,
         exercise: inputs.exercise,
         muscleName: inputs.muscleName
     );
-    emit(DeleteCustomExerciseSuccessState());
   }
 
+  void finishDeleting(context, {required Exercises exercise})
+  {
+    customExercises.remove(exercise);
+    customExercisesList.remove(exercise);
+
+    PlansCubit.getInstance(context).allPlans.forEach((key, value) {
+      (value as Map).forEach((key, value) {
+        (value as List<Exercises>).removeWhere((element) => element.id == exercise.id);
+      });
+    });
+  }
+
+
   Future<void> setRecord({
-    required MainFunctions exerciseType,
+    required ExercisesMain exerciseType,
     required SetRecModel model
   })async
   {
@@ -135,12 +152,16 @@ class ExercisesCubit extends Cubit<ExercisesStates>
               emit(PickCustomExerciseImageSuccessState());
             }).catchError((error)
             {
+
               emit(PickCustomExerciseImageErrorState());
             });
           },
-          onPermissionDenied: () => MySnackBar.showSnackBar(
-            context: context,
-            message:  'Can\'t access Camera please enable it from settings',)),
+          onPermissionDenied: () => AnimatedSnackBar.material(
+              'Can\'t access Camera please enable it from settings',
+              type: AnimatedSnackBarType.error,
+              mobileSnackBarPosition: MobileSnackBarPosition.bottom
+          ).show(context)
+      ),
     );
   }
 
@@ -215,17 +236,16 @@ class ExercisesCubit extends Cubit<ExercisesStates>
    }
 
  }
+  void removeSelectedImage()
+  {
+    selectedExerciseImage = null;
+    emit(RemoveSelectedImage());
+  }
 
   int dot = 0;
   void changeDot(int newDot)
   {
     dot = newDot;
     emit(ChangeDot());
-  }
-
-  void removeSelectedImage()
-  {
-    selectedExerciseImage = null;
-    emit(RemoveSelectedImage());
   }
 }

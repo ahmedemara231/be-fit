@@ -1,32 +1,38 @@
-import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/model/local/cache_helper/shared_prefs.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
-import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multiple_result/src/result.dart';
 import '../../../../models/data_types/pick_precord.dart';
 import '../../../../models/data_types/setRecord_model.dart';
-import '../../../../models/data_types/set_record.dart';
-import '../../../../view_model/exercises/cubit.dart';
 import '../../../../view_model/plan_creation/cubit.dart';
 import '../../../error_handling.dart';
 
 class DefaultExercisesImpl extends ExercisesMain implements MainFunctions
 {
+
+  static DefaultExercisesImpl? instance;
+
+  static DefaultExercisesImpl getInstance()
+  {
+    return instance ??= DefaultExercisesImpl();
+  }
+
   @override
   Future<void> deleteExercise(BuildContext context,{
   required Exercises exercise,
   required String muscleName
   })async {}
 
+  List<Exercises> exercises = [];
+
   @override
-  Future<Result<List<Exercises>, NewFirebaseError>> getExercises(BuildContext context, String muscleName)async {
+  Future<Result<List<Exercises>, FirebaseError>> getExercises(BuildContext context, String muscleName)async {
     try {
-      List<Exercises> exercises = [];
+      exercises = [];
       await FirebaseFirestore.instance
           .collection(muscleName)
           .get()
@@ -37,14 +43,11 @@ class DefaultExercisesImpl extends ExercisesMain implements MainFunctions
         }
       });
 
-      ExercisesCubit.getInstance(context).exercises = List.from(exercises);
-      ExercisesCubit.getInstance(context).exercisesList = List.from(exercises);
-
       return Result.success(exercises);
 
     } on FirebaseException catch(e)
     {
-      NewFirebaseError newFirebaseError = ErrorHandler().handleFireStoreError(context, e);
+      FirebaseError newFirebaseError = ErrorHandler().handleFireStoreError(context, e);
       return Result.error(newFirebaseError);
     }
   }
@@ -54,7 +57,7 @@ class DefaultExercisesImpl extends ExercisesMain implements MainFunctions
   DefaultExercisesImpl({this.getRecord});
 
   @override
-  Future<Result<List<MyRecord>, NewFirebaseError>> getRecords(BuildContext context)async {
+  Future<Result<List<MyRecord>, FirebaseError>> getRecords(BuildContext context)async {
     List<MyRecord> records = [];
     try{
       await FirebaseFirestore.instance
@@ -83,27 +86,16 @@ class DefaultExercisesImpl extends ExercisesMain implements MainFunctions
 
   @override
   Future<void> setRecords(SetRecModel model) async{
-    double? reps = double.tryParse(model.controllers.reps);
-    double? weight = double.tryParse(model.controllers.weight);
-
-    final record = SetRecordModel(
-        weight: weight!,
-        reps: reps!,
-        dateTime: Constants.dataTime,
-        uId: CacheHelper.getInstance().shared.getStringList('userData')![0]
-    );
-
-
     await FirebaseFirestore.instance
         .collection(model.muscleName)
         .doc(model.exerciseId)
         .collection('records')
-        .add(record.toJson()).then((recordId)async
+        .add(model.toJson()).then((recordId)async
     {
       // set a record for exercise in plans
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(record.uId)
+          .doc(CacheHelper.getInstance().shared.getStringList('userData')![0])
           .collection('plans')
           .get()
           .then((value)async {
@@ -123,7 +115,7 @@ class DefaultExercisesImpl extends ExercisesMain implements MainFunctions
                       .doc(model.exerciseId)
                       .collection('records')
                       .doc(recordId.id)
-                      .set(record.toJson());
+                      .set(model.toJson());
                 }
               });
             }
@@ -132,16 +124,35 @@ class DefaultExercisesImpl extends ExercisesMain implements MainFunctions
       });
     });
   }
+
+  @override
+  List<Exercises> search(String pattern) {
+    List<Exercises> filteredList = [];
+    if(pattern.isEmpty)
+      {
+        filteredList = List.from(exercises);
+      }
+    else{
+      filteredList = exercises.where((element) => element.name.contains(pattern)).toList();
+    }
+    return filteredList;
+  }
 }
 
 class CustomExercisesImpl extends ExercisesMain implements MainFunctions
 {
+  static CustomExercisesImpl? instance;
+
+  static CustomExercisesImpl getInstance({GetRecordForCustom? getRecordForCustom})
+  {
+    return instance ??= CustomExercisesImpl(getRecordForCustom: getRecordForCustom);
+  }
+
   @override
   Future<void> deleteExercise(BuildContext context,{
     required Exercises exercise,
     required String muscleName
   })async {
-
     final userDoc = FirebaseFirestore.instance.collection('users')
         .doc(CacheHelper.getInstance().shared.getStringList('userData')?[0]);
 
@@ -165,31 +176,15 @@ class CustomExercisesImpl extends ExercisesMain implements MainFunctions
             }
         }
       });
-      finishDeleting(context, exercise: exercise);
     });
   }
 
-  void finishDeleting(context, {required Exercises exercise})
-  {
-    ExercisesCubit
-        .getInstance(context)
-        .customExercises.remove(exercise);
-
-    ExercisesCubit
-        .getInstance(context)
-        .customExercisesList.remove(exercise);
-
-    PlansCubit.getInstance(context).allPlans.forEach((key, value) {
-      (value as Map).forEach((key, value) {
-        (value as List<Exercises>).removeWhere((element) => element.id == exercise.id);
-      });
-    });
-  }
+  List<CustomExercises> customExercises = [];
 
   @override
-  Future<Result<List<Exercises>, NewFirebaseError>> getExercises(BuildContext context, String muscleName)async {
+  Future<Result<List<Exercises>, FirebaseError>> getExercises(BuildContext context, String muscleName)async {
     try{
-      List<CustomExercises> customExercises = [];
+      customExercises = [];
       await FirebaseFirestore.instance
           .collection('users')
           .doc(CacheHelper.getInstance().shared.getStringList('userData')?[0])
@@ -203,13 +198,11 @@ class CustomExercisesImpl extends ExercisesMain implements MainFunctions
           );
         }
       });
-      ExercisesCubit.getInstance(context).customExercises = List.from(customExercises);
-      ExercisesCubit.getInstance(context).customExercisesList = List.from(customExercises);
 
       return Result.success(customExercises);
     } on FirebaseException catch(e)
     {
-      NewFirebaseError error = ErrorHandler.getInstance().handleFireStoreError(context, e);
+      FirebaseError error = ErrorHandler.getInstance().handleFireStoreError(context, e);
       return Result.error(error);
     }
 
@@ -220,7 +213,7 @@ class CustomExercisesImpl extends ExercisesMain implements MainFunctions
   CustomExercisesImpl({this.getRecordForCustom});
 
   @override
-  Future<Result<List<MyRecord>, NewFirebaseError>> getRecords(BuildContext context)async {
+  Future<Result<List<MyRecord>, FirebaseError>> getRecords(BuildContext context)async {
     List<MyRecord> recordsForCustomExercise = [];
     try{
       await FirebaseFirestore.instance
@@ -248,14 +241,6 @@ class CustomExercisesImpl extends ExercisesMain implements MainFunctions
 
   @override
   Future<void> setRecords(SetRecModel model)async {
-    double? reps = double.tryParse(model.controllers.reps);
-    double? weight = double.tryParse(model.controllers.weight);
-
-    SetRecordModel inputs = SetRecordModel(
-        weight: weight!, reps: reps!,
-        dateTime: Constants.dataTime, uId: 'uId'
-    );
-
     final userDoc =  FirebaseFirestore.instance
         .collection('users')
         .doc(CacheHelper.getInstance().shared.getStringList('userData')![0]);
@@ -263,7 +248,7 @@ class CustomExercisesImpl extends ExercisesMain implements MainFunctions
     userDoc
         .collection('customExercises')
         .doc(model.exerciseId)
-        .collection('records').add(inputs.toJson())
+        .collection('records').add(model.toJson())
         .then((record)async {
 
      userDoc
@@ -283,11 +268,24 @@ class CustomExercisesImpl extends ExercisesMain implements MainFunctions
                   .doc(model.exerciseId)
                   .collection('records')
                   .doc(record.id)
-                  .set(inputs.toJson());
+                  .set(model.toJson());
             }
           }
         }
       });
     });
+  }
+
+  @override
+  List<Exercises> search(String pattern) {
+    List<Exercises> filteredList = [];
+    if(pattern.isEmpty)
+    {
+      filteredList = List.from(customExercises);
+    }
+    else{
+      filteredList = customExercises.where((element) => element.name.contains(pattern)).toList();
+    }
+    return filteredList;
   }
 }

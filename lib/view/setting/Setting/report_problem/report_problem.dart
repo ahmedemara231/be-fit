@@ -1,5 +1,6 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
+import 'package:be_fit/extensions/routes.dart';
 import '../../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/setting/Setting/report_problem/reports.dart';
@@ -10,8 +11,9 @@ import '../../../../models/widgets/modules/textFormField.dart';
 class ReportProblem extends StatelessWidget {
   ReportProblem({super.key});
 
-  var formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   final problemCont = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,14 +22,13 @@ class ReportProblem extends StatelessWidget {
           TextButton(
               onPressed: ()
               {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Reports(),
-                    ),
-                );
+                context.normalNewRoute(const Reports());
               },
-              child: MyText(text: 'Reports',fontWeight: FontWeight.bold,),
+              child: MyText(
+                text: 'Reports',
+                fontWeight: FontWeight.bold,
+                color: Constants.appColor,
+              ),
           ),
         ],
       ),

@@ -7,10 +7,10 @@ import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
-import 'package:be_fit/view/specificExercise/specific_exercise.dart';
-import '../../../models/widgets/modules/myText.dart';
+import 'package:be_fit/models/widgets/specific_exercise.dart';
+import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
-import '../createExercise/create_exercise.dart';
+import '../../createExercise/create_exercise.dart';
 
 class CustomExercisesScreen extends StatelessWidget {
 
@@ -116,12 +116,9 @@ class CustomExercisesScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    maintainState: false,builder: (context) => CreateExercise(
+                context.normalNewRoute(
+                  CreateExercise(
                     muscleName: muscleName,
-                  ),
                   ),
                 );
               },

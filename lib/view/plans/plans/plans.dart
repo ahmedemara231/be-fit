@@ -1,6 +1,7 @@
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
-import 'package:be_fit/view/BottomNavBar/invalid_connection_screen.dart';
+import 'package:be_fit/models/widgets/invalid_connection_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/plan_details.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
@@ -8,12 +9,22 @@ import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../constants/constants.dart';
-import '../../../model/local/cache_helper/shared_prefs.dart';
 import '../create_plan/create_plan.dart';
 
-class Plans extends StatelessWidget {
+class Plans extends StatefulWidget {
   const Plans({super.key});
 
+  @override
+  State<Plans> createState() => _PlansState();
+}
+
+class _PlansState extends State<Plans> {
+
+  @override
+  void initState() {
+    PlansCubit.getInstance(context).getPlans(context);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
         return Scaffold(
@@ -25,27 +36,26 @@ class Plans extends StatelessWidget {
             color: Colors.white,
             onRefresh: ()async
             {
-              await PlansCubit.getInstance(context).getAllPlans(
-                  context,
-                  CacheHelper.getInstance().getData('userData')[0]
-              );
+              await PlansCubit.getInstance(context).getAllPlans(context);
             },
             child: BlocBuilder<PlansCubit,PlansStates>(
               builder: (context, state) {
                 if(state is GetAllPlansLoadingState)
                   {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return Center(
+                      child: SpinKitCircle(
+                        color: Constants.appColor,
+                        size: 50.0,
+                      ),
                     );
                   }
                 else if(state is GetAllPlansErrorState)
                   {
                     return ErrorBuilder(
                         msg: 'Try Again Later',
-                        onPressed: ()async => await PlansCubit.getInstance(context).getAllPlans(
-                            context,
-                            CacheHelper.getInstance().getData('userData')[0]
-                    ));
+                        onPressed: ()async
+                        => await PlansCubit.getInstance(context).getAllPlans(context)
+                    );
                   }
                 else{
                   return Padding(
@@ -68,14 +78,18 @@ class Plans extends StatelessWidget {
                                 };
 
                                 PlansCubit.getInstance(context).roadToPlanExercise = road;
-                                context.normalNewRoute(PlanDetails());
+                                context.normalNewRoute(const PlanDetails());
                               },
                               child: Container(
                                 decoration: BoxDecoration(
                                     border: context.decoration()
                                 ),
                                 child: ListTile(
-                                  title: MyText(text: PlansCubit.getInstance(context).allPlans.keys.toList()[index],fontSize: 20,fontWeight: FontWeight.w500,),
+                                  title: MyText(
+                                    text: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                   trailing:  PopupMenuButton(
                                     itemBuilder: (context) {
                                       return [
@@ -122,5 +136,5 @@ class Plans extends StatelessWidget {
             )
           ),
         );
-      }
+  }
 }

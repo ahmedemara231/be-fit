@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 extension Routes on BuildContext
@@ -7,9 +6,8 @@ extension Routes on BuildContext
   {
     Navigator.push(
         this,
-        CupertinoDialogRoute(
+      MaterialPageRoute(
             builder: (context) => newRoute,
-            context: this,
         ),
     );
   }
@@ -28,9 +26,9 @@ extension Routes on BuildContext
   {
     Navigator.pushReplacement(
       this,
-      CupertinoDialogRoute(
+      MaterialPageRoute(
         builder: (context) => newRoute,
-        context: this,
       ),
-    );  }
+    );
+  }
 }

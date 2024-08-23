@@ -11,33 +11,34 @@ class ErrorCode
   static const String defaultError = 'can\'t make changes, please try again later';
 }
 
-abstract class NewFirebaseError
+abstract class FirebaseError
 {
-  String message;
-  NewFirebaseError(this.message);
+  final String message;
+
+  FirebaseError(this.message);
 }
 
-class Unavailable extends NewFirebaseError
+class Unavailable extends FirebaseError
 {
   Unavailable(super.message);
 }
 
-class PermissionDenied extends NewFirebaseError
+class PermissionDenied extends FirebaseError
 {
   PermissionDenied(super.message);
 }
 
-class ResourceExhausted extends NewFirebaseError
+class ResourceExhausted extends FirebaseError
 {
   ResourceExhausted(super.message);
 }
 
-class Aborted extends NewFirebaseError
+class Aborted extends FirebaseError
 {
   Aborted(super.message);
 }
 
-class DefaultError extends NewFirebaseError
+class DefaultError extends FirebaseError
 {
   DefaultError(super.message);
 }
@@ -54,7 +55,7 @@ class ErrorHandler
   }
 
 
-  NewFirebaseError handleFireStoreError(BuildContext context,FirebaseException e) {
+  FirebaseError handleFireStoreError(BuildContext context,FirebaseException e) {
     switch (e.code) {
       case 'unavailable':
         _showErrorMessage(context, ErrorCode.unavailable);

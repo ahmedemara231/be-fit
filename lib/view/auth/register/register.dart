@@ -1,11 +1,11 @@
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
-import 'package:be_fit/models/widgets/app_button.dart';
 import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../models/widgets/auth_component.dart';
 import '../../../models/widgets/modules/myText.dart';
 import '../login/login.dart';
 
@@ -18,11 +18,11 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
 
-  final emailCont = TextEditingController();
+  late TextEditingController emailCont;
 
-  final passCont = TextEditingController();
+  late TextEditingController passCont;
 
-  final confirmPassCont = TextEditingController();
+  late TextEditingController confirmPassCont;
 
   final formKey = GlobalKey<FormState>();
 
@@ -30,6 +30,10 @@ class _SignUpState extends State<SignUp> {
 
   @override
   void initState() {
+    emailCont = TextEditingController();
+    passCont = TextEditingController();
+    confirmPassCont = TextEditingController();
+
     signUpInputs =
     [
       AuthTFF(
@@ -92,16 +96,10 @@ class _SignUpState extends State<SignUp> {
                       )),
                     ),
                   ),
-                  if(state is SignUpLoadingState)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 14.0),
-                      child: CircularProgressIndicator(),
-                    ),
-                  if(state is! SignUpLoadingState)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: AppButton(
-                        onPressed: ()async
+                  BlocBuilder<SignUpCubit,SignUpStates>(
+                    builder: (context, state) => AuthComponent(
+                      onPressed: state is SignUpLoadingState?
+                      null : ()async
                       {
                         if(formKey.currentState!.validate())
                         {
@@ -113,19 +111,11 @@ class _SignUpState extends State<SignUp> {
                             context: context,
                           );
                         }
-                      }, text: 'Sign up',
-                      ),
+                      },
+                      buttonText: 'Sign up',
+                      secondText: 'Already have have an account?',
+                      textButtonClick: () => context.removeOldRoute(const Login()),
                     ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyText(text: 'Already have have an account?',),
-                      TextButton(
-                          onPressed: ()
-                          {
-                            context.removeOldRoute(Login());
-                          }, child: MyText(text: 'sign in')),
-                    ],
                   ),
                 ],
               ),

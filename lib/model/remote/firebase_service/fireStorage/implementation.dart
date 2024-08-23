@@ -11,7 +11,7 @@ import '../errors.dart';
 class FireStorageCall extends FireStorageService
 {
   @override
-  Future<Result<Reference, FirebaseError>> callFireStorage({
+  Future<Result<Reference, FirebaseError2>> callFireStorage({
     required String refName,
     required String childName
   })async{

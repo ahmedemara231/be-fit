@@ -5,7 +5,7 @@ import 'package:multiple_result/multiple_result.dart';
 
 abstract class FireStoreService
 {
-  Future<Result<CollectionReference,FirebaseError>> callFireStore(String collectionName);
+  Future<Result<CollectionReference,FirebaseError2>> callFireStore(String collectionName);
 
   void handleError(BuildContext context, {String? errorMessage});
 }

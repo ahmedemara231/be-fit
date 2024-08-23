@@ -15,7 +15,6 @@ class ErrorBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -31,7 +30,7 @@ class ErrorBuilder extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          AppButton(text: 'Try Again',onPressed: onPressed,)
+          AppButton(text: 'Try Again',onPressed: onPressed)
         ],
       ),
     );

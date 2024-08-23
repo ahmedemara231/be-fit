@@ -1,3 +1,6 @@
+import 'package:be_fit/view/auth/login/login.dart';
+import 'package:be_fit/view/exercises/exercises.dart';
+import 'package:be_fit/view/packages_test/listView.dart';
 import 'package:be_fit/view/splash.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
@@ -14,10 +17,12 @@ import 'package:be_fit/view_model/setting/states.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'model/local/cache_helper/shared_prefs.dart';
 import 'models/data_types/permission_process_model.dart';
 import 'models/methods/check_permission.dart';
+import 'models/methods/intercept_internet_connection/internet_check.dart';
 
 class BeFitApp extends StatefulWidget {
   const BeFitApp({super.key});
@@ -47,7 +52,7 @@ class _BeFitAppState extends State<BeFitApp> {
           create: (context) => BottomNavCubit(BottomNavState()),
         ),
         BlocProvider(
-          create: (context) => ExercisesCubit(ExerInitialState()),
+          create: (context) => ExercisesCubit(ExercisesInitialState()),
         ),
         BlocProvider(
           create: (context) => PlanCreationCubit(PlanCreationInitialState()),
@@ -73,7 +78,6 @@ class _BeFitAppState extends State<BeFitApp> {
                       : ThemeData.dark(),
               debugShowCheckedModeBanner: false,
               home: const Splash()
-              // const Splash()
           );
         },
       ),

@@ -7,7 +7,11 @@ class MyToast
 {
   static final toast = FToast();
 
-  static void showToast(BuildContext context,{required String msg, Color? color})
+  static void showToast(BuildContext context,{
+    required String msg,
+    Color? color,
+    Duration? duration,
+  })
   {
     toast.init(context);
     toast.showToast(
@@ -27,7 +31,7 @@ class MyToast
           ),
         ),
       ),
-      toastDuration: const Duration(seconds: 2),
+      toastDuration: duration?? const Duration(seconds: 2),
       positionedToastBuilder: (context, child)
       {
         return Positioned(

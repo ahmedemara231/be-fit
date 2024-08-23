@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Statistics extends StatefulWidget {
-  Exercises exercise;
+  final Exercises exercise;
 
-  Statistics({super.key,
+  const Statistics({super.key,
     required this.exercise,
   });
 
@@ -24,30 +24,45 @@ class Statistics extends StatefulWidget {
 class _StatisticsState extends State<Statistics> {
 
   late MainFunctions exerciseType;
+  late ZoomPanBehavior _zoomPanBehavior;
+
+  void init()
+  {
+    _zoomPanBehavior = ZoomPanBehavior(
+      enablePanning: true,
+      enableDoubleTapZooming: true,
+      enableMouseWheelZooming: true,
+      zoomMode: ZoomMode.x,  // Horizontal zooming and scrolling only
+    );
+  }
+
   @override
   void initState() {
+    init();
     if(widget.exercise.isCustom)
       {
         exerciseType = CustomExercisesImpl(
-          getRecordForCustom: GetRecordForCustom(
-            exerciseDoc: widget.exercise.id,
-          )
+            getRecordForCustom: GetRecordForCustom(
+              exerciseDoc: widget.exercise.id,
+            )
         );
       }
     else{
       exerciseType = DefaultExercisesImpl(
         getRecord: GetRecord(
-            muscleName: widget.exercise.muscleName!,
-            exerciseDoc: widget.exercise.id,
+          muscleName: widget.exercise.muscleName!,
+          exerciseDoc: widget.exercise.id,
         ),
       );
     }
+
     ExercisesCubit.getInstance(context).pickRecordsToMakeChart(
         context,
         exerciseType: exerciseType
     );
     super.initState();
   }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,8 +72,13 @@ class _StatisticsState extends State<Statistics> {
       body:
       BlocBuilder<ExercisesCubit, ExercisesStates>(
         builder: (context, state) => SfCartesianChart(
+          // primaryXAxis: const NumericAxis(
+          //   edgeLabelPlacement: EdgeLabelPlacement.shift,
+          // ),
           primaryXAxis: const CategoryAxis(),
-          title: const ChartTitle(text: 'Analysis'),
+
+          zoomPanBehavior: _zoomPanBehavior,
+          title: ChartTitle(text: '${widget.exercise.name} Analysis'),
           // Enable legend
           legend: const Legend(isVisible: true),
           series: [
@@ -66,15 +86,15 @@ class _StatisticsState extends State<Statistics> {
               LineSeries(
                 dataSource: ExercisesCubit.getInstance(context).records,
                 dataLabelSettings: const DataLabelSettings(isVisible: true),
-                xValueMapper: (datum, index) => 0,
+                xValueMapper: (datum, index) => 100,
                 yValueMapper: (datum, index) => 50,
               ) else
                 LineSeries(
-              dataSource: ExercisesCubit.getInstance(context).records,
-              dataLabelSettings: const DataLabelSettings(isVisible: true),
-              xValueMapper: (datum, index) => ExercisesCubit.getInstance(context).records[index].weight,
-              yValueMapper: (datum, index) => ExercisesCubit.getInstance(context).records[index].reps,
-            )
+                  dataSource: ExercisesCubit.getInstance(context).records,
+                  dataLabelSettings: const DataLabelSettings(isVisible: true),
+                  xValueMapper: (datum, index) => ExercisesCubit.getInstance(context).records[index].reps,
+                  yValueMapper: (datum, index) => ExercisesCubit.getInstance(context).records[index].weight,
+                )
           ],
         ),
       ),

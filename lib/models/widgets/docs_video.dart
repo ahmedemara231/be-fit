@@ -1,8 +1,9 @@
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
+import 'package:be_fit/models/widgets/video_player.dart';
+import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'modules/myText.dart';
-import '../../view/exercises/exercise_video.dart';
 
 class DocsAndVideo extends StatelessWidget {
 
@@ -57,12 +58,11 @@ class DocsAndVideo extends StatelessWidget {
             onPressed: ()
             {
               context.normalNewRoute(
-                ExerciseVideo(
-                  exerciseName: exercise.name,
-                  url: exercise.video.isEmpty?
-                  'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' :
-                  exercise.video,
-                ),
+                PlayVideo(
+                    url: exercise.video.isEmpty?
+                    'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4' : exercise.video,
+                    exerciseName: exercise.name
+                )
               );
             },
             icon: const Icon(Icons.play_arrow),

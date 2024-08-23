@@ -1,6 +1,7 @@
 import 'package:be_fit/constants/constants.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
-import 'package:be_fit/models/widgets/app_button.dart';
+import 'package:be_fit/models/widgets/auth_component.dart';
 import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
 import 'package:be_fit/models/widgets/modules/divider.dart';
 import 'package:be_fit/view/auth/forgot_password/forgot_password.dart';
@@ -13,162 +14,161 @@ import '../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../models/widgets/modules/myText.dart';
 import '../register/register.dart';
 
-class Login extends StatelessWidget {
-  Login({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
-  final emailCont = TextEditingController();
-  final passCont = TextEditingController();
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  late TextEditingController emailCont;
+
+  late TextEditingController passCont;
+
   final formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    emailCont = TextEditingController();
+    passCont = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailCont.dispose();
+    passCont.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginCubit,LoginStates>(
-      builder: (context, state)
-      {
-        return Scaffold(
-          appBar: AppBar(),
-          body: Form(
-            key: formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+    return Scaffold(
+      appBar: AppBar(),
+      body: Form(
+        key: formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset('images/be-fit_logo.png'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyText(
+                    text: 'Hi, Welcome Back',
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 30,),
+                AuthTFF(
+                  obscureText: false,
+                  controller: emailCont,
+                  keyboardType: TextInputType.emailAddress,
+                  hintText: 'ahmed@example.com',
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                AuthTFF(
+                  obscureText: LoginCubit.getInstance(context).isVisible,
+                  controller: passCont,
+                  suffixIcon: IconButton(
+                    onPressed: ()
+                    {
+                      LoginCubit.getInstance(context).setPasswordVisibility();
+                    },
+                    icon: LoginCubit.getInstance(context).isVisible == true?
+                    const Icon(Icons.visibility_off):
+                    const Icon(Icons.visibility),
+                  ),
+                  hintText: 'Password',
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: TextButton(
+                        onPressed: ()
+                        {
+                          context.normalNewRoute(const ForgotPassword());
+                        }, child: MyText(
+                      text: 'forget password?',
+                      color: Constants.appColor,
+                    )),
+                  ),
+                ),
+                BlocBuilder<LoginCubit,LoginStates>(
+                  builder: (context, state) => AuthComponent(
+                    onPressed: state is LoginLoadingState?
+                    null : ()async
+                    {
+                    if(formKey.currentState!.validate())
+                    {
+                      await LoginCubit.getInstance(context).login(
+                        user: Trainee(
+                          email: emailCont.text,
+                          password: passCont.text,
+                        ),
+                        context: context,
+                      );
+                    }
+                  },
+                    buttonText: 'Login',
+                    secondText: 'Don\'t have an account?',
+                    textButtonClick: () => context.normalNewRoute(const SignUp()),
+                  ),
+                ),
+                Row(
                   children: [
-                    Image.asset('images/be-fit_logo.png'),
+                    const Expanded(child: MyDivider()),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MyText(
-                        text: 'Hi, Welcome Back',
-                        fontSize: 25,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: MyText(text: 'OR'),
                     ),
-                    const SizedBox(height: 30,),
-                    AuthTFF(
-                      obscureText: false,
-                      controller: emailCont,
-                      keyboardType: TextInputType.emailAddress,
-                      hintText: 'ahmed@example.com',
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    AuthTFF(
-                      obscureText: LoginCubit.getInstance(context).isVisible,
-                      controller: passCont,
-                      suffixIcon: IconButton(
-                          onPressed: ()
-                          {
-                            LoginCubit.getInstance(context).setPasswordVisibility();
-                          },
-                          icon: LoginCubit.getInstance(context).isVisible == true?
-                          const Icon(Icons.visibility_off):
-                          const Icon(Icons.visibility),
-                      ),
-                      hintText: 'Password',
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: TextButton(
-                            onPressed: ()
-                            {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ForgotPassword(),
-                                ),
-                              );
-                            }, child: MyText(
-                          text: 'forget password?',
-                          color: Constants.appColor,
-                        )),
-                      ),
-                    ),
-                    if(state is LoginLoadingState)
-                      const CircularProgressIndicator(),
-                    if(state is! LoginLoadingState)
-                      AppButton(onPressed: ()async
-                      {
-                        if(formKey.currentState!.validate())
-                        {
-                          await LoginCubit.getInstance(context).login(
-                            user: Trainee(
-                              email: emailCont.text,
-                              password: passCont.text,
-                            ),
-                            context: context,
-                          );
-                        }
-                      }, text: 'Login',
-                      ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        MyText(text: 'Don\'t have an account?',),
-                        TextButton(
-                            onPressed: ()
-                            {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SignUp(),
-                                ),
-                              );
-                            }, child: MyText(text: 'sign up',)),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Expanded(child: MyDivider()),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: MyText(text: 'OR'),
-                        ),
-                        const Expanded(child: MyDivider()),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: InkWell(
-                        onTap: () async
-                        {
-                          await LoginCubit.getInstance(context).signInWithGoogle(context);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
-                            Colors.grey[200]:
-                            HexColor('#333333'),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.asset('images/google.png')
-                                ),
-                                MyText(text: 'Sign in with Google',fontWeight: FontWeight.bold,)
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    const Expanded(child: MyDivider()),
                   ],
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: InkWell(
+                    onTap: () async
+                    {
+                      await LoginCubit.getInstance(context).signInWithGoogle(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
+                        Colors.grey[200]:
+                        HexColor('#333333'),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                width: 50,
+                                height: 50,
+                                child: Image.asset('images/google.png')
+                            ),
+                            MyText(text: 'Sign in with Google',fontWeight: FontWeight.bold,)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

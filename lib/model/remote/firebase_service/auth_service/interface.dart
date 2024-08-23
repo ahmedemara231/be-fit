@@ -6,7 +6,7 @@ import '../errors.dart';
 
 abstract class AuthService
 {
-  Future<Result<UserCredential,FirebaseError>> callFirebaseAuth({
+  Future<Result<UserCredential,FirebaseError2>> callFirebaseAuth({
     required String email,
     required String password,
   });

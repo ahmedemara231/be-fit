@@ -14,7 +14,7 @@ import 'interface.dart';
 class FirebaseRegisterCall extends AuthService
 {
   @override
-  Future<Result<UserCredential, FirebaseError>> callFirebaseAuth({
+  Future<Result<UserCredential, FirebaseError2>> callFirebaseAuth({
     required String email,
     required String password,
   })async{
@@ -50,7 +50,7 @@ class FirebaseRegisterCall extends AuthService
 
     await cacheData(userCredential).whenComplete(()
     {
-      context.removeOldRoute(BottomNavBar());
+      context.removeOldRoute(const BottomNavBar());
 
       MyToast.showToast(
         context,
@@ -88,7 +88,7 @@ class FirebaseRegisterCall extends AuthService
 class FirebaseLoginCall extends AuthService
 {
   @override
-  Future<Result<UserCredential, FirebaseError>> callFirebaseAuth({
+  Future<Result<UserCredential, FirebaseError2>> callFirebaseAuth({
     required String email,
     required String password,
   })async{
@@ -134,7 +134,7 @@ class FirebaseLoginCall extends AuthService
 
     cacheData(userCredential);
 
-    context.removeOldRoute(BottomNavBar());
+    context.removeOldRoute(const BottomNavBar());
 
     MyToast.showToast(
       context,

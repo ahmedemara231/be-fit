@@ -4,8 +4,8 @@ import 'package:be_fit/view/specificExercise/stream.dart';
 import 'package:flutter/material.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
-import 'package:be_fit/view/specificExercise/specific_exercise.dart';
-import '../../../models/widgets/modules/myText.dart';
+import 'package:be_fit/models/widgets/specific_exercise.dart';
+import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 
 class DefaultExercises extends StatelessWidget {
@@ -23,7 +23,7 @@ class DefaultExercises extends StatelessWidget {
       onRefresh: () {
         ExercisesCubit.getInstance(context).getExercises(
           context,
-          exercisesType: DefaultExercisesImpl(),
+          exercisesType: DefaultExercisesImpl.getInstance(),
           muscleName: muscleName,
         );
         return Future(() => null);

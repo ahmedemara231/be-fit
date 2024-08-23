@@ -3,11 +3,9 @@ import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/finish_plan.dart';
 import 'package:be_fit/models/data_types/get_plans_results.dart';
 import 'package:be_fit/models/data_types/pick_records_plan.dart';
-import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multiple_result/multiple_result.dart';
-
 import '../../../../models/data_types/delete_exercise_from_plan.dart';
 import '../../../../models/data_types/exercises.dart';
 import '../../../../view/statistics/statistics.dart';
@@ -15,18 +13,17 @@ import '../../../local/cache_helper/shared_prefs.dart';
 
 class PlansRepo extends MainFunctions
 {
+  Map<String,dynamic> allPlans = {};
+  List<String> allPlansIds = [];
+  Map<String,List<Exercises>> plan = {};
+  List<int> days = [1,2,3,4,5,6];
 
-  Future<Result<GetPlansResults,NewFirebaseError>> getAllPlans(context, String uId)async
+  Future<Result<GetPlansResults,FirebaseError>> getAllPlans(BuildContext context)async
   {
-    Map<String,List<Exercises>> plan = {};
-    Map<String,dynamic> allPlans = {};
-    List<String> allPlansIds = [];
-    List<int> days = [1,2,3,4,5,6];
-
     try{
       CollectionReference plansCollection = FirebaseFirestore.instance
           .collection('users')
-          .doc(uId)
+          .doc(CacheHelper.getInstance().getData('userData')[0])
           .collection('plans');
 
       await plansCollection
@@ -81,9 +78,8 @@ class PlansRepo extends MainFunctions
     inputs.allPlans[inputs.planName] = inputs.plan;
   }
 
-  Future<Result<void, NewFirebaseError>> deletePlan(BuildContext context,{
+  Future<Result<void, FirebaseError>> deletePlan(BuildContext context,{
     required String planId,
-
 })async
   {
     try{
@@ -101,7 +97,7 @@ class PlansRepo extends MainFunctions
     }
   }
 
-  Future<Result<void, NewFirebaseError>> deleteExerciseFromPlan(BuildContext context, {required DeleteFromPlanModel inputs})async
+  Future<Result<void, FirebaseError>> deleteExerciseFromPlan(BuildContext context, {required DeleteFromPlanModel inputs})async
   {
     try{
       await FirebaseFirestore.instance
@@ -124,7 +120,7 @@ class PlansRepo extends MainFunctions
   PlansRepo({this.getRecordsInputs});
 
   @override
-  Future<Result<List<MyRecord>, NewFirebaseError>> getRecords(BuildContext context)async
+  Future<Result<List<MyRecord>, FirebaseError>> getRecords(BuildContext context)async
   {
     List<MyRecord> records = [];
     try {
@@ -151,11 +147,4 @@ class PlansRepo extends MainFunctions
       return Result.error(error);
     }
   }
-
-  @override
-  Future<void> setRecords(SetRecModel model) {
-    // TODO: implement setRecords
-    throw UnimplementedError();
-  }
-
 }
