@@ -7,7 +7,6 @@ import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../../models/widgets/modules/myText.dart';
 
 class ChooseExercises extends StatefulWidget {
@@ -58,11 +57,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
         color: Colors.white,
         onRefresh: ()async
         {
-          print('ahmed');
-          await planCreationCubit.getMuscles(
-              context,
-              uId: CacheHelper.getInstance().getData('userData')[0]
-          );
+          await planCreationCubit.getAllExercises(context);
         },
         child: Padding(
           padding: const EdgeInsets.all(5.0),
@@ -83,9 +78,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                   return ErrorBuilder(
                       msg: 'Try Again Later',
                       onPressed: ()async =>
-                      await planCreationCubit.getMuscles(
-                          context,uId: CacheHelper.getInstance().getData('userData')[0]
-                      )
+                      await planCreationCubit.getAllExercises(context)
                   );
                 }
               else{
@@ -123,7 +116,6 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                     fontWeight: FontWeight.w500,
                                   ),
                                   trailing: Checkbox(
-                                    tristate: true,
                                     value:
                                     planCreationCubit.dayCheckBox['day${widget.day}']?[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]?[i],
 

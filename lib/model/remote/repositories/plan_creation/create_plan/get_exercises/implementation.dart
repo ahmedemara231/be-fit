@@ -1,11 +1,12 @@
-import 'package:be_fit/model/remote/repositories/plan_creation/get_exercises/interface.dart';
+import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/move_custom_to_plan.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../../../constants/constants.dart';
-import '../../../../../models/data_types/get_records_to_plan.dart';
-import '../../../../local/cache_helper/shared_prefs.dart';
 
-class GetDefaultExercise extends GetExercises
+import '../../../../../../constants/constants.dart';
+import '../../../../../../models/data_types/get_records_to_plan.dart';
+import '../../../../../local/cache_helper/shared_prefs.dart';
+
+class GetDefaultExercise extends GetUserPlanExercises
 {
   @override
   Future<void> getExercise(MoveExerciseToPlan model) async{
@@ -57,7 +58,7 @@ class GetDefaultExercise extends GetExercises
   }
 }
 
-class GetCustomExercise extends GetExercises
+class GetCustomExercise extends GetUserPlanExercises
 {
   @override
   Future<void> getExercise(MoveExerciseToPlan model) async{

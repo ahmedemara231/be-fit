@@ -7,7 +7,7 @@ import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../models/widgets/modules/myText.dart';
-import '../../models/methods/intercept_internet_connection/internet_check.dart';
+
 
 class BodyMuscles extends StatefulWidget {
   const BodyMuscles({super.key});

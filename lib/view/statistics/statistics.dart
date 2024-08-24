@@ -67,14 +67,13 @@ class _StatisticsState extends State<Statistics> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: MyText(text: 'Statistics'),
+        title: InkWell(
+            onTap: () => print(widget.exercise.muscleName),
+            child: MyText(text: 'Statistics')),
       ),
       body:
       BlocBuilder<ExercisesCubit, ExercisesStates>(
         builder: (context, state) => SfCartesianChart(
-          // primaryXAxis: const NumericAxis(
-          //   edgeLabelPlacement: EdgeLabelPlacement.shift,
-          // ),
           primaryXAxis: const CategoryAxis(),
 
           zoomPanBehavior: _zoomPanBehavior,
