@@ -1,6 +1,7 @@
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
+import 'package:be_fit/models/widgets/modules/image.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/plans/every_day_exercises.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
@@ -89,12 +90,8 @@ class _PlanDetailsState extends State<PlanDetails> {
                                       ),
                                         width: 80,
                                         height: 80,
-                                        child: Image.network(
-                                          plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index+1}']![i].image[0] as String,
-                                          errorBuilder: (context, error, stackTrace) => MyText(
-                                            text: 'Failed to load image',
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        child: MyNetworkImage(
+                                          url: plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index+1}']![i].image[0] as String,
                                         )
                                     ),
                                   ),

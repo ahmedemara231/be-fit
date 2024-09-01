@@ -1,6 +1,6 @@
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
-import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
+import 'package:be_fit/models/widgets/auth_TFF.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/login/states.dart';
 import 'package:flutter/material.dart';

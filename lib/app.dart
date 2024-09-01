@@ -1,3 +1,4 @@
+import 'package:be_fit/view/plans/create_plan/create_plan.dart';
 import 'package:be_fit/view/splash.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
@@ -15,6 +16,8 @@ import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'model/local/cache_helper/shared_prefs.dart';
 import 'models/data_types/permission_process_model.dart';
 import 'models/methods/check_permission.dart';
@@ -67,12 +70,18 @@ class _BeFitAppState extends State<BeFitApp> {
       ],
       child: BlocBuilder<SettingCubit, SettingStates>(
         builder: (context, state) {
-          return MaterialApp(
-              theme: CacheHelper.getInstance().shared.getBool('appTheme') == false
-                      ? ThemeData.light()
-                      : ThemeData.dark(),
-              debugShowCheckedModeBanner: false,
-              home: const Splash()
+          return ScreenUtilInit(
+            designSize: const Size(360, 690),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            child: MaterialApp(
+                theme: CacheHelper.getInstance().shared.getBool('appTheme') == false
+                        ? ThemeData.light()
+                        : ThemeData.dark(),
+                debugShowCheckedModeBanner: false,
+                home: const Splash(),
+                builder: EasyLoading.init(),
+            ),
           );
         },
       ),

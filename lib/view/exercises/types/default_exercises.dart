@@ -1,10 +1,10 @@
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
-import 'package:be_fit/view/specificExercise/stream.dart';
+import 'package:be_fit/models/widgets/modules/image.dart';
 import 'package:flutter/material.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
-import 'package:be_fit/models/widgets/specific_exercise.dart';
+import 'package:be_fit/models/widgets/specificExercise/specific_exercise.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 
@@ -45,7 +45,6 @@ class DefaultExercises extends StatelessWidget {
               context.normalNewRoute(
                 SpecificExercise(
                   exercise: exercise,
-                  stream: MyStream(exercise: exercise),
                 ),
               );
             },
@@ -53,18 +52,8 @@ class DefaultExercises extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListTile(
-                  leading: Container(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5)
-                    ),
-                    child: Image.network(
-                      ExercisesCubit.getInstance(context).exercisesList[index].image[0],
-                      errorBuilder: (context, error, stackTrace) => MyText(
-                        text: 'Failed to load image',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                  leading: MyNetworkImage(
+                      url: ExercisesCubit.getInstance(context).exercisesList[index].image[0]
                   ),
                   title: MyText(
                     text: ExercisesCubit.getInstance(context).exercisesList[index].name,

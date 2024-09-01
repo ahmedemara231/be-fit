@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
+import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
 import '../../../../models/widgets/modules/myText.dart';
@@ -9,15 +11,40 @@ import 'package:be_fit/view/plans/create_plan/number_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../model/local/cache_helper/shared_prefs.dart';
-import '../../../models/widgets/modules/snackBar.dart';
 import '../../../models/widgets/modules/textFormField.dart';
 
-class CreatePlan extends StatelessWidget {
-   CreatePlan({super.key});
+class CreatePlan extends StatefulWidget {
+   const CreatePlan({super.key});
 
-  final workOutNameCont = TextEditingController();
+  @override
+  State<CreatePlan> createState() => _CreatePlanState();
+}
+
+class _CreatePlanState extends State<CreatePlan> {
+  late TextEditingController workOutNameCont;
   final formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    workOutNameCont = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if(CacheHelper.getInstance().getData('isBeginner') as bool)
+      {
+        Timer(const Duration(milliseconds: 250), () {
+          PlanCreationCubit.getInstance(context).askUserIfHeIsBeginner(context);
+        });
+      }
+    super.didChangeDependencies();
+  }
+  @override
+  void dispose() {
+    workOutNameCont.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlanCreationCubit,PlanCreationStates>(
@@ -93,13 +120,10 @@ class CreatePlan extends StatelessWidget {
                             ).show(context);
                           }
                           else{
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ContinuePlanning(
-                                  name: workOutNameCont.text,
-                                  daysNumber: PlanCreationCubit.getInstance(context).currentIndex,
-                                ),
+                            context.normalNewRoute(
+                              ContinuePlanning(
+                                name: workOutNameCont.text,
+                                daysNumber: PlanCreationCubit.getInstance(context).currentIndex,
                               ),
                             );
                           }

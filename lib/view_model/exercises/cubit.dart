@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/implementation.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/interface.dart';
 import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
@@ -8,10 +9,8 @@ import 'package:be_fit/models/data_types/delete_custom_exercise.dart';
 import 'package:be_fit/models/data_types/permission_process_model.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/models/methods/check_permission.dart';
-import 'package:be_fit/models/widgets/modules/snackBar.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,7 +42,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     ExerciseModel(imageUrl: 'Legs', text: 'legs',numberOfExercises: 5),
     ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
   ];
-
   List<Exercises> exercises = [];
 
   Future<void> getExercises(BuildContext context,{
@@ -152,7 +150,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
               emit(PickCustomExerciseImageSuccessState());
             }).catchError((error)
             {
-
               emit(PickCustomExerciseImageErrorState());
             });
           },
@@ -174,48 +171,37 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   {
     emit(CreateCustomExerciseLoadingState());
 
-    var result = await storage.callFireStorage(refName: 'exerciseImages/', childName: exerciseImageName);
+    final result = await storage.callFireStorage(
+        context,
+        addCustomExerciseModel: addCustomExerciseModel,
+        inputs: FireStorageInputs(
+            refName: 'exerciseImages/',
+            childName: exerciseImageName,
+            selectedExerciseImage: selectedExerciseImage!
+        )
+    );
     if(result.isSuccess())
-    {
-      result.getOrThrow()
-          .putFile(selectedExerciseImage!)
-          .then((val) {
-        val.ref.getDownloadURL().then((imageUrl)async
-        {
-          await FirebaseFirestore.instance
-          .collection('users').doc(addCustomExerciseModel.uId)
-              .collection('customExercises')
-              .add(addCustomExerciseModel.toJson(imageUrl)).then((value) {
-                final exercise = CustomExercises(
-                  name: addCustomExerciseModel.name,
-                  image: [imageUrl],
-                  docs: addCustomExerciseModel.description,
-                  id: value.id,
-                  isCustom: true,
-                  video: '',
-                );
-            customExercises.add(
-              exercise
-            );
-                customExercisesList = List.from(customExercises);
-                PlanCreationCubit.getInstance(context).addCustomExerciseToMuscles(
-                    addCustomExerciseModel.muscle,
-                    exercise
-                );
-                newExerciseCreated(context);
-                emit(CreateCustomExerciseSuccessState());
-          });
-        });
-      });
-    }
+      {
+
+        newExerciseCreated(context, result.getOrThrow());
+        emit(CreateCustomExerciseSuccessState());
+      }
     else{
-      storage.handleError(context,errorMessage: result.tryGetError()?.message);
+      MyToast.showToast(context, msg: 'Try Again Later',color: Constants.appColor);
       emit(CreateCustomExerciseErrorState());
     }
   }
 
-  void newExerciseCreated(context)
+  void newExerciseCreated(BuildContext context, CustomExercises exercise)
   {
+    customExercises.add(
+        exercise
+    );
+    customExercisesList = List.from(customExercises);
+
+    PlanCreationCubit.getInstance(context).addCustomExerciseToMuscles(
+        exercise
+    );
     MyToast.showToast(context, msg: 'Ready Now');
     Navigator.pop(context);
     selectedExerciseImage = null;

@@ -1,41 +1,73 @@
+import 'package:be_fit/model/error_handling.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:multiple_result/multiple_result.dart';
 import '../../../../constants/constants.dart';
+import '../../../../models/data_types/add_custom_exercise.dart';
+import '../../../../models/data_types/exercises.dart';
 import '../../../../models/widgets/modules/toast.dart';
+import '../../../local/cache_helper/shared_prefs.dart';
 import '../errors.dart';
 
 class FireStorageCall extends FireStorageService
 {
   @override
-  Future<Result<Reference, FirebaseError2>> callFireStorage({
-    required String refName,
-    required String childName
+  Future<Result<CustomExercises, FirebaseError>> callFireStorage(BuildContext context,{
+    required AddCustomExerciseModel addCustomExerciseModel,
+    required FireStorageInputs inputs,
   })async{
+    try{
+      final val = await FirebaseStorage.instance
+          .ref(inputs.refName)
+          .child(inputs.childName)
+          .putFile(inputs.selectedExerciseImage);
 
-    final connectivityResult = await Connectivity().checkConnectivity();
-    switch(connectivityResult) {
-      case ConnectivityResult.wifi:
-      case ConnectivityResult.mobile:
-      case ConnectivityResult.ethernet:
-      case ConnectivityResult.bluetooth:
-      case ConnectivityResult.vpn:
-        try{
-         Reference reference = FirebaseStorage.instance
-              .ref(refName)
-              .child(childName);
+      final imageUrl = await val.ref.getDownloadURL();
 
-          return Result.success(reference);
+      final value = await FirebaseFirestore.instance
+          .collection('users').doc(CacheHelper.getInstance().shared.getStringList('userData')?[0])
+          .collection('customExercises')
+          .add(addCustomExerciseModel.toJson(imageUrl));
 
-        } on FirebaseException catch (e) {
-          return Result.error(FirebaseStoreException(e.code));
-        }
-      default:
-        return Result.error(NetworkException('Please Check your connection and try again'));
+      final exercise = CustomExercises(
+        image: [imageUrl],
+        name: addCustomExerciseModel.name,
+        docs: addCustomExerciseModel.description,
+        muscleName: addCustomExerciseModel.muscle,
+        id: value.id,
+        isCustom: true,
+        video: '',
+      );
+      return Result.success(exercise);
+    }on FirebaseException catch(e)
+    {
+      final error = ErrorHandler.getInstance().handleFireStoreError(context, e);
+      return Result.error(error);
     }
+
+
+    // final connectivityResult = await Connectivity().checkConnectivity();
+    // switch(connectivityResult) {
+    //   case ConnectivityResult.wifi:
+    //   case ConnectivityResult.mobile:
+    //   case ConnectivityResult.ethernet:
+    //   case ConnectivityResult.bluetooth:
+    //   case ConnectivityResult.vpn:
+    //     try{
+    //      Reference reference = FirebaseStorage.instance
+    //           .ref(refName)
+    //           .child(childName);
+    //
+    //       return Result.success(reference);
+    //
+    //     } on FirebaseException catch (e) {
+    //       return Result.error(FirebaseStoreException(e.code));
+    //     }
+    //   default:
+    //     return Result.error(NetworkException('Please Check your connection and try again'));
+    // }
   }
 
   @override

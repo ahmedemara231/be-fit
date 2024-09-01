@@ -1,9 +1,8 @@
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/widgets/video_player.dart';
-import 'package:draggable_bottom_sheet/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'modules/myText.dart';
+import '../modules/myText.dart';
 
 class DocsAndVideo extends StatelessWidget {
 

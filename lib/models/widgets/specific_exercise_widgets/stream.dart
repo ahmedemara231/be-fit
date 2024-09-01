@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:animation_list/animation_list.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
@@ -7,16 +6,14 @@ import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../constants/constants.dart';
-import '../../model/local/cache_helper/shared_prefs.dart';
-import '../../models/widgets/modules/myText.dart';
-import '../../models/widgets/modules/snackBar.dart';
-import '../../models/widgets/records_model.dart';
+import '../../../model/local/cache_helper/shared_prefs.dart';
+import '../modules/myText.dart';
+import '../records_model.dart';
 
 class MyStream extends StatelessWidget {
 
   final Exercises exercise;
-   MyStream({super.key,
+   const MyStream({super.key,
     required this.exercise,
   });
 

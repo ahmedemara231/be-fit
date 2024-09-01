@@ -1,6 +1,6 @@
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
-import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
+import 'package:be_fit/models/widgets/auth_TFF.dart';
 import 'package:be_fit/view_model/sign_up/cubit.dart';
 import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +113,7 @@ class _SignUpState extends State<SignUp> {
                         }
                       },
                       buttonText: 'Sign up',
-                      secondText: 'Already have have an account?',
+                      secondText: 'Already have an account?',
                       textButtonClick: () => context.removeOldRoute(const Login()),
                     ),
                   ),

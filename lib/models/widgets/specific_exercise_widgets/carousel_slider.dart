@@ -1,8 +1,8 @@
+import 'package:be_fit/models/widgets/modules/image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'modules/myText.dart';
-import '../../view_model/exercises/cubit.dart';
+import '../../../view_model/exercises/cubit.dart';
 
 class MyCarousel extends StatelessWidget {
 
@@ -23,13 +23,7 @@ class MyCarousel extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16)
               ),
-              child: Image.network(
-                e,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => MyText(
-                  text: 'Failed to load image',
-                  fontWeight: FontWeight.bold,
-                ),),
+              child: MyNetworkImage(url: e),
             ),
           )).toList(),
           options: CarouselOptions(
@@ -42,12 +36,15 @@ class MyCarousel extends StatelessWidget {
             autoPlay: false,
           ),
         ),
-        DotsIndicator(
-          dotsCount: images.length,
-          position: ExercisesCubit.getInstance(context).dot,
-          decorator: const DotsDecorator(
-            color: Colors.black87, // Inactive color
-            activeColor: Colors.redAccent,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: DotsIndicator(
+            dotsCount: images.length,
+            position: ExercisesCubit.getInstance(context).dot,
+            decorator: const DotsDecorator(
+              color: Colors.black87, // Inactive color
+              activeColor: Colors.redAccent,
+            ),
           ),
         ),
       ],

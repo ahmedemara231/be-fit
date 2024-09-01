@@ -3,7 +3,6 @@ import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/widgets/app_button.dart';
-import 'package:be_fit/models/widgets/modules/snackBar.dart';
 import 'package:be_fit/view/createExercise/choose_image_source.dart';
 import '../../../models/widgets/modules/textFormField.dart';
 import '../../../models/widgets/modules/myText.dart';
@@ -85,7 +84,8 @@ class CreateExercise extends StatelessWidget {
                                 child: Image.file(ExercisesCubit.getInstance(context).selectedExerciseImage!)),
                           ),
                           InkWell(
-                            onTap: ()
+                            onTap: state is CreateCustomExerciseLoadingState?
+                            null :()
                             {
                               ExercisesCubit.getInstance(context).removeSelectedImage();
                             },
@@ -154,7 +154,6 @@ class CreateExercise extends StatelessWidget {
                             await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
                               context: context,
                               addCustomExerciseModel: AddCustomExerciseModel(
-                                uId: CacheHelper.getInstance().getData('userData')[0],
                                 muscle: muscleName,
                                 name: nameCont.text,
                                 description: descriptionCont.text,

@@ -1,5 +1,6 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
+import 'package:be_fit/models/widgets/modules/image.dart';
 import 'package:be_fit/models/widgets/invalid_connection_screen.dart';
 import 'package:be_fit/view/plans/create_plan/choose_exercises/reps_sets.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
@@ -106,8 +107,8 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                     (i) => ListTile(
                                   leading: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Image.network(
-                                        planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].image[0]
+                                    child: MyNetworkImage(
+                                        url: planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].image[0]
                                     ),
                                   ),
                                   title: MyText(

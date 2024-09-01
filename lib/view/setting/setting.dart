@@ -3,11 +3,49 @@ import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../models/data_types/dialog_inputs.dart';
+import '../../models/widgets/app_dialog.dart';
 import '../../view_model/setting/states.dart';
+import 'package:in_app_update/in_app_update.dart';
 
 
-class Setting extends StatelessWidget {
+class Setting extends StatefulWidget {
   const Setting({super.key});
+
+  @override
+  State<Setting> createState() => _SettingState();
+}
+
+class _SettingState extends State<Setting> {
+  Future<void> _checkForUpdate(BuildContext context) async {
+    AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      _showUpdateDialog(context, info: updateInfo);
+    }
+  }
+
+  void _showUpdateDialog(BuildContext context, {required AppUpdateInfo info})async {
+    AppDialog.showAppDialog(
+        context,
+        inputs: DialogInputs(
+          title: 'There is an Available update, update now?',
+          confirmButtonText: 'Update',
+          onTapConfirm: ()async => await _startFlexibleUpdate(info),
+        )
+    );
+  }
+
+  Future<void> _startFlexibleUpdate(AppUpdateInfo info) async {
+    if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+      InAppUpdate.performImmediateUpdate();
+    }
+  }
+
+  @override
+  void initState() {
+    // _checkForUpdate(context);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +78,9 @@ class Setting extends StatelessWidget {
                       SettingCubit.getInstance(context).share(context);
                       break;
                     case 5:
+                      SettingCubit.getInstance(context).rate();
+                      break;
+                    case 6:
                       SettingCubit.getInstance(context).logout(context);
                       break;
                   }

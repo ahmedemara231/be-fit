@@ -1,28 +1,28 @@
-import 'dart:developer';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
-import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
+import 'package:be_fit/models/data_types/dialog_inputs.dart';
 import 'package:be_fit/models/data_types/report.dart';
-import 'package:be_fit/models/widgets/modules/snackBar.dart';
+import 'package:be_fit/models/widgets/app_dialog.dart';
 import 'package:be_fit/view/setting/Setting/contacting_us.dart';
 import 'package:be_fit/view/setting/Setting/notifications/notifications.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
-import 'package:be_fit/view_model/login/cubit.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
 import '../../models/data_types/permission_process_model.dart';
 import '../../models/methods/check_permission.dart';
-import '../../models/widgets/modules/myText.dart';
 import '../../models/widgets/setting_model.dart';
 import '../../view/auth/login/login.dart';
 import '../../view/setting/Setting/report_problem/reports.dart';
@@ -51,6 +51,7 @@ class SettingCubit extends Cubit<SettingStates>
       OtherOptions(icon: Icons.contact_phone_sharp, optionName: 'About Us & Contacting'),
       OtherOptions(icon: Icons.report_gmailerrorred_sharp, optionName: 'Report a problem'),
       OtherOptions(icon: Icons.share, optionName: 'Share the app'),
+      OtherOptions(icon: Icons.star_rate_rounded, optionName: 'Rate us'),
       OtherOptions(icon: Icons.logout, optionName: 'Logout'),
     ];
   }
@@ -208,31 +209,35 @@ class SettingCubit extends Cubit<SettingStates>
     context.normalNewRoute(newRoute);
   }
 
+  Future<void> rate()async
+  {
+    final InAppReview inAppReview = InAppReview.instance;
+
+      if (await inAppReview.isAvailable()) {
+        inAppReview.requestReview();
+      }
+  }
+
   Future<void> logout(context) async
   {
-    PanaraConfirmDialog.show(
-      context,
-      color: Constants.appColor,
-      message: 'Are you sure to logout ?',
-      confirmButtonText: "Yes, Logout",
-      cancelButtonText: "Cancel",
-      onTapCancel: () {
-        Navigator.pop(context);
-      },
-      onTapConfirm: ()async {
-        makeLogout(context);
-        await Future.delayed(const Duration(milliseconds: 250));
+    await AppDialog.showAppDialog(
+        context,
+        inputs: DialogInputs(
+            title: 'Are you sure to logout ?',
+            confirmButtonText: 'Yes, Logout',
+          onTapConfirm: ()async {
+            makeLogout(context);
+            await Future.delayed(const Duration(milliseconds: 250));
 
-        if(CacheHelper.getInstance().shared.getBool('isGoogleUser') == true)
-        {
-          await finishLogoutWhenGoogleUser(context);
-        }
-        else{
-          await finishLogoutWhenNormalUser();
-        }
-      },
-      panaraDialogType: PanaraDialogType.custom,
-      barrierDismissible: false, // optional parameter (default is true)
+            if(CacheHelper.getInstance().shared.getBool('isGoogleUser') == true)
+            {
+              await finishLogoutWhenGoogleUser(context);
+            }
+            else{
+              await finishLogoutWhenNormalUser();
+            }
+          },
+        )
     );
   }
 
@@ -255,7 +260,7 @@ class SettingCubit extends Cubit<SettingStates>
 
   Future<void> finishLogoutWhenGoogleUser(context)async
   {
-    await LoginCubit.getInstance(context).google.disconnect();
+    GoogleSignIn().disconnect();
     await emptyGoogleUserCache();
   }
 
@@ -267,4 +272,16 @@ class SettingCubit extends Cubit<SettingStates>
     PlansCubit.getInstance(context).allPlans.clear();
     ExercisesCubit.getInstance(context).customExercises.clear();
   }
+}
+
+Future<void> checkForUpdate() async {
+  InAppUpdate.checkForUpdate().then((info)async {
+    print(1);
+    print(info.flexibleUpdateAllowed);
+    if(info.flexibleUpdateAllowed)
+      {
+        print(info.flexibleUpdateAllowed);
+        // await InAppUpdate.completeFlexibleUpdate();
+      }
+  });
 }

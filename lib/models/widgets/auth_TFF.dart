@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../model/local/cache_helper/shared_prefs.dart';
+import '../../model/local/cache_helper/shared_prefs.dart';
 
 class AuthTFF extends StatelessWidget {
   String? hintText;

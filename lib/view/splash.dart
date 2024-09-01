@@ -34,7 +34,6 @@ class _SplashState extends State<Splash> {
   void _navigate() async {
     Timer(
         const Duration(seconds: 2), () {
-
       switch (CacheHelper.getInstance().shared.getBool('finishOnBoarding')) {
         case true:
           switch (userLoginState) {
@@ -46,26 +45,15 @@ class _SplashState extends State<Splash> {
         default:
           context.removeOldRoute(const OnBoarding());
       }
-      CheckInternetConnection.getInstance().startInternetInterceptor(_scaffoldKey.currentContext);
+      CheckInternetConnection().startInternetInterceptor(context);
     });
   }
 
   @override
   void initState() {
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     _navigate();
-
     super.initState();
   }
-
-  // @override
-  // void dispose() {
-  //   SystemChrome.setEnabledSystemUIMode(
-  //       SystemUiMode.manual,
-  //       overlays: SystemUiOverlay.values
-  //   );
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {

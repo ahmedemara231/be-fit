@@ -34,8 +34,8 @@ class Exercises
       muscleName: element.data()['muscle'],
       isCustom: element.data()['isCustom'],
       video: element.data()['video'],
-      reps: element.data()['reps'],
-      sets: element.data()['sets'],
+      reps: element.data()['reps']??'10',
+      sets: element.data()['sets']??'3',
     );
   }
 
@@ -53,7 +53,6 @@ class Exercises
         'isCustom' : false,
       };
   }
-
 }
 
 class CustomExercises extends Exercises

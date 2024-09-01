@@ -52,7 +52,7 @@ class PlansRepo extends MainFunctions
             inputs: FinishPlanInputs(
               allPlans: allPlans,
               plan: plan,
-              planName: (value.docs[index].data() as Map<String,dynamic>)['name'],
+              planName: (value.docs[index].data() as Map<String,dynamic>)['name']?? 'error',
             ),
           );
         }

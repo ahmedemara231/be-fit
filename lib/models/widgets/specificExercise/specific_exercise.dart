@@ -5,26 +5,25 @@ import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/controllers.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
-import 'package:be_fit/models/widgets/carousel_slider.dart';
+import 'package:be_fit/models/widgets/specific_exercise_widgets/carousel_slider.dart';
+import 'package:be_fit/models/widgets/specific_exercise_widgets/stream.dart';
 import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../models/widgets/modules/myText.dart';
-import '../../../view_model/exercises/states.dart';
-import '../../constants/constants.dart';
-import 'app_button.dart';
-import 'docs_video.dart';
-import 'modules/otp_tff.dart';
+import '../../../../models/widgets/modules/myText.dart';
+import '../../../../view_model/exercises/states.dart';
+import '../../../constants/constants.dart';
+import '../app_button.dart';
+import '../specific_exercise_widgets/docs_video.dart';
+import '../specific_exercise_widgets/otp_tff.dart';
 
 class SpecificExercise extends StatefulWidget {
 
   final Exercises exercise;
-  final Widget stream;
 
   const SpecificExercise({super.key,
     required this.exercise,
-    required this.stream,
   });
 
   @override
@@ -104,7 +103,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                   )
               ),
             ),
-            widget.stream,
+            MyStream(exercise: widget.exercise),
             Column(
               children: [
                 Padding(
@@ -159,7 +158,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
 
                           if(widget.exercise.isCustom)
                           {
-                            exercisesType = CustomExercisesImpl();
+                            exercisesType = CustomExercisesImpl.getInstance();
                           }
                           else{
                             exercisesType = DefaultExercisesImpl.getInstance();

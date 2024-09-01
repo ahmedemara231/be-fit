@@ -1,4 +1,5 @@
 import 'package:be_fit/extensions/container_decoration.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import '../../../models/widgets/contacting_us.dart';
 
 class Contacting extends StatelessWidget {
   Contacting({super.key});
-  
+
   List<ContactingUsModel> customerSupport =
   const
   [
@@ -30,19 +31,19 @@ class Contacting extends StatelessWidget {
         value: 'help help'
     ),
     ContactingUsModel(
-        icon: Image.network(
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk5rkswzExkLh0Ol6Y7Xcad4MLZRR4lpdENg&usqp=CAU',
+        icon: Padding(
+          padding: const EdgeInsets.all(7.0),
+          child: CachedNetworkImage(
+            imageUrl: 'https://www.pngall.com/wp-content/uploads/5/Instagram-Logo.png',
+            color: Colors.white,
+            errorWidget: (context, url, error) => MyText(
+                text: 'Failed Load Image'
+            ),
+          ),
         ),
         title: 'instagram',
         value: 'help2251',
     ),
-    ContactingUsModel(
-        icon: Image.network(
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSGPh_mA_P4XT-GopPUmHCmgv5zwWiSLynZw&usqp=CAU',
-        ),
-        title: 'X',
-        value: 'help_2451'
-    )
   ];
 
   @override

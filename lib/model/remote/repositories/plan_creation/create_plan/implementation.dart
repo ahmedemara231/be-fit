@@ -1,4 +1,3 @@
-import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/model/error_handling.dart';
 import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/move_custom_to_plan.dart';
@@ -6,11 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:multiple_result/multiple_result.dart';
-import '../../../../../models/data_types/exercises.dart';
 import '../../../../../models/data_types/make_plan.dart';
 import '../../../../../models/widgets/modules/toast.dart';
 import '../../../../local/cache_helper/shared_prefs.dart';
-import 'get_exercises/implementation.dart';
 
 class PlanCreationRepo extends PlanCreationRepositories
 {
@@ -54,24 +51,13 @@ class PlanCreationRepo extends PlanCreationRepositories
                   .collection(listsKeys[index])
                   .doc(element.id); // 1st exercise in list1 in the plan
 
-              // check if this exercise has a records or not for this user
-
-              GetUserPlanExercises getExercises;
-              if(element.isCustom == true)
-              {
-                getExercises = GetCustomExercise();
-              }
-              else{
-                getExercises = GetDefaultExercise();
-              }
-
               MoveExerciseToPlan model = MoveExerciseToPlan(
                   planExerciseDoc: planExerciseDoc.id,
                   planDoc: planDoc.id,
                   listsKeys: listsKeys, index: index,
                   element: element
               );
-              await getExercises.getExercise(model);
+              moveExerciseToPlan(model);
             }
         }
       });
@@ -82,5 +68,16 @@ class PlanCreationRepo extends PlanCreationRepositories
       final error = ErrorHandler.getInstance().handleFireStoreError(context, e);
       return Result.error(error);
     }
+  }
+
+  Future<void> moveExerciseToPlan(MoveExerciseToPlan model) async{
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(CacheHelper.getInstance().shared.getStringList('userData')?[0])
+        .collection('plans')
+        .doc(model.planDoc)
+        .collection(model.listsKeys[model.index])
+        .doc(model.planExerciseDoc)
+        .set(model.element.toJson());
   }
 }

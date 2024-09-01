@@ -1,5 +1,7 @@
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
+import 'package:be_fit/models/data_types/dialog_inputs.dart';
+import 'package:be_fit/models/widgets/app_dialog.dart';
 import 'package:be_fit/models/widgets/invalid_connection_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../../models/widgets/modules/myText.dart';
@@ -19,6 +21,7 @@ class Plans extends StatefulWidget {
 }
 
 class _PlansState extends State<Plans> {
+
 
   @override
   void initState() {
@@ -90,17 +93,25 @@ class _PlansState extends State<Plans> {
                                     fontSize: 20,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                  trailing:  PopupMenuButton(
+                                  trailing:
+                                  PopupMenuButton(
                                     itemBuilder: (context) {
                                       return [
                                         PopupMenuItem(
                                           child: MyText(text: 'Delete'),
                                           onTap: () async
                                           {
-                                            await PlansCubit.getInstance(context).deletePlan(
-                                              context,
-                                              index : index,
-                                              planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
+                                            await AppDialog.showAppDialog(
+                                                context,
+                                                inputs: DialogInputs(
+                                                    title: 'Are you sure to delete ${PlansCubit.getInstance(context).allPlans.keys.toList()[index]} ?',
+                                                    confirmButtonText: 'Delete',
+                                                    onTapConfirm: ()async => await PlansCubit.getInstance(context).deletePlan(
+                                                      context,
+                                                      index : index,
+                                                      planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
+                                                    ),
+                                                )
                                             );
                                           },
                                         )
@@ -118,7 +129,7 @@ class _PlansState extends State<Plans> {
                         Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: InkWell(
-                            onTap: () => context.normalNewRoute(CreatePlan()),
+                            onTap: () => context.normalNewRoute(const CreatePlan()),
                             child: Container(
                               height: 50,
                               decoration: BoxDecoration(

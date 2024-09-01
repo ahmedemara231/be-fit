@@ -4,7 +4,6 @@ import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/modules/toast.dart';
 import 'package:be_fit/view_model/login/states.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +13,6 @@ import '../../model/local/cache_helper/shared_prefs.dart';
 import '../../model/remote/firebase_service/auth_service/implementation.dart';
 import '../../model/remote/firebase_service/auth_service/interface.dart';
 import '../../model/remote/firebase_service/errors.dart';
-import '../../models/widgets/modules/snackBar.dart';
 import '../../view/BottomNavBar/bottom_nav_bar.dart';
 
 class LoginCubit extends Cubit<LoginStates>
@@ -59,6 +57,7 @@ class LoginCubit extends Cubit<LoginStates>
   void setPasswordVisibility()
   {
     isVisible = !isVisible;
+    print(isVisible);
     emit(SetPasswordVisibility());
   }
 
@@ -79,61 +78,36 @@ class LoginCubit extends Cubit<LoginStates>
     }
   }
 
-  GoogleSignIn google = GoogleSignIn();
-  Future<void> signInWithGoogle(BuildContext context) async {
+  Future<void> signInWithGoogle(BuildContext context, GoogleAuth signIn) async {
     emit(LoginLoadingState());
-    try{
-      final GoogleSignInAccount? googleUser = await google.signIn();
-
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-      if(googleUser == null)
-        {
-          emit(GoBackState());
-        }
-      else{
-        // Create a new credential
-        final credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth?.accessToken,
-          idToken: googleAuth?.idToken,
-        );
-
-        // Once signed in, return the UserCredential
-        UserCredential user =  await FirebaseAuth.instance.signInWithCredential(credential);
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.user!.uid)
-            .set(
-          {
-            'name' : user.user!.displayName,
-            'email' : user.user!.email,
-          },
-        ).then((value) async
-        {
-          CacheHelper.getInstance().setData(key: 'isGoogleUser', value: true);
-
-          await CacheHelper.getInstance().setData(
-            key: 'userData',
-            value: [
-              user.user!.uid,
-              user.user!.displayName!,
-              user.user!.email
-            ],
-          ).whenComplete(() {
-            context.removeOldRoute(const BottomNavBar());
-            MyToast.showToast(
-              context,
-              msg: 'Welcome Coach!',
-              color: Constants.appColor,
-            );
-            emit(LoginSuccessState());
-          });
-        });
+    final result = await signIn.signInWithGoogle(context);
+    if(result.isSuccess())
+      {
+        await finishGoogleSignIn(context, result.getOrThrow());
+        emit(LoginSuccessState());
       }
-    } on Exception catch(e)
-    {
+    else{
       emit(LoginErrorState());
-      handleLoginErrors(context, e);
     }
+  }
+
+  Future<void> finishGoogleSignIn(BuildContext context, UserCredential user)async
+  {
+    await CacheHelper.getInstance().setData(key: 'isGoogleUser', value: true);
+    await CacheHelper.getInstance().setData(
+      key: 'userData',
+      value: <String>[
+        user.user!.uid,
+        user.user!.displayName!,
+        user.user!.email!
+      ],
+    ).whenComplete(() {
+      context.removeOldRoute(const BottomNavBar());
+      MyToast.showToast(
+        context,
+        msg: 'Welcome Coach!',
+        color: Constants.appColor,
+      );
+    });
   }
 }

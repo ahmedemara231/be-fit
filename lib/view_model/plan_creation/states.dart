@@ -29,3 +29,5 @@ class CreateNewPlanLoadingState extends PlanCreationStates{}
 class CreateNewPlanSuccessState extends PlanCreationStates{}
 
 class CreateNewPlanErrorState extends PlanCreationStates{}
+
+class PreparPlanState extends PlanCreationStates{}

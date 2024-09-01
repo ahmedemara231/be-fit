@@ -33,10 +33,7 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
   List<ExercisesMain> exerciseTypes = [DefaultExercisesImpl.getInstance(), CustomExercisesImpl.getInstance()];
   @override
   void initState() {
-    CheckInternetConnection.getInstance().startInternetInterceptor(context);
-
     ExercisesCubit.getInstance(context).currentIndex = 1;
-
     for(ExercisesMain exerciseType in exerciseTypes)
       {
         ExercisesCubit.getInstance(context).getExercises(

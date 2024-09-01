@@ -1,12 +1,13 @@
+import 'dart:io';
+
 class AddCustomExerciseModel
 {
-  String uId;
   String muscle;
   String name;
   String description;
 
+
   AddCustomExerciseModel({
-    required this.uId,
     required this.muscle,
     required this.name,
     required this.description,
@@ -17,10 +18,23 @@ class AddCustomExerciseModel
   {
     return {
       'muscle' : muscle,
-      'name' : name,
       'image' : [imageUrl],
+      'name' : name,
       'description' : description,
       'isCustom' : true,
     };
   }
+}
+
+class FireStorageInputs
+{
+  String refName;
+  String childName;
+  File selectedExerciseImage;
+
+  FireStorageInputs({
+    required this.refName,
+    required this.childName,
+    required this.selectedExerciseImage,
+});
 }

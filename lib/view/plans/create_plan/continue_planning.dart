@@ -4,6 +4,7 @@ import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/make_plan.dart';
+import 'package:be_fit/models/widgets/modules/image.dart';
 import 'package:be_fit/view/BottomNavBar/bottom_nav_bar.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
@@ -33,8 +34,14 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
   @override
   void initState() {
     planCreationCubit = PlanCreationCubit.getInstance(context);
-    planCreationCubit.makeListForEachDay(widget.daysNumber);
-    planCreationCubit.finishGettingMuscles(context, day: widget.daysNumber!);
+
+    if(widget.name == 'b')
+      {
+        PlanCreationCubit.getInstance(context).createBeginnerPlan(context);
+      }
+    else{
+      planCreationCubit.finishGettingMuscles(context, day: widget.daysNumber!);
+    }
     super.initState();
   }
   @override
@@ -102,7 +109,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                             child: SizedBox(
                                                 width: 80,
                                                 height: 80,
-                                                child: Image.network(planCreationCubit.lists['list${index+1}']![i].image[0])),
+                                                child: MyNetworkImage(url: planCreationCubit.lists['list${index+1}']![i].image[0]))
                                           ),
                                         subtitle: MyText(
                                             text: planCreationCubit.lists['list${index+1}']![i].name,
@@ -120,7 +127,7 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                             ),
                                             const SizedBox(height: 7),
                                             MyText(
-                                              text: '${planCreationCubit.lists['list${index+1}']![i].sets!} X ${planCreationCubit.lists['list${index+1}']![i].reps!}',
+                                              text: '${planCreationCubit.lists['list${index+1}']![i].sets} X ${planCreationCubit.lists['list${index+1}']![i].reps}',
                                               fontWeight: FontWeight.w500,
                                               fontSize: 16,
                                             ),

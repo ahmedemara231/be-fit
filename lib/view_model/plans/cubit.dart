@@ -10,14 +10,15 @@ class PlansCubit extends Cubit<PlansStates>
   PlansCubit(super.initialState);
   static PlansCubit getInstance(context) => BlocProvider.of(context);
 
-  Map<String,dynamic> allPlans = {};
-  List<String> allPlansIds = [];
-
   PlansRepo repo = PlansRepo();
 
+
+  Map<String,dynamic> allPlans = {};
+  List<String> allPlansIds = [];
   Future<void> getAllPlans(context)async
   {
     emit(GetAllPlansLoadingState());
+
     final result = await repo.getAllPlans(context);
     if(result.isSuccess())
     {
@@ -68,7 +69,6 @@ class PlansCubit extends Cubit<PlansStates>
 
         if(exercisesList.isEmpty)
         {
-          // (allPlans[inputs.planName] as Map<String, List<Exercises>>).removeWhere((key, value) => value.isEmpty);
           Navigator.pop(context);
         }
         emit(DeleteExerciseFromPlanSuccessState());

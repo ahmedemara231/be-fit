@@ -1,8 +1,9 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/routes.dart';
+import 'package:be_fit/model/remote/firebase_service/auth_service/implementation.dart';
 import 'package:be_fit/models/data_types/user.dart';
 import 'package:be_fit/models/widgets/auth_component.dart';
-import 'package:be_fit/models/widgets/modules/auth_TFF.dart';
+import 'package:be_fit/models/widgets/auth_TFF.dart';
 import 'package:be_fit/models/widgets/modules/divider.dart';
 import 'package:be_fit/view/auth/forgot_password/forgot_password.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
@@ -73,19 +74,22 @@ class _LoginState extends State<Login> {
                 const SizedBox(
                   height: 16,
                 ),
-                AuthTFF(
-                  obscureText: LoginCubit.getInstance(context).isVisible,
-                  controller: passCont,
-                  suffixIcon: IconButton(
-                    onPressed: ()
-                    {
-                      LoginCubit.getInstance(context).setPasswordVisibility();
-                    },
-                    icon: LoginCubit.getInstance(context).isVisible == true?
-                    const Icon(Icons.visibility_off):
-                    const Icon(Icons.visibility),
+                BlocBuilder<LoginCubit,LoginStates>(
+                  builder: (context, state) => AuthTFF(
+                    obscureText: LoginCubit.getInstance(context).isVisible,
+                    controller: passCont,
+                    suffixIcon: IconButton(
+                      onPressed: ()
+                      {
+                        LoginCubit.getInstance(context).setPasswordVisibility();
+                      },
+                      icon: LoginCubit.getInstance(context).isVisible?
+                      const Icon(Icons.visibility_off):
+                      const Icon(Icons.visibility),
+                    ),
+                    hintText: 'Password',
                   ),
-                  hintText: 'Password',
+                  buildWhen: (previous, current) => current is SetPasswordVisibility,
                 ),
                 Align(
                   alignment: Alignment.centerRight,
@@ -137,7 +141,7 @@ class _LoginState extends State<Login> {
                   child: InkWell(
                     onTap: () async
                     {
-                      await LoginCubit.getInstance(context).signInWithGoogle(context);
+                      await LoginCubit.getInstance(context).signInWithGoogle(context, GoogleSignInCall());
                     },
                     child: Container(
                       decoration: BoxDecoration(

@@ -1,13 +1,15 @@
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
-import 'package:be_fit/view/plans/plans/specific_exercise/stream.dart';
-import 'package:be_fit/models/widgets/specific_exercise.dart';
+import 'package:be_fit/models/widgets/modules/image.dart';
+import 'package:be_fit/models/widgets/specificExercise/specific_exercise.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:flutter/material.dart';
+import '../../../models/data_types/dialog_inputs.dart';
 import '../../../models/data_types/exercises.dart';
+import '../../../models/widgets/app_dialog.dart';
 import '../../../view_model/plans/cubit.dart';
 
 class DayExercises extends StatefulWidget {
@@ -31,7 +33,7 @@ class _DayExercisesState extends State<DayExercises> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: MyText(text: 'Day ${plansCubit.roadToPlanExercise['listIndex']} exercises',),
+        title: MyText(text: 'Day ${plansCubit.roadToPlanExercise['listIndex']} exercises'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -44,11 +46,6 @@ class _DayExercisesState extends State<DayExercises> {
                 context.normalNewRoute(
                     SpecificExercise(
                         exercise: exercise,
-                        stream: MyPlanStream(
-                            exercise: exercise,
-                            planDoc: plansCubit.roadToPlanExercise['planDoc'],
-                            listIndex: plansCubit.roadToPlanExercise['listIndex']
-                        )
                     )
                 );
               },
@@ -64,13 +61,9 @@ class _DayExercisesState extends State<DayExercises> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5)
                       ),
-                      child: Image.network(
-                        (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).image[0],
-                        errorBuilder: (context, error, stackTrace) => MyText(
-                          text: 'Failed to load image',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: MyNetworkImage(
+                        url:(plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).image[0],
+                      )
                     ),
                     title: MyText(
                       text: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name,
@@ -84,15 +77,22 @@ class _DayExercisesState extends State<DayExercises> {
                             child: MyText(text: 'Delete'),
                             onTap: () async
                             {
-                              await plansCubit.deleteExerciseFromPlan(
-                                context,
-                                inputs: DeleteFromPlanModel(
-                                  exerciseIndex: index,
-                                  planName: plansCubit.roadToPlanExercise['planName'],
-                                  planDoc: plansCubit.roadToPlanExercise['planDoc'],
-                                  listIndex: plansCubit.roadToPlanExercise['listIndex'],
-                                  exerciseDoc: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).id,
-                                ),
+                              await AppDialog.showAppDialog(
+                                  context,
+                                  inputs: DialogInputs(
+                                    title: 'Are you sure to delete ${(plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name} From ${plansCubit.roadToPlanExercise['planName']} ?',
+                                    confirmButtonText: 'Delete',
+                                    onTapConfirm: ()async => await plansCubit.deleteExerciseFromPlan(
+                                      context,
+                                      inputs: DeleteFromPlanModel(
+                                        exerciseIndex: index,
+                                        planName: plansCubit.roadToPlanExercise['planName'],
+                                        planDoc: plansCubit.roadToPlanExercise['planDoc'],
+                                        listIndex: plansCubit.roadToPlanExercise['listIndex'],
+                                        exerciseDoc: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).id,
+                                      ),
+                                    )
+                                  )
                               );
                             },
                           )
