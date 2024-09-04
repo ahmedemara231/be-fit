@@ -1,46 +1,38 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/models/widgets/modules/myText.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyNetworkImage extends StatelessWidget {
   final String url;
-  const MyNetworkImage({super.key,
-    required this.url
-  });
+  const MyNetworkImage({super.key, required this.url});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5)
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
       child: Image.network(
-          url,
+        url,
         fit: BoxFit.fill,
         loadingBuilder: (context, child, loadingProgress) {
-          if(loadingProgress == null)
-          {
+          if (loadingProgress == null) {
             return child;
-          }
-          else{
+          } else {
             return SizedBox(
-                width: 10,
-                height: 10,
+                width: 10.w,
+                height: 10.h,
                 child: CircularProgressIndicator(
-                  value: loadingProgress.cumulativeBytesLoaded /  3500000
-                )
-            );
+                    value: loadingProgress.cumulativeBytesLoaded / 3500000));
           }
         },
-        errorBuilder: (context, error, stackTrace) =>
-            Center(
-              child: MyText(
-                text: 'Failed Load Image',
-                color: Constants.appColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+        errorBuilder: (context, error, stackTrace) => Center(
+          child: MyText(
+            text: 'Failed Load Image',
+            color: Constants.appColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }

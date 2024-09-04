@@ -1,4 +1,5 @@
 import 'package:be_fit/models/widgets/modules/divider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import '../../models/data_types/dialog_inputs.dart';
 import '../../models/widgets/app_dialog.dart';
 import '../../view_model/setting/states.dart';
 import 'package:in_app_update/in_app_update.dart';
-
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -24,15 +24,14 @@ class _SettingState extends State<Setting> {
     }
   }
 
-  void _showUpdateDialog(BuildContext context, {required AppUpdateInfo info})async {
-    AppDialog.showAppDialog(
-        context,
+  void _showUpdateDialog(BuildContext context,
+      {required AppUpdateInfo info}) async {
+    AppDialog.showAppDialog(context,
         inputs: DialogInputs(
           title: 'There is an Available update, update now?',
           confirmButtonText: 'Update',
-          onTapConfirm: ()async => await _startFlexibleUpdate(info),
-        )
-    );
+          onTapConfirm: () async => await _startFlexibleUpdate(info),
+        ));
   }
 
   Future<void> _startFlexibleUpdate(AppUpdateInfo info) async {
@@ -49,22 +48,22 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingCubit,SettingStates>(
-      builder: (context, state)
-      {
+    return BlocBuilder<SettingCubit, SettingStates>(
+      builder: (context, state) {
         SettingCubit.getInstance(context).createSettings(context);
         return Scaffold(
           appBar: AppBar(
-            title: MyText(text: 'Setting',fontWeight: FontWeight.w500,),
+            title: MyText(
+              text: 'Setting',
+              fontWeight: FontWeight.w500,
+            ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding:  EdgeInsets.all(8.0.r),
             child: ListView.separated(
               itemBuilder: (context, index) => InkWell(
-                onTap: ()
-                {
-                  switch(index)
-                  {
+                onTap: () {
+                  switch (index) {
                     case 1:
                       SettingCubit.getInstance(context).notifications(context);
                       break;
@@ -98,10 +97,10 @@ class _SettingState extends State<Setting> {
                   ),
                 ),
               ),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 16,
+              separatorBuilder: (context, index) => SizedBox(
+                height: 16.h,
               ),
-              itemCount:  SettingCubit.getInstance(context).settingModel.length,
+              itemCount: SettingCubit.getInstance(context).settingModel.length,
             ),
           ),
         );

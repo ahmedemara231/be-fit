@@ -23,7 +23,7 @@ class Statistics extends StatefulWidget {
 
 class _StatisticsState extends State<Statistics> {
 
-  late MainFunctions exerciseType;
+  late ExercisesMain exerciseType;
   late ZoomPanBehavior _zoomPanBehavior;
 
   void init()

@@ -1,17 +1,14 @@
 import 'package:be_fit/model/error_handling.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/finish_plan.dart';
 import 'package:be_fit/models/data_types/get_plans_results.dart';
-import 'package:be_fit/models/data_types/pick_records_plan.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multiple_result/multiple_result.dart';
 import '../../../../models/data_types/delete_exercise_from_plan.dart';
 import '../../../../models/data_types/exercises.dart';
-import '../../../../view/statistics/statistics.dart';
 import '../../../local/cache_helper/shared_prefs.dart';
 
-class PlansRepo extends MainFunctions
+class PlansRepo
 {
   Map<String,dynamic> allPlans = {};
   List<String> allPlansIds = [];
@@ -112,38 +109,6 @@ class PlansRepo extends MainFunctions
     }on FirebaseException catch(e)
     {
       final error = ErrorHandler().handleFireStoreError(context, e);
-      return Result.error(error);
-    }
-  }
-
-  RecordsForPlan? getRecordsInputs;
-  PlansRepo({this.getRecordsInputs});
-
-  @override
-  Future<Result<List<MyRecord>, FirebaseError>> getRecords(BuildContext context)async
-  {
-    List<MyRecord> records = [];
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(CacheHelper.getInstance().getData('userData')[0])
-          .collection('plans')
-          .doc(getRecordsInputs!.planDoc)
-          .collection('list${getRecordsInputs!.listIndex}')
-          .doc(getRecordsInputs!.exerciseId)
-          .collection('records')
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          records.add(
-              MyRecord.fromJson(element)
-          );
-        }
-      });
-
-      return Result.success(records);
-    } on FirebaseException catch (e) {
-      final error = ErrorHandler.getInstance().handleFireStoreError(context, e);
       return Result.error(error);
     }
   }

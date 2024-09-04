@@ -1,6 +1,7 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
 import 'package:be_fit/models/widgets/default_custom_buttons.dart';
+import 'package:be_fit/models/widgets/search_bar.dart';
 import 'package:be_fit/view/exercises/types/custom_exercises.dart';
 import 'package:be_fit/view/exercises/types/default_exercises.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -10,7 +11,6 @@ import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../model/remote/repositories/interface.dart';
-import '../../models/methods/intercept_internet_connection/internet_check.dart';
 import '../../models/widgets/modules/textFormField.dart';
 
 class ExercisesForMuscle extends StatefulWidget {
@@ -30,7 +30,7 @@ class ExercisesForMuscle extends StatefulWidget {
 class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
 
   final searchCont = TextEditingController();
-  List<ExercisesMain> exerciseTypes = [DefaultExercisesImpl.getInstance(), CustomExercisesImpl.getInstance()];
+  List<ExercisesMain> exerciseTypes = [DefaultExercisesImpl(), CustomExercisesImpl()];
   @override
   void initState() {
     ExercisesCubit.getInstance(context).currentIndex = 1;
@@ -99,35 +99,21 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
                 Expanded(
                   child: ListView(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 10),
-                        child: TFF(
-                          obscureText: false,
-                          controller: searchCont,
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Constants.appColor),
-                              borderRadius: BorderRadius.circular(25)
-                          ),
-                          hintText: 'Search for Exercise',
-                          prefixIcon: const Icon(Icons.search),
-                          onChanged: (newLetter)
-                          {
-                            if(ExercisesCubit.getInstance(context).currentIndex == 1)
-                            {
-                              ExercisesCubit.getInstance(context).exerciseSearch(
-                                  exercisesType: DefaultExercisesImpl.getInstance(),
-                                  pattern: newLetter
-                              );
-                            }
-                            else{
-                              ExercisesCubit.getInstance(context).exerciseSearch(
-                                  exercisesType: CustomExercisesImpl.getInstance(),
-                                  pattern: newLetter
-                              );
-                            }
-                          },
-                        ),
-                      ),
+                      AppSearchBar(
+                        controller: searchCont, onChanged: (newLetter) {
+                        if(ExercisesCubit.getInstance(context).currentIndex == 1)
+                        {
+                          ExercisesCubit.getInstance(context).customExercisesSearch(
+                              newLetter
+                          );
+                        }
+                        else{
+                          ExercisesCubit.getInstance(context).search(
+                              newLetter
+                          );
+                        }
+                      },),
+
                       if(ExercisesCubit.getInstance(context).currentIndex == 1)
                         DefaultExercises(muscleName: widget.muscleName),
                       if(ExercisesCubit.getInstance(context).currentIndex == 2)

@@ -264,7 +264,17 @@ class GetLegsExercises extends GetUserExercises
         .get().then((value)async
     {
       for (var element in value.docs) {
-        legsExercises.add(Exercises.fromJson(element));
+        legsExercises.add(Exercises(
+          name: element.data()['name'],
+          image: element.data()['image'],
+          docs: element.data()['docs'],
+          id: element.id,
+          muscleName: element.data()['muscle'],
+          isCustom: element.data()['isCustom'],
+          video: element.data()['video'],
+          reps: element.data()['reps']??'10',
+          sets: element.data()['sets']??'3',
+        ));
         checkBox.add(false);
 
         if(element.data()['name'] == 'Leg press')

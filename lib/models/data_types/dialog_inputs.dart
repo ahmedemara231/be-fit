@@ -4,11 +4,13 @@ class DialogInputs
   String confirmButtonText;
   String? cancelButtonText;
   void Function() onTapConfirm;
+  void Function()? onTapCancel;
 
   DialogInputs({
     required this.title,
     required this.confirmButtonText,
     this.cancelButtonText,
-    required this.onTapConfirm
+    required this.onTapConfirm,
+    this.onTapCancel
   });
 }

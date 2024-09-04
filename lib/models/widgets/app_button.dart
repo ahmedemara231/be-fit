@@ -1,15 +1,16 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'modules/myText.dart';
 
 class AppButton extends StatelessWidget {
-
   void Function()? onPressed;
   String text;
 
-  AppButton({super.key,
+  AppButton({
+    super.key,
     this.onPressed,
     required this.text,
   });
@@ -17,15 +18,14 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding:  EdgeInsets.all(12.0.r),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
             backgroundColor: Constants.appColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
-            )
-        ),
+            )),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: context.setWidth(3.5),
@@ -35,7 +35,7 @@ class AppButton extends StatelessWidget {
             child: MyText(
               text: text,
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 18.sp,
             ),
           ),
         ),

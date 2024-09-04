@@ -1,16 +1,16 @@
 import 'package:be_fit/extensions/container_decoration.dart';
-import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
 import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/controllers.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
+import 'package:be_fit/models/widgets/specific_exercise_app_bar.dart';
 import 'package:be_fit/models/widgets/specific_exercise_widgets/carousel_slider.dart';
 import 'package:be_fit/models/widgets/specific_exercise_widgets/stream.dart';
-import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import '../../../../view_model/exercises/states.dart';
 import '../../../constants/constants.dart';
@@ -19,10 +19,10 @@ import '../specific_exercise_widgets/docs_video.dart';
 import '../specific_exercise_widgets/otp_tff.dart';
 
 class SpecificExercise extends StatefulWidget {
-
   final Exercises exercise;
 
-  const SpecificExercise({super.key,
+  const SpecificExercise({
+    super.key,
     required this.exercise,
   });
 
@@ -53,6 +53,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
     ExercisesCubit.getInstance(context).dot = 0;
     super.initState();
   }
+
   @override
   void dispose() {
     weightCont.dispose();
@@ -60,33 +61,14 @@ class _SpecificExerciseState extends State<SpecificExercise> {
     controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-        title: MyText(text: widget.exercise.name,fontWeight: FontWeight.w500,),
-        actions: [
-          TextButton(
-              onPressed: ()
-              {
-                context.normalNewRoute(
-                    Statistics(
-                      exercise: widget.exercise,
-                    )
-                );
-              },
-              child: MyText(
-                text: 'Statistics',
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Constants.appColor,
-              )
-          )
-        ],
-      ),
+      appBar: ExerciseAppBar(exercise: widget.exercise),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
         child: ListView(
           children: [
             Padding(
@@ -94,14 +76,13 @@ class _SpecificExerciseState extends State<SpecificExercise> {
               child: Container(
                   width: double.infinity,
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16)
-                  ),
-                  child: BlocBuilder<ExercisesCubit,ExercisesStates>(
-                    builder: (context, state) => MyCarousel(images: widget.exercise.image),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                  child: BlocBuilder<ExercisesCubit, ExercisesStates>(
+                    builder: (context, state) =>
+                        MyCarousel(images: widget.exercise.image),
                     buildWhen: (previous, current) => current is ChangeDot,
-                  )
-              ),
+                  )),
             ),
             MyStream(exercise: widget.exercise),
             Column(
@@ -114,9 +95,7 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                      border: context.decoration()
-                  ),
+                  decoration: BoxDecoration(border: context.decoration()),
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -125,15 +104,16 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                           MyText(
                             text: Constants.dataTime,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 20.sp,
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.h),
                           Form(
                             key: formKey,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                OtpTff(controller: weightCont, hintText: 'weight'),
+                                OtpTff(
+                                    controller: weightCont, hintText: 'weight'),
                                 OtpTff(controller: repsCont, hintText: 'reps'),
                               ],
                             ),
@@ -147,33 +127,36 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: BlocBuilder<ExercisesCubit, ExercisesStates>(
                     builder: (context, state) => AppButton(
-                      onPressed: state is SetNewRecordLoadingState? null : ()async
-                      {
-                        if(formKey.currentState!.validate())
-                        {
-                          controllers = Controllers(
-                              weight: double.tryParse(weightCont.text),
-                              reps: double.tryParse(repsCont.text)
-                          );
+                      onPressed: state is SetNewRecordLoadingState
+                          ? null
+                          : () async {
+                              if (formKey.currentState!.validate()) {
+                                controllers = Controllers(
+                                    weight: double.tryParse(weightCont.text),
+                                    reps: double.tryParse(repsCont.text));
 
-                          if(widget.exercise.isCustom)
-                          {
-                            exercisesType = CustomExercisesImpl.getInstance();
-                          }
-                          else{
-                            exercisesType = DefaultExercisesImpl.getInstance();
-                          }
-                          await ExercisesCubit.getInstance(context).setRecord(
-                              exerciseType: exercisesType,
-                              model: SetRecModel(
-                                  muscleName: widget.exercise.muscleName!,
-                                  exerciseId: widget.exercise.id,
-                                  controllers: controllers
-                              )
-                          );
-                          _clearCont(weightCont, repsCont);
-                        }
-                      },
+                                SetRecModel model = SetRecModel(
+                                    muscleName: widget.exercise.muscleName!,
+                                    exerciseId: widget.exercise.id,
+                                    controllers: controllers
+                                );
+
+                                print(model.muscleName);
+                                print(model.exerciseId);
+
+                                if (widget.exercise.isCustom) {
+                                  exercisesType = CustomExercisesImpl(model: model);
+                                } else {
+                                  exercisesType = DefaultExercisesImpl(model: model);
+                                }
+
+                                await ExercisesCubit.getInstance(context).setRecord(
+                                        exerciseType: exercisesType,
+                                );
+
+                                _clearCont(weightCont, repsCont);
+                              }
+                            },
                       text: 'Add',
                     ),
                   ),
@@ -186,8 +169,8 @@ class _SpecificExerciseState extends State<SpecificExercise> {
     );
   }
 
-  void _clearCont(TextEditingController weightCont, TextEditingController repsCont)
-  {
+  void _clearCont(
+      TextEditingController weightCont, TextEditingController repsCont) {
     weightCont.clear();
     repsCont.clear();
   }

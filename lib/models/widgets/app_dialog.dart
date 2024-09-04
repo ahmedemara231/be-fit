@@ -13,7 +13,7 @@ class AppDialog
       message: inputs.title,
       confirmButtonText: inputs.confirmButtonText,
       cancelButtonText: inputs.cancelButtonText?? 'Cancel',
-      onTapCancel: () {
+      onTapCancel: inputs.onTapCancel ??() {
         Navigator.pop(context);
       },
       onTapConfirm: () {

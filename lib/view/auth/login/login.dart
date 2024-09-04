@@ -14,6 +14,7 @@ import 'package:hexcolor/hexcolor.dart';
 import '../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../models/widgets/modules/myText.dart';
 import '../register/register.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -50,105 +51,107 @@ class _LoginState extends State<Login> {
       body: Form(
         key: formKey,
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding:  EdgeInsets.all(12.0.r),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset('images/be-fit_logo.png'),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.all(8.0.r),
                   child: MyText(
                     text: 'Hi, Welcome Back',
-                    fontSize: 25,
+                    fontSize: 25.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 30,),
-                AuthTFF(
-                  obscureText: false,
-                  controller: emailCont,
-                  keyboardType: TextInputType.emailAddress,
-                  hintText: 'ahmed@example.com',
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 40.h),
+                  child: AuthTFF(
+                    obscureText: false,
+                    controller: emailCont,
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: 'ahmed@example.com',
+                  ),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
-                BlocBuilder<LoginCubit,LoginStates>(
+                BlocBuilder<LoginCubit, LoginStates>(
                   builder: (context, state) => AuthTFF(
                     obscureText: LoginCubit.getInstance(context).isVisible,
                     controller: passCont,
                     suffixIcon: IconButton(
-                      onPressed: ()
-                      {
+                      onPressed: () {
                         LoginCubit.getInstance(context).setPasswordVisibility();
                       },
-                      icon: LoginCubit.getInstance(context).isVisible?
-                      const Icon(Icons.visibility_off):
-                      const Icon(Icons.visibility),
+                      icon: LoginCubit.getInstance(context).isVisible
+                          ? const Icon(Icons.visibility_off)
+                          : const Icon(Icons.visibility),
                     ),
                     hintText: 'Password',
                   ),
-                  buildWhen: (previous, current) => current is SetPasswordVisibility,
+                  buildWhen: (previous, current) =>
+                      current is SetPasswordVisibility,
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
-                    padding: const EdgeInsets.all(5.0),
+                    padding:  EdgeInsets.all(5.0.r),
                     child: TextButton(
-                        onPressed: ()
-                        {
+                        onPressed: () {
                           context.normalNewRoute(const ForgotPassword());
-                        }, child: MyText(
-                      text: 'forget password?',
-                      color: Constants.appColor,
-                    )),
+                        },
+                        child: MyText(
+                          text: 'forget password?',
+                          color: Constants.appColor,
+                        )),
                   ),
                 ),
-                BlocBuilder<LoginCubit,LoginStates>(
+                BlocBuilder<LoginCubit, LoginStates>(
                   builder: (context, state) => AuthComponent(
-                    onPressed: state is LoginLoadingState?
-                    null : ()async
-                    {
-                    if(formKey.currentState!.validate())
-                    {
-                      await LoginCubit.getInstance(context).login(
-                        user: Trainee(
-                          email: emailCont.text,
-                          password: passCont.text,
-                        ),
-                        context: context,
-                      );
-                    }
-                  },
+                    onPressed: state is LoginLoadingState
+                        ? null
+                        : () async {
+                            if (formKey.currentState!.validate()) {
+                              await LoginCubit.getInstance(context).login(
+                                user: Trainee(
+                                  email: emailCont.text,
+                                  password: passCont.text,
+                                ),
+                                context: context,
+                              );
+                            }
+                          },
                     buttonText: 'Login',
                     secondText: 'Don\'t have an account?',
-                    textButtonClick: () => context.normalNewRoute(const SignUp()),
+                    textButtonClick: () =>
+                        context.normalNewRoute(const SignUp()),
                   ),
                 ),
                 Row(
                   children: [
                     const Expanded(child: MyDivider()),
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding:  EdgeInsets.all(12.0.r),
                       child: MyText(text: 'OR'),
                     ),
                     const Expanded(child: MyDivider()),
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding:  EdgeInsets.all(16.0.r),
                   child: InkWell(
-                    onTap: () async
-                    {
-                      await LoginCubit.getInstance(context).signInWithGoogle(context, GoogleSignInCall());
+                    onTap: () async {
+                      await LoginCubit.getInstance(context)
+                          .signInWithGoogle(context, GoogleSignInCall());
                     },
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
-                        Colors.grey[200]:
-                        HexColor('#333333'),
+                        color: CacheHelper.getInstance()
+                                    .shared
+                                    .getBool('appTheme') ==
+                                false
+                            ? Colors.grey[200]
+                            : HexColor('#333333'),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -157,11 +160,13 @@ class _LoginState extends State<Login> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: Image.asset('images/google.png')
-                            ),
-                            MyText(text: 'Sign in with Google',fontWeight: FontWeight.bold,)
+                                width: 50.w,
+                                height: 50.h,
+                                child: Image.asset('images/google.png')),
+                            MyText(
+                              text: 'Sign in with Google',
+                              fontWeight: FontWeight.bold,
+                            )
                           ],
                         ),
                       ),

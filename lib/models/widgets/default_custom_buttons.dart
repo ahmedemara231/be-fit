@@ -1,6 +1,7 @@
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'modules/myText.dart';
 
 class DefaultAndCustomButtons extends StatelessWidget {
@@ -8,7 +9,8 @@ class DefaultAndCustomButtons extends StatelessWidget {
   void Function()? onTap;
   Color? color;
 
-  DefaultAndCustomButtons({super.key,
+  DefaultAndCustomButtons({
+    super.key,
     required this.text,
     required this.onTap,
     this.color,
@@ -26,7 +28,7 @@ class DefaultAndCustomButtons extends StatelessWidget {
         ),
         width: context.setWidth(2.5),
         height: context.setWidth(8),
-        child: Center(child: MyText(text: text,fontSize: 18)),
+        child: Center(child: MyText(text: text, fontSize: 18.sp)),
       ),
     );
   }

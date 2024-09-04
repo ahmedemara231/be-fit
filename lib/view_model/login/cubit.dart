@@ -95,6 +95,10 @@ class LoginCubit extends Cubit<LoginStates>
   {
     await CacheHelper.getInstance().setData(key: 'isGoogleUser', value: true);
     await CacheHelper.getInstance().setData(
+        key: 'isBeginner',
+        value: true
+    );
+    await CacheHelper.getInstance().setData(
       key: 'userData',
       value: <String>[
         user.user!.uid,

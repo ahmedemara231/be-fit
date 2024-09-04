@@ -6,8 +6,8 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../models/widgets/modules/myText.dart';
-
 
 class BodyMuscles extends StatefulWidget {
   const BodyMuscles({super.key});
@@ -17,13 +17,13 @@ class BodyMuscles extends StatefulWidget {
 }
 
 class _BodyMusclesState extends State<BodyMuscles> {
-
   late TextEditingController searchCont;
   @override
   void initState() {
-    searchCont  = TextEditingController();
+    searchCont = TextEditingController();
     super.initState();
   }
+
   @override
   void dispose() {
     searchCont.dispose();
@@ -32,18 +32,19 @@ class _BodyMusclesState extends State<BodyMuscles> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ExercisesCubit,ExercisesStates>(
+    return BlocBuilder<ExercisesCubit, ExercisesStates>(
       builder: (context, state) => Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             child: ListView(
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
                   child: MyText(
-                    text: 'Hello, ${CacheHelper.getInstance().getData('userData')[1]}',
-                    fontSize: 18,
+                    text:
+                        'Hello, ${CacheHelper.getInstance().getData('userData')[1]}',
+                    fontSize: 18.sp,
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
@@ -56,13 +57,15 @@ class _BodyMusclesState extends State<BodyMuscles> {
                       children: [
                         MyText(
                           text: 'Select',
-                          fontSize: 25,
+                          fontSize: 25.sp,
                           fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(width: 10,),
+                        SizedBox(
+                          width: 10.w,
+                        ),
                         MyText(
                           text: 'Muscle',
-                          fontSize: 25,
+                          fontSize: 25.sp,
                           fontWeight: FontWeight.bold,
                           color: Constants.appColor,
                         ),
@@ -76,22 +79,29 @@ class _BodyMusclesState extends State<BodyMuscles> {
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (context, index) => InkWell(
-                        onTap: ()
-                        {
-                          context.normalNewRoute(
-                            ExercisesForMuscle(
-                              muscleName: ExercisesCubit.getInstance(context).musclesList[index].text,
-                              numberOfExercises: ExercisesCubit.getInstance(context).musclesList[index].numberOfExercises,
-                            ),
-                          );
-                        },
-                        child: ExercisesCubit.getInstance(context).musclesList[index],
-                      ),
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 16,
-                      ),
-                      itemCount: ExercisesCubit.getInstance(context).musclesList.length
-                  ),
+                            onTap: () {
+                              context.normalNewRoute(
+                                ExercisesForMuscle(
+                                  muscleName:
+                                      ExercisesCubit.getInstance(context)
+                                          .musclesList[index]
+                                          .text,
+                                  numberOfExercises:
+                                      ExercisesCubit.getInstance(context)
+                                          .musclesList[index]
+                                          .numberOfExercises,
+                                ),
+                              );
+                            },
+                            child: ExercisesCubit.getInstance(context)
+                                .musclesList[index],
+                          ),
+                      separatorBuilder: (context, index) => SizedBox(
+                            height: 16.h,
+                          ),
+                      itemCount: ExercisesCubit.getInstance(context)
+                          .musclesList
+                          .length),
                 ),
               ],
             ),

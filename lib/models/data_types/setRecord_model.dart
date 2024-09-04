@@ -26,32 +26,3 @@ class SetRecModel
     };
   }
 }
-
-class SetCustomExerciseRecModel extends SetRecModel
-{
-
-  SetCustomExerciseRecModel({
-    required super.exerciseId,
-    required super.muscleName,
-    required super.controllers,
-});
-}
-
-class SetRecordForPlanExercise
-{
-  String planDoc;
-  int listIndex;
-  Exercises exercise;
-  String reps;
-  String weight;
-  String uId;
-
-  SetRecordForPlanExercise({
-    required this.planDoc,
-    required this.listIndex,
-    required this.exercise,
-    required this.reps,
-    required this.weight,
-    required this.uId,
-  });
-}

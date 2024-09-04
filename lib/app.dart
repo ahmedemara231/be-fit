@@ -1,7 +1,11 @@
+import 'package:be_fit/view/cardio/cardio_exercise.dart';
+import 'package:be_fit/view/onBoarding/page_view.dart';
 import 'package:be_fit/view/plans/create_plan/create_plan.dart';
 import 'package:be_fit/view/splash.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/bottomNavBar/states.dart';
+import 'package:be_fit/view_model/cardio/cubit.dart';
+import 'package:be_fit/view_model/cardio/states.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
@@ -67,6 +71,9 @@ class _BeFitAppState extends State<BeFitApp> {
         BlocProvider(
           create: (context) => SettingCubit(SettingInitialState()),
         ),
+        BlocProvider(
+          create: (context) => CardioCubit(CardioInitialState())
+        ),
       ],
       child: BlocBuilder<SettingCubit, SettingStates>(
         builder: (context, state) {
@@ -79,7 +86,7 @@ class _BeFitAppState extends State<BeFitApp> {
                         ? ThemeData.light()
                         : ThemeData.dark(),
                 debugShowCheckedModeBanner: false,
-                home: const Splash(),
+                home:  Splash(),
                 builder: EasyLoading.init(),
             ),
           );

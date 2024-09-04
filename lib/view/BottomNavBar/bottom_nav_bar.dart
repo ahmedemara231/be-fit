@@ -1,5 +1,6 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/models/widgets/modules/myText.dart';
+import 'package:be_fit/view/cardio/cardio_exercise.dart';
 import 'package:be_fit/view/plans/plans/plans.dart';
 import 'package:be_fit/view/setting/setting.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
@@ -17,6 +18,7 @@ class BottomNavBar extends StatelessWidget {
    const [
      BodyMuscles(),
      Plans(),
+     Cardio(),
      Setting(),
   ];
 
@@ -26,6 +28,7 @@ class BottomNavBar extends StatelessWidget {
     [
       BottomNavBarItem(icon: const Icon(Icons.home_filled), title: 'Muscles', selectedColor: Colors.white),
       BottomNavBarItem(icon: const Icon(Icons.notes), title: 'Plans', selectedColor: Colors.orange),
+      BottomNavBarItem(icon: const Icon(Icons.directions_run), title: 'Cardio', selectedColor: Colors.orange),
       BottomNavBarItem(icon: const Icon(Icons.settings_suggest), title: 'Settings', selectedColor: Colors.grey[350]!),
     ];
 

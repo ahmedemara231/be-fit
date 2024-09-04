@@ -1,6 +1,7 @@
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/extensions/routes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../model/local/cache_helper/shared_prefs.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/setting/Setting/report_problem/reports.dart';
@@ -20,20 +21,19 @@ class ReportProblem extends StatelessWidget {
       appBar: AppBar(
         actions: [
           TextButton(
-              onPressed: ()
-              {
-                context.normalNewRoute(const Reports());
-              },
-              child: MyText(
-                text: 'Reports',
-                fontWeight: FontWeight.bold,
-                color: Constants.appColor,
-              ),
+            onPressed: () {
+              context.normalNewRoute(const Reports());
+            },
+            child: MyText(
+              text: 'Reports',
+              fontWeight: FontWeight.bold,
+              color: Constants.appColor,
+            ),
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding:  EdgeInsets.all(12.0.r),
         child: Column(
           // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,7 +41,7 @@ class ReportProblem extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: MyText(
                 text: 'What\'s your problem ?',
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -54,43 +54,32 @@ class ReportProblem extends StatelessWidget {
                   controller: problemCont,
                   hintText: 'Write your problem',
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Constants.appColor)
-                  ),
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Constants.appColor)),
                 ),
               ),
             ),
             ElevatedButton(
-              onPressed: ()async
-              {
-                if(formKey.currentState!.validate())
-                  {
-                    await SettingCubit.getInstance(context).report(
-                      context,
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  await SettingCubit.getInstance(context).report(context,
                       problem: problemCont.text,
-                      uId: CacheHelper.getInstance().getData('userData')[0]
-
-                    );
-                  }
+                      uId: CacheHelper.getInstance().getData('userData')[0]);
+                }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Constants.appColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)
-                )
-              ),
+                  backgroundColor: Constants.appColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12))),
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: context.setWidth(3)
-                ),
+                    vertical: 12, horizontal: context.setWidth(3)),
                 child: FittedBox(
                     child: MyText(
-                      text: 'Submit',
-                      color: Colors.white,
-                      fontSize: 16,
-                    )
-                ),
+                  text: 'Submit',
+                  color: Colors.white,
+                  fontSize: 16.sp,
+                )),
               ),
             )
           ],

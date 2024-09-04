@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
 
 class AuthTFF extends StatelessWidget {
@@ -19,7 +20,8 @@ class AuthTFF extends StatelessWidget {
   void Function(String)? onFieldSubmitted;
   String? Function(String?)? validator;
 
-  AuthTFF({super.key,
+  AuthTFF({
+    super.key,
     required this.obscureText,
     required this.controller,
     this.hintText,
@@ -44,36 +46,32 @@ class AuthTFF extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       controller: controller,
-      validator: validator?? (value)
-      {
-        if(value!.isEmpty)
-        {
-          return 'This Field is required';
-        }
-      },
+      validator: validator ??
+          (value) {
+            if (value!.isEmpty) {
+              return 'This Field is required';
+            }
+          },
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
-      style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w500
-      ),
+      style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
       decoration: InputDecoration(
         border: border,
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-              color: CacheHelper.getInstance().shared.getBool('appTheme') == false?
-              Colors.black :
-              Colors.white,
-          )
-        ),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color:
+                  CacheHelper.getInstance().shared.getBool('appTheme') == false
+                      ? Colors.black
+                      : Colors.white,
+            )),
         hintText: hintText,
         hintStyle: hintStyle,
         labelText: labelText,
         labelStyle: labelStyle,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        errorStyle: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),
+        errorStyle: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
       ),
     );
   }

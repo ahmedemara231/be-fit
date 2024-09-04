@@ -1,36 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'modules/myText.dart';
 
 abstract class SettingModel extends StatelessWidget {
-
-  IconData icon;
+  final IconData icon;
   final String optionName;
 
-  SettingModel({
+  const SettingModel({
+    required super.key,
     required this.icon,
     required this.optionName,
-});
+  });
 
   @override
   Widget build(BuildContext context);
 }
 
-class SwitchOption extends SettingModel
-{
-  void Function(bool)? onChanged;
-  bool? value;
-  SwitchOption({
+class SwitchOption extends SettingModel {
+
+  final void Function(bool)? onChanged;
+  final bool? value;
+
+  const SwitchOption({super.key,
     required super.icon,
     required super.optionName,
     required this.value,
     required this.onChanged,
   });
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(icon),
-      title: MyText(text: optionName,fontWeight: FontWeight.w500,fontSize: 18,),
+      title: MyText(
+        text: optionName,
+        fontWeight: FontWeight.w500,
+        fontSize: 18.sp,
+      ),
       trailing: Switch(
         value: value!,
         onChanged: onChanged,
@@ -39,9 +46,10 @@ class SwitchOption extends SettingModel
   }
 }
 
-class OtherOptions extends SettingModel
-{
-  OtherOptions({
+class OtherOptions extends SettingModel {
+
+  const OtherOptions({
+    super.key,
     required super.icon,
     required super.optionName,
   });
@@ -50,8 +58,11 @@ class OtherOptions extends SettingModel
   Widget build(BuildContext context) {
     return ListTile(
         leading: Icon(icon),
-        title: MyText(text: optionName,fontWeight: FontWeight.w500,fontSize: 18,),
-        trailing: const Icon(Icons.arrow_forward_ios)
-    );
+        title: MyText(
+          text: optionName,
+          fontWeight: FontWeight.w500,
+          fontSize: 18.sp,
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios));
   }
 }

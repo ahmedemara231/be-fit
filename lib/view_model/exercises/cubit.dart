@@ -75,18 +75,24 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   late List<Exercises> exercisesList;
   List<Exercises> customExercisesList = [];
 
-  void exerciseSearch({
-    required ExercisesMain exercisesType,
-    required String pattern
-  })
-  {
-    final List<Exercises> filteredList = exercisesType.search(pattern);
-    if(exercisesType is DefaultExercisesImpl)
-      {
-        exercisesList = filteredList;
-      }
+  void search(String pattern) {
+    if(pattern.isEmpty)
+    {
+      exercisesList = List.from(exercises);
+    }
     else{
-      customExercisesList = filteredList;
+      exercisesList = exercises.where((element) => element.name.contains(pattern)).toList();
+    }
+    emit(NewSearchState());
+  }
+
+  void customExercisesSearch(String pattern) {
+    if(pattern.isEmpty)
+    {
+      customExercisesList = List.from(customExercises);
+    }
+    else{
+      customExercisesList = customExercises.where((element) => element.name.contains(pattern)).toList();
     }
     emit(NewSearchState());
   }
@@ -123,11 +129,11 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 
   Future<void> setRecord({
     required ExercisesMain exerciseType,
-    required SetRecModel model
+    // required SetRecModel model
   })async
   {
     emit(SetNewRecordLoadingState());
-    await exerciseType.setRecords(model);
+    await exerciseType.setRecords();
     emit(SetNewRecordSuccessState());
   }
 
@@ -208,7 +214,7 @@ class ExercisesCubit extends Cubit<ExercisesStates>
   }
 
   List<MyRecord> records = [];
- Future<void> pickRecordsToMakeChart(context,{required MainFunctions exerciseType})async
+ Future<void> pickRecordsToMakeChart(context,{required ExercisesMain exerciseType})async
  {
    emit(MakeChartForExerciseLoadingState());
    final result = await exerciseType.getRecords(context);

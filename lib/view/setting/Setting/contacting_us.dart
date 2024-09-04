@@ -4,45 +4,38 @@ import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:flutter/material.dart';
 import '../../../models/widgets/contacting_us.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Contacting extends StatelessWidget {
   Contacting({super.key});
 
-  List<ContactingUsModel> customerSupport =
-  const
-  [
+  List<ContactingUsModel> customerSupport = const [
     ContactingUsModel(
         icon: Icon(Icons.phone_android),
         title: 'Contacting Number',
-        value: '+201069897'
-    ),
+        value: '+201069897'),
     ContactingUsModel(
         icon: Icon(Icons.mail),
         title: 'E-mail Address',
-        value: 'help@gmail.com'
-    )
+        value: 'help@gmail.com')
   ];
 
-  List<ContactingUsModel> socialMedia =
-  [
+  List<ContactingUsModel> socialMedia = [
     const ContactingUsModel(
-        icon: Icon(Icons.facebook),
-        title: 'Facebook',
-        value: 'help help'
-    ),
+        icon: Icon(Icons.facebook), title: 'Facebook', value: 'help help'),
     ContactingUsModel(
-        icon: Padding(
-          padding: const EdgeInsets.all(7.0),
-          child: CachedNetworkImage(
-            imageUrl: 'https://www.pngall.com/wp-content/uploads/5/Instagram-Logo.png',
-            color: Colors.white,
-            errorWidget: (context, url, error) => MyText(
-                text: 'Failed Load Image'
-            ),
-          ),
+      icon: Padding(
+        padding: EdgeInsets.all(7.0.r),
+        child: CachedNetworkImage(
+          imageUrl:
+              'https://www.pngall.com/wp-content/uploads/5/Instagram-Logo.png',
+          color: Colors.white,
+          errorWidget: (context, url, error) =>
+              MyText(text: 'Failed Load Image'),
         ),
-        title: 'instagram',
-        value: 'help2251',
+      ),
+      title: 'instagram',
+      value: 'help2251',
     ),
   ];
 
@@ -54,43 +47,41 @@ class Contacting extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: EdgeInsets.all(12.0.r),
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: MyText(
-                    text: 'You can get touch with us through these platforms, out team will reach out to you as soon as it could be possible',
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    maxLines: 3,
+                  text:
+                      'You can get touch with us through these platforms, out team will reach out to you as soon as it could be possible',
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.sp,
+                  maxLines: 3,
                 ),
               ),
-
               Container(
-                decoration: BoxDecoration(
-                  border: context.decoration()
-                ),
+                decoration: BoxDecoration(border: context.decoration()),
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0.r),
                   child: Column(
                     children: List.generate(
                       customerSupport.length,
-                          (index) => InkWell(
-                        onTap: ()
-                        {
-                          switch(index)
-                          {
+                      (index) => InkWell(
+                        onTap: () {
+                          switch (index) {
                             case 0:
-                              SettingCubit.getInstance(context).contactingPhoneClick(
+                              SettingCubit.getInstance(context)
+                                  .contactingPhoneClick(
                                 phone: 'tel:${customerSupport[index].value}',
                               );
                               break;
                             case 1:
-                              SettingCubit.getInstance(context).contactingEmailClick(
-                                  emailAddress: 'mailto:${customerSupport[index].value}'
-                              );
+                              SettingCubit.getInstance(context)
+                                  .contactingEmailClick(
+                                      emailAddress:
+                                          'mailto:${customerSupport[index].value}');
                           }
                         },
                         child: customerSupport[index],
@@ -99,19 +90,15 @@ class Contacting extends StatelessWidget {
                   ),
                 ),
               ),
-
-              const SizedBox(height: 20),
-
+              SizedBox(height: 20.h),
               Container(
-                decoration: BoxDecoration(
-                  border: context.decoration()
-                ),
+                decoration: BoxDecoration(border: context.decoration()),
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0.r),
                   child: Column(
                     children: List.generate(
                       socialMedia.length,
-                          (index) => socialMedia[index],
+                      (index) => socialMedia[index],
                     ),
                   ),
                 ),

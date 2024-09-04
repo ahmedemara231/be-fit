@@ -117,6 +117,7 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
           confirmButtonText: 'Make Plan',
           cancelButtonText: 'not Beginner',
           onTapConfirm: () async=> handleBeginnerClick(context),
+          onTapCancel: ()async => handleCancelClick(context),
         )
     );
   }
@@ -135,6 +136,16 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
         value: false
     );
   }
+
+  Future<void> handleCancelClick(BuildContext context)async
+  {
+    Navigator.pop(context);
+    await CacheHelper.getInstance().setData(
+        key: 'isBeginner',
+        value: false
+    );
+  }
+
   Future<void> createPlan(BuildContext context, MakePlanModel model)async
   {
     emit(CreateNewPlanLoadingState());
