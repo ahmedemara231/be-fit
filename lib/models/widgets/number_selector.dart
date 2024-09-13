@@ -24,7 +24,7 @@ class NumberSelection extends StatelessWidget {
               isInfinite: false,
               horizontal: false,
               verticalListWidth: 65.w,
-              verticalListHeight: 150.h,
+              verticalListHeight: 140.h,
               enableAnimation: true,
               animationDuration: const Duration(milliseconds: 500),
               perspective: 0.01,

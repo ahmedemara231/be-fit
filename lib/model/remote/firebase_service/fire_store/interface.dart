@@ -1,10 +1,10 @@
-import 'package:be_fit/model/error_handling.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multiple_result/multiple_result.dart';
 import '../../../../../models/data_types/move_custom_to_plan.dart';
-import '../../../models/data_types/make_plan.dart';
-import '../../../models/data_types/muscles_and_checkbox.dart';
+import '../../../../models/data_types/make_plan.dart';
+import '../../../../models/data_types/muscles_and_checkbox.dart';
 
 abstract class ExercisesMain
 {
@@ -18,6 +18,8 @@ abstract class ExercisesMain
   Future<void> setRecords();
 
   Future<Result<dynamic,FirebaseError>> getRecords(BuildContext context);
+
+  Future<void> deleteRecord();
 }
 
 abstract class GetUserPlanExercises

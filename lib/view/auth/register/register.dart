@@ -65,66 +65,70 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SignUpCubit, SignUpStates>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding:  EdgeInsets.all(12.0.r),
-              child: Column(
-                children: [
-                  Image.asset('images/be-fit_logo.png'),
-                  Padding(
-                    padding:  EdgeInsets.all(8.0.r),
-                    child: MyText(
-                      text: 'Let\'s create an account',
-                      fontSize: 25.sp,
-                      fontWeight: FontWeight.w500,
+    return BlocProvider(
+      create: (context) => SignUpCubit(),
+      child: BlocBuilder<SignUpCubit, SignUpStates>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding:  EdgeInsets.all(12.0.r),
+                child: Column(
+                  children: [
+                    Image.asset('images/be-fit_logo.png'),
+                    Padding(
+                      padding:  EdgeInsets.all(8.0.r),
+                      child: MyText(
+                        text: 'Let\'s create an account',
+                        fontSize: 25.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 30.h,
-                  ),
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: List.generate(
-                          signUpInputs.length,
-                          (index) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12.0),
-                                child: signUpInputs[index],
-                              )),
+                    SizedBox(
+                      height: 30.h,
                     ),
-                  ),
-                  BlocBuilder<SignUpCubit, SignUpStates>(
-                    builder: (context, state) => AuthComponent(
-                      onPressed: state is SignUpLoadingState
-                          ? null
-                          : () async {
-                              if (formKey.currentState!.validate()) {
-                                await SignUpCubit.getInstance(context).signUp(
-                                  user: Trainee(
-                                    email: emailCont.text,
-                                    password: passCont.text,
-                                  ),
-                                  context: context,
-                                );
-                              }
-                            },
-                      buttonText: 'Sign up',
-                      secondText: 'Already have an account?',
-                      textButtonClick: () =>
-                          context.removeOldRoute(const Login()),
+                    Form(
+                      key: formKey,
+                      child: Column(
+                        children: List.generate(
+                            signUpInputs.length,
+                            (index) => Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12.0),
+                                  child: signUpInputs[index],
+                                )),
+                      ),
                     ),
-                  ),
-                ],
+                    BlocBuilder<SignUpCubit, SignUpStates>(
+                      builder: (context, state) => AuthComponent(
+                        onPressed: state is SignUpLoadingState
+                            ? null
+                            : () async {
+                                if (formKey.currentState!.validate()) {
+                                  await SignUpCubit.getInstance(context).signUp(
+                                    user: Trainee(
+                                      email: emailCont.text,
+                                      password: passCont.text,
+                                    ),
+                                    context: context,
+                                  );
+                                }
+                              },
+                        buttonText: 'Sign up',
+                        secondText: 'Already have an account?',
+                        thirdText: 'Login',
+                        textButtonClick: () =>
+                            context.removeOldRoute(const Login()),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

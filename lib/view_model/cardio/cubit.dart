@@ -1,14 +1,14 @@
-import 'package:be_fit/model/remote/repositories/cardio/implementation.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/cardio_records.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/view_model/cardio/states.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../model/remote/firebase_service/fire_store/cardio/implementation.dart';
+import '../../model/remote/firebase_service/fire_store/interface.dart';
 
 class CardioCubit extends Cubit<CardioStates> {
-  CardioCubit(super.initialState);
-  static CardioCubit getInstance(context) => BlocProvider.of(context);
+  CardioCubit() : super(CardioInitialState());
+  factory CardioCubit.getInstance(context) => BlocProvider.of(context);
 
   List<Exercises> cardioExercises = [];
   List<Exercises> cardioExercisesList = [];

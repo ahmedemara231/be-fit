@@ -1,12 +1,12 @@
-import 'package:be_fit/model/error_handling.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
-import 'package:be_fit/model/remote/repositories/plan_creation/get_exercises/factory_method.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
+import 'package:be_fit/model/remote/firebase_service/fire_store/plan_creation/get_exercises/factory_method.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multiple_result/multiple_result.dart';
-import '../../../../../constants/constants.dart';
-import '../../../../../models/data_types/exercises.dart';
-import '../../../../../models/data_types/muscles_and_checkbox.dart';
-import '../../../../../models/data_types/return_all_exercises.dart';
+import '../../../../../../constants/constants.dart';
+import '../../../../../../models/data_types/exercises.dart';
+import '../../../../../../models/data_types/muscles_and_checkbox.dart';
+import '../../../../../../models/data_types/return_all_exercises.dart';
+import '../../interface.dart';
 
 class GetExercisesToMakePlan
 {

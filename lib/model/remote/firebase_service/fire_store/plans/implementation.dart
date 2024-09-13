@@ -1,19 +1,18 @@
-import 'package:be_fit/model/error_handling.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:be_fit/models/data_types/finish_plan.dart';
 import 'package:be_fit/models/data_types/get_plans_results.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multiple_result/multiple_result.dart';
-import '../../../../models/data_types/delete_exercise_from_plan.dart';
-import '../../../../models/data_types/exercises.dart';
-import '../../../local/cache_helper/shared_prefs.dart';
+import '../../../../../models/data_types/delete_exercise_from_plan.dart';
+import '../../../../../models/data_types/exercises.dart';
+import '../../../../local/cache_helper/shared_prefs.dart';
 
 class PlansRepo
 {
   Map<String,dynamic> allPlans = {};
   List<String> allPlansIds = [];
   Map<String,List<Exercises>> plan = {};
-  List<int> days = [1,2,3,4,5,6];
 
   Future<Result<GetPlansResults,FirebaseError>> getAllPlans(BuildContext context)async
   {
@@ -32,7 +31,7 @@ class PlansRepo
           allPlansIds.add(value.docs[index].id);
           plan = {};
 
-          for(int i = 1; i <= days.length; i++)
+          for(int i = 1; i <= 6; i++)
           {
             await value.docs[index].reference.collection('list$i').get()
                 .then((value)
@@ -105,6 +104,7 @@ class PlansRepo
           .collection('list${inputs.listIndex}')
           .doc(inputs.exerciseDoc)
           .delete();
+
       return const Result.success(null);
     }on FirebaseException catch(e)
     {

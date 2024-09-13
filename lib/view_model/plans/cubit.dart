@@ -1,14 +1,14 @@
 import 'dart:async';
-import 'package:be_fit/model/remote/repositories/plans/implementation.dart';
 import 'package:be_fit/view_model/plans/states.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../model/remote/firebase_service/fire_store/plans/implementation.dart';
 import '../../models/data_types/delete_exercise_from_plan.dart';
 
 class PlansCubit extends Cubit<PlansStates>
 {
-  PlansCubit(super.initialState);
-  static PlansCubit getInstance(context) => BlocProvider.of(context);
+  PlansCubit() : super(PlansInitialState());
+  factory PlansCubit.getInstance(context) => BlocProvider.of(context);
 
   PlansRepo repo = PlansRepo();
 

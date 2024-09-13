@@ -29,8 +29,8 @@ import '../../view/setting/Setting/report_problem/report_problem.dart';
 
 class SettingCubit extends Cubit<SettingStates>
 {
-  SettingCubit(super.initialState);
-  static SettingCubit getInstance(context) => BlocProvider.of(context);
+  SettingCubit() : super(SettingInitialState());
+  factory SettingCubit.getInstance(context) => BlocProvider.of(context);
 
   late List<SettingModel> settingModel;
 
@@ -46,12 +46,12 @@ class SettingCubit extends Cubit<SettingStates>
           await changeAppTheme(newMode);
         },
       ),
-      OtherOptions(icon: Icons.notifications, optionName: 'Notifications'),
-      OtherOptions(icon: Icons.contact_phone_sharp, optionName: 'About Us & Contacting'),
-      OtherOptions(icon: Icons.report_gmailerrorred_sharp, optionName: 'Report a problem'),
-      OtherOptions(icon: Icons.share, optionName: 'Share the app'),
-      OtherOptions(icon: Icons.star_rate_rounded, optionName: 'Rate us'),
-      OtherOptions(icon: Icons.logout, optionName: 'Logout'),
+      const OtherOptions(icon: Icons.notifications, optionName: 'Notifications'),
+      const OtherOptions(icon: Icons.contact_phone_sharp, optionName: 'About Us & Contacting'),
+      const OtherOptions(icon: Icons.report_gmailerrorred_sharp, optionName: 'Report a problem'),
+      const OtherOptions(icon: Icons.share, optionName: 'Share the app'),
+      const OtherOptions(icon: Icons.star_rate_rounded, optionName: 'Rate us'),
+      const OtherOptions(icon: Icons.logout, optionName: 'Logout'),
     ];
   }
 
@@ -268,8 +268,8 @@ class SettingCubit extends Cubit<SettingStates>
     Navigator.pop(context);
     context.removeOldRoute(const Login());
     BottomNavCubit.getInstance(context).returnToFirst();
-    PlansCubit.getInstance(context).allPlans.clear();
-    ExercisesCubit.getInstance(context).customExercises.clear();
+    // PlansCubit.getInstance(context).allPlans.clear();
+    // ExercisesCubit.getInstance(context).customExercises.clear();
   }
 }
 

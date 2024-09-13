@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class BottomNavBarItem
 {
-  Icon icon;
+  Widget icon;
   String title;
   Color selectedColor;
 

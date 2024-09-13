@@ -90,9 +90,7 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                     borderRadius: BorderRadius.circular(12)),
                                 child: ExpansionTile(
                                   title: MyText(
-                                    text: planCreationCubit
-                                        .musclesAndItsExercises.keys
-                                        .toList()[index],
+                                    text: planCreationCubit.musclesAndItsExercises.keys.toList()[index],
                                     fontSize: 20.sp,
                                   ),
                                   subtitle: MyText(
@@ -101,40 +99,22 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                     fontSize: 13.sp,
                                   ),
                                   children: List.generate(
-                                    planCreationCubit
-                                        .musclesAndItsExercises[
-                                            planCreationCubit
-                                                .musclesAndItsExercises.keys
-                                                .toList()[index]]!
-                                        .length,
+                                    planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]!.length,
                                     (i) => ListTile(
                                       leading: Padding(
                                         padding:  EdgeInsets.all(8.0.r),
                                         child: MyNetworkImage(
-                                            url: planCreationCubit
-                                                .musclesAndItsExercises[
-                                                    planCreationCubit
-                                                        .musclesAndItsExercises
-                                                        .keys
-                                                        .toList()[index]]![i]
-                                                .image[0]),
+                                            url: planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].image[0]),
                                       ),
                                       title: MyText(
                                         text: planCreationCubit
-                                            .musclesAndItsExercises[
-                                                planCreationCubit
-                                                    .musclesAndItsExercises.keys
-                                                    .toList()[index]]![i]
+                                            .musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i]
                                             .name,
                                         fontSize: 18.sp,
                                         fontWeight: FontWeight.w500,
                                       ),
                                       trailing: Checkbox(
-                                        value: planCreationCubit
-                                                .dayCheckBox['day${widget.day}']
-                                            ?[planCreationCubit
-                                                .musclesAndItsExercises.keys
-                                                .toList()[index]]?[i],
+                                        value: planCreationCubit.dayCheckBox['day${widget.day}']?[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]?[i],
                                         onChanged: (value) {
                                           if (value == true) {
                                             scaffoldKey.currentState
@@ -142,68 +122,34 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                                     (context) => Form(
                                                           key: formKey,
                                                           child: SizedBox(
-                                                              width: double
-                                                                  .infinity,
-                                                              height: context
-                                                                  .setHeight(4),
-                                                              child:
-                                                                  RepsAnaSets(
-                                                                repsCont:
-                                                                    repsCont,
-                                                                setsCont:
-                                                                    setsCont,
-                                                                cancelButtonAction:
-                                                                    () {
-                                                                  Navigator.pop(
-                                                                      context);
+                                                              width: double.infinity,
+                                                              height: context.setHeight(4),
+                                                              child: RepsAnaSets(
+                                                                repsCont: repsCont,
+                                                                setsCont: setsCont,
+                                                                cancelButtonAction: () {
+                                                                  Navigator.pop(context);
                                                                 },
                                                                 conformButtonAction:
                                                                     () {
-                                                                  if (formKey
-                                                                      .currentState!
-                                                                      .validate()) {
-                                                                    planCreationCubit
-                                                                        .musclesAndItsExercises[planCreationCubit
-                                                                            .musclesAndItsExercises
-                                                                            .keys
-                                                                            .toList()[index]]![i]
-                                                                        .reps = repsCont.text;
-                                                                    planCreationCubit
-                                                                        .musclesAndItsExercises[planCreationCubit
-                                                                            .musclesAndItsExercises
-                                                                            .keys
-                                                                            .toList()[index]]![i]
-                                                                        .sets = setsCont.text;
+                                                                  if (formKey.currentState!.validate()) {
+                                                                    planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].reps = repsCont.text;
+                                                                    planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i].sets = setsCont.text;
 
                                                                     planCreationCubit.addToPlanExercises(
-                                                                        widget
-                                                                            .day,
-                                                                        planCreationCubit.musclesAndItsExercises[planCreationCubit
-                                                                            .musclesAndItsExercises
-                                                                            .keys
-                                                                            .toList()[index]]![i]);
+                                                                        widget.day,
+                                                                        planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i]);
 
-                                                                    planCreationCubit
-                                                                        .newChangeCheckBoxValue(
-                                                                      value:
-                                                                          value!,
-                                                                      dayIndex:
-                                                                          widget
-                                                                              .day,
-                                                                      muscle: planCreationCubit
-                                                                          .musclesAndItsExercises
-                                                                          .keys
-                                                                          .toList()[index],
-                                                                      exerciseIndex:
-                                                                          i,
+                                                                    planCreationCubit.newChangeCheckBoxValue(
+                                                                      value: value!,
+                                                                      dayIndex: widget.day,
+                                                                      muscle: planCreationCubit.musclesAndItsExercises.keys.toList()[index],
+                                                                      exerciseIndex: i,
                                                                     );
 
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    repsCont.text =
-                                                                        '';
-                                                                    setsCont.text =
-                                                                        '';
+                                                                    Navigator.pop(context);
+                                                                    repsCont.text = '';
+                                                                    setsCont.text = '';
                                                                   }
                                                                 },
                                                               )),
@@ -211,20 +157,11 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                           } else {
                                             planCreationCubit.removeFromPlanExercises(
                                                 widget.day,
-                                                planCreationCubit
-                                                        .musclesAndItsExercises[
-                                                    planCreationCubit
-                                                        .musclesAndItsExercises
-                                                        .keys
-                                                        .toList()[index]]![i]);
-
-                                            planCreationCubit
-                                                .newChangeCheckBoxValue(
+                                                planCreationCubit.musclesAndItsExercises[planCreationCubit.musclesAndItsExercises.keys.toList()[index]]![i]);
+                                            planCreationCubit.newChangeCheckBoxValue(
                                               value: value!,
                                               dayIndex: widget.day,
-                                              muscle: planCreationCubit
-                                                  .musclesAndItsExercises.keys
-                                                  .toList()[index],
+                                              muscle: planCreationCubit.musclesAndItsExercises.keys.toList()[index],
                                               exerciseIndex: i,
                                             );
                                           }

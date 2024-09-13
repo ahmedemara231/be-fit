@@ -1,4 +1,4 @@
-import 'package:be_fit/model/error_handling.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/interface.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +9,6 @@ import '../../../../models/data_types/add_custom_exercise.dart';
 import '../../../../models/data_types/exercises.dart';
 import '../../../../models/widgets/modules/toast.dart';
 import '../../../local/cache_helper/shared_prefs.dart';
-import '../errors.dart';
 
 class FireStorageCall extends FireStorageService
 {
@@ -46,28 +45,6 @@ class FireStorageCall extends FireStorageService
       final error = ErrorHandler.getInstance().handleFireStoreError(context, e);
       return Result.error(error);
     }
-
-
-    // final connectivityResult = await Connectivity().checkConnectivity();
-    // switch(connectivityResult) {
-    //   case ConnectivityResult.wifi:
-    //   case ConnectivityResult.mobile:
-    //   case ConnectivityResult.ethernet:
-    //   case ConnectivityResult.bluetooth:
-    //   case ConnectivityResult.vpn:
-    //     try{
-    //      Reference reference = FirebaseStorage.instance
-    //           .ref(refName)
-    //           .child(childName);
-    //
-    //       return Result.success(reference);
-    //
-    //     } on FirebaseException catch (e) {
-    //       return Result.error(FirebaseStoreException(e.code));
-    //     }
-    //   default:
-    //     return Result.error(NetworkException('Please Check your connection and try again'));
-    // }
   }
 
   @override

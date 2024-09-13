@@ -1,23 +1,12 @@
-import 'package:be_fit/view/cardio/cardio_exercise.dart';
-import 'package:be_fit/view/onBoarding/page_view.dart';
-import 'package:be_fit/view/plans/create_plan/create_plan.dart';
 import 'package:be_fit/view/splash.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
-import 'package:be_fit/view_model/bottomNavBar/states.dart';
 import 'package:be_fit/view_model/cardio/cubit.dart';
-import 'package:be_fit/view_model/cardio/states.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
-import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:be_fit/view_model/login/cubit.dart';
-import 'package:be_fit/view_model/login/states.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
-import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:be_fit/view_model/plans/cubit.dart';
-import 'package:be_fit/view_model/plans/states.dart';
 import 'package:be_fit/view_model/setting/cubit.dart';
 import 'package:be_fit/view_model/setting/states.dart';
-import 'package:be_fit/view_model/sign_up/cubit.dart';
-import 'package:be_fit/view_model/sign_up/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -51,29 +40,34 @@ class _BeFitAppState extends State<BeFitApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BottomNavCubit(BottomNavState()),
+          create: (context) => SettingCubit(),
         ),
+
         BlocProvider(
-          create: (context) => ExercisesCubit(ExercisesInitialState()),
+          create: (context) => BottomNavCubit(),
         ),
+
         BlocProvider(
-          create: (context) => PlanCreationCubit(PlanCreationInitialState()),
+          create: (context) => ExercisesCubit(),
         ),
+
         BlocProvider(
-          create: (context) => PlansCubit(PlansInitialState()),
+          create: (context) => PlanCreationCubit(),
         ),
+
         BlocProvider(
-          create: (context) => LoginCubit(LoginInitialState()),
+          create: (context) => PlansCubit(),
         ),
+
         BlocProvider(
-          create: (context) => SignUpCubit(SignUpInitialState()),
+          create: (context) => LoginCubit(),
         ),
+
         BlocProvider(
-          create: (context) => SettingCubit(SettingInitialState()),
+          create: (context) => CardioCubit()
         ),
-        BlocProvider(
-          create: (context) => CardioCubit(CardioInitialState())
-        ),
+
+        // setting - sign up
       ],
       child: BlocBuilder<SettingCubit, SettingStates>(
         builder: (context, state) {
@@ -82,11 +76,12 @@ class _BeFitAppState extends State<BeFitApp> {
             minTextAdapt: true,
             splitScreenMode: true,
             child: MaterialApp(
+                title: 'Be Fit',
                 theme: CacheHelper.getInstance().shared.getBool('appTheme') == false
                         ? ThemeData.light()
                         : ThemeData.dark(),
                 debugShowCheckedModeBanner: false,
-                home:  Splash(),
+                home: const Splash(),
                 builder: EasyLoading.init(),
             ),
           );

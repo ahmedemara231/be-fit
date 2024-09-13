@@ -3,27 +3,24 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/implementation.dart';
 import 'package:be_fit/model/remote/firebase_service/fireStorage/interface.dart';
-import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/delete_custom_exercise.dart';
 import 'package:be_fit/models/data_types/permission_process_model.dart';
-import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/models/methods/check_permission.dart';
-import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../model/remote/firebase_service/fire_store/exercises/implementation.dart';
+import '../../model/remote/firebase_service/fire_store/interface.dart';
 import '../../models/data_types/add_custom_exercise.dart';
 import '../../models/data_types/exercises.dart';
-import '../../models/widgets/exercise_model.dart';
 import '../../models/widgets/modules/toast.dart';
 import '../plan_creation/cubit.dart';
 import '../plans/cubit.dart';
 
 class ExercisesCubit extends Cubit<ExercisesStates>
 {
-  ExercisesCubit(super.initialState);
+  ExercisesCubit() : super(ExercisesInitialState());
   static ExercisesCubit getInstance(context) => BlocProvider.of(context);
 
   int currentIndex = 1;
@@ -33,15 +30,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     emit(ChangeBody());
   }
 
-  List<ExerciseModel> musclesList = [
-    ExerciseModel(imageUrl: 'aps', text: 'Aps',numberOfExercises: 2),
-    ExerciseModel(imageUrl: 'back', text: 'Back',numberOfExercises: 7),
-    ExerciseModel(imageUrl: 'chest', text: 'chest',numberOfExercises: 9),
-    ExerciseModel(imageUrl: 'biceps', text: 'biceps',numberOfExercises: 5),
-    ExerciseModel(imageUrl: 'triceps', text: 'triceps',numberOfExercises: 5),
-    ExerciseModel(imageUrl: 'Legs', text: 'legs',numberOfExercises: 5),
-    ExerciseModel(imageUrl: 'shoulders', text: 'Shoulders',numberOfExercises: 5),
-  ];
   List<Exercises> exercises = [];
 
   Future<void> getExercises(BuildContext context,{
@@ -114,10 +102,16 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     );
   }
 
+
   void finishDeleting(context, {required Exercises exercise})
   {
     customExercises.remove(exercise);
     customExercisesList.remove(exercise);
+
+    PlanCreationCubit.getInstance(context).removeCustomExerciseFromMuscles(
+        muscleName: exercise.muscleName!,
+        exerciseId: exercise.id
+    );
 
     PlansCubit.getInstance(context).allPlans.forEach((key, value) {
       (value as Map).forEach((key, value) {
@@ -129,7 +123,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
 
   Future<void> setRecord({
     required ExercisesMain exerciseType,
-    // required SetRecModel model
   })async
   {
     emit(SetNewRecordLoadingState());
@@ -213,21 +206,6 @@ class ExercisesCubit extends Cubit<ExercisesStates>
     selectedExerciseImage = null;
   }
 
-  List<MyRecord> records = [];
- Future<void> pickRecordsToMakeChart(context,{required ExercisesMain exerciseType})async
- {
-   emit(MakeChartForExerciseLoadingState());
-   final result = await exerciseType.getRecords(context);
-   if(result.isSuccess())
-     {
-       records = result.getOrThrow();
-       emit(MakeChartForExerciseSuccessState());
-     }
-   else{
-     emit(PickCustomExerciseImageErrorState());
-   }
-
- }
   void removeSelectedImage()
   {
     selectedExerciseImage = null;

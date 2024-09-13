@@ -7,6 +7,7 @@ import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../../../models/widgets/modules/myText.dart';
 
 class BodyMuscles extends StatefulWidget {
@@ -42,13 +43,27 @@ class _BodyMusclesState extends State<BodyMuscles> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: MyText(
-                    text:
-                        'Hello, ${CacheHelper.getInstance().getData('userData')[1]}',
+                    text: 'Hello, ${CacheHelper.getInstance().getData('userData')[1]}',
                     fontSize: 18.sp,
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
+                //
+                // Showcase(
+                //   key: _bottomNavItem2,
+                //   description: 'This is the Settings',
+                //   child: Icon(Icons.settings),
+                // ),
+
+
+
+
+
+
+
+
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
@@ -82,26 +97,17 @@ class _BodyMusclesState extends State<BodyMuscles> {
                             onTap: () {
                               context.normalNewRoute(
                                 ExercisesForMuscle(
-                                  muscleName:
-                                      ExercisesCubit.getInstance(context)
-                                          .musclesList[index]
-                                          .text,
-                                  numberOfExercises:
-                                      ExercisesCubit.getInstance(context)
-                                          .musclesList[index]
-                                          .numberOfExercises,
+                                  muscleName: Constants.musclesList[index].text,
+                                  numberOfExercises: Constants.musclesList[index].numberOfExercises,
                                 ),
                               );
                             },
-                            child: ExercisesCubit.getInstance(context)
-                                .musclesList[index],
+                            child: Constants.musclesList[index],
                           ),
                       separatorBuilder: (context, index) => SizedBox(
                             height: 16.h,
                           ),
-                      itemCount: ExercisesCubit.getInstance(context)
-                          .musclesList
-                          .length),
+                      itemCount: Constants.musclesList.length),
                 ),
               ],
             ),

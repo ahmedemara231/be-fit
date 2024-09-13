@@ -88,17 +88,13 @@ class _CreatePlanState extends State<CreatePlan> {
                           child: Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                color: CacheHelper.getInstance()
-                                            .shared
-                                            .getBool('appTheme') ==
-                                        false
+                                color: CacheHelper.getInstance().shared.getBool('appTheme') == false
                                     ? Colors.grey[300]
                                     : Colors.grey[700]),
                             child: Padding(
                               padding:  EdgeInsets.all(8.0.r),
                               child: MyText(
-                                text:
-                                    '${PlanCreationCubit.getInstance(context).currentIndex}',
+                                text: '${PlanCreationCubit.getInstance(context).currentIndex}',
                                 fontSize: 16.sp,
                               ),
                             ),
@@ -116,14 +112,12 @@ class _CreatePlanState extends State<CreatePlan> {
                     ),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
-                        if (PlanCreationCubit.getInstance(context)
-                                .currentIndex ==
-                            0) {
-                          AnimatedSnackBar.material('Days must be more than 0',
-                                  type: AnimatedSnackBarType.info,
-                                  mobileSnackBarPosition:
-                                      MobileSnackBarPosition.bottom)
-                              .show(context);
+                        if (PlanCreationCubit.getInstance(context).currentIndex == 0) {
+                          AnimatedSnackBar.material(
+                              'Days must be more than 0',
+                              type: AnimatedSnackBarType.info,
+                              mobileSnackBarPosition: MobileSnackBarPosition.bottom
+                          ).show(context);
                         } else {
                           context.normalNewRoute(
                             ContinuePlanning(

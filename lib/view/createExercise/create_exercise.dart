@@ -53,9 +53,7 @@ class CreateExercise extends StatelessWidget {
                           color: Constants.appColor,
                         ),
                       ),
-                    if (ExercisesCubit.getInstance(context)
-                            .selectedExerciseImage ==
-                        null)
+                    if (ExercisesCubit.getInstance(context).selectedExerciseImage == null)
                       IconButton(
                         onPressed: () {
                           scaffoldKey.currentState?.showBottomSheet(
@@ -78,9 +76,7 @@ class CreateExercise extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (ExercisesCubit.getInstance(context)
-                            .selectedExerciseImage !=
-                        null)
+                    if (ExercisesCubit.getInstance(context).selectedExerciseImage != null)
                       Stack(
                         alignment: Alignment.topRight,
                         children: [
@@ -89,17 +85,12 @@ class CreateExercise extends StatelessWidget {
                             child: SizedBox(
                                 width: context.setWidth(1.2),
                                 height: context.setHeight(2.2),
-                                child: Image.file(
-                                    ExercisesCubit.getInstance(context)
-                                        .selectedExerciseImage!)),
+                                child: Image.file(ExercisesCubit.getInstance(context).selectedExerciseImage!)),
                           ),
                           InkWell(
-                            onTap: state is CreateCustomExerciseLoadingState
-                                ? null
-                                : () {
-                                    ExercisesCubit.getInstance(context)
-                                        .removeSelectedImage();
-                                  },
+                            onTap: state is CreateCustomExerciseLoadingState ? null : () {
+                                ExercisesCubit.getInstance(context).removeSelectedImage();
+                              },
                             child: CircleAvatar(
                               radius: 14,
                               backgroundColor: Constants.appColor,
@@ -150,22 +141,16 @@ class CreateExercise extends StatelessWidget {
                       ),
                     ),
                     AppButton(
-                      onPressed: state is CreateCustomExerciseLoadingState
-                          ? null
+                      onPressed: state is CreateCustomExerciseLoadingState ? null
                           : () async {
                               if (formKey.currentState!.validate()) {
-                                if (ExercisesCubit.getInstance(context)
-                                        .selectedExerciseImage ==
-                                    null) {
+                                if (ExercisesCubit.getInstance(context).selectedExerciseImage == null) {
                                   AnimatedSnackBar.material(
                                           'Please select exercise photo',
                                           type: AnimatedSnackBarType.warning,
-                                          mobileSnackBarPosition:
-                                              MobileSnackBarPosition.bottom)
-                                      .show(context);
+                                          mobileSnackBarPosition: MobileSnackBarPosition.bottom).show(context);
                                 } else {
-                                  await ExercisesCubit.getInstance(context)
-                                      .uploadPickedImageAndAddCustomExercise(
+                                  await ExercisesCubit.getInstance(context).uploadPickedImageAndAddCustomExercise(
                                     context: context,
                                     addCustomExerciseModel:
                                         AddCustomExerciseModel(

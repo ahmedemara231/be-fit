@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BottomNavCubit extends Cubit<BottomNavState>
 {
-  BottomNavCubit(super.initialState);
-  static BottomNavCubit getInstance(context) => BlocProvider.of(context);
+  BottomNavCubit() : super(BottomNavState());
+  factory BottomNavCubit.getInstance(context) => BlocProvider.of(context);
 
   int currentIndex = 0;
   Future<void> changeScreen(context,{

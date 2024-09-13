@@ -1,4 +1,5 @@
 import 'package:animation_list/animation_list.dart';
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
@@ -10,8 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
+import '../../model/remote/firebase_service/fire_store/interface.dart';
+import '../../models/data_types/dialog_inputs.dart';
+import '../../models/widgets/app_dialog.dart';
 import '../../models/widgets/cardio_records_model.dart';
 import '../../models/widgets/specific_exercise_app_bar.dart';
+import '../../models/widgets/specific_exercise_widgets/stream/delete_rec_factory_method.dart';
 
 class SpecificCardioExercise extends StatelessWidget {
 
@@ -71,34 +76,45 @@ class SpecificCardioExercise extends StatelessWidget {
                                               children: [
                                                 const Spacer(),
                                                 SizedBox(
-                                                  width: 100.w,
-                                                  child: Column(
-                                                    children: [
-                                                      MyText(
-                                                        text: snapshot
-                                                            .data?.docs[index]
-                                                            .data()['dateTime'],
-                                                        fontSize: 22.sp,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ],
+                                                  width: 70.w,
+                                                  child: MyText(
+                                                    text: snapshot.data?.docs[index].data()['dateTime'],
+                                                    fontSize: 16.sp,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                                 const Spacer(),
-                                                Column(
-                                                  children: [
-                                                    MyText(
-                                                      text:
-                                                      '${snapshot.data?.docs[index].data()['time']}',
-                                                      fontSize: 22.sp,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ],
+
+                                                MyText(
+                                                  text: snapshot.data!.docs[index].data()['time'].toString(),
+                                                  fontSize: 22.sp,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
                                                 const Spacer(),
+
+                                                InkWell(
+                                                    onTap: ()async
+                                                    {
+                                                      AppDialog.showAppDialog(
+                                                          context,
+                                                          inputs: DialogInputs(
+                                                            title: 'Are you sure to delete the record ?',
+                                                            confirmButtonText: 'Delete',
+                                                            onTapConfirm: ()async {
+                                                              final ExercisesMain type = DeleteExecuter().factory(
+                                                                  exercise: exercise,
+                                                                  recId: snapshot.data?.docs[index].id
+                                                              );
+
+                                                              await type.deleteRecord();
+                                                            },
+                                                          )
+                                                      );
+                                                    }, child: Icon(Icons.close, color: Constants.appColor,)
+                                                ),
+
                                               ],
-                                            ),
-                                          ),
+                                            )),
                                         )
                                     ),
                                   ),
@@ -114,11 +130,12 @@ class SpecificCardioExercise extends StatelessWidget {
                       return MyText(text: 'error');
                     }
                   else{
-                    return MyText(text: 'Loading...');
+                    return Align(
+                        alignment: Alignment.center,
+                        child: MyText(text: 'Loading...'));
                   }
                 },
             ),
-            const Spacer(),
             MyStopWatch(exercise: exercise)
           ],
         ),

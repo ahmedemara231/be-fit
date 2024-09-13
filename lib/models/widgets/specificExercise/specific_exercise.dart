@@ -1,12 +1,11 @@
 import 'package:be_fit/extensions/container_decoration.dart';
-import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
 import 'package:be_fit/models/data_types/controllers.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/data_types/setRecord_model.dart';
 import 'package:be_fit/models/widgets/specific_exercise_app_bar.dart';
 import 'package:be_fit/models/widgets/specific_exercise_widgets/carousel_slider.dart';
-import 'package:be_fit/models/widgets/specific_exercise_widgets/stream.dart';
+import 'package:be_fit/models/widgets/specific_exercise_widgets/stream/set_rec_factory_method.dart';
+import 'package:be_fit/models/widgets/specific_exercise_widgets/stream/stream.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import '../../../../view_model/exercises/states.dart';
 import '../../../constants/constants.dart';
+import '../../../model/remote/firebase_service/fire_store/exercises/implementation.dart';
+import '../../../model/remote/firebase_service/fire_store/interface.dart';
 import '../app_button.dart';
 import '../specific_exercise_widgets/docs_video.dart';
 import '../specific_exercise_widgets/otp_tff.dart';
@@ -42,8 +43,6 @@ class _SpecificExerciseState extends State<SpecificExercise> {
   late PageController controller;
 
   late Controllers controllers;
-
-  late ExercisesMain exercisesType;
 
   @override
   void initState() {
@@ -109,13 +108,17 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                           SizedBox(height: 20.h),
                           Form(
                             key: formKey,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                OtpTff(
-                                    controller: weightCont, hintText: 'weight'),
-                                OtpTff(controller: repsCont, hintText: 'reps'),
-                              ],
+                            child: FittedBox(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0.r),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    OtpTff(controller: weightCont, hintText: 'weight'),
+                                    OtpTff(controller: repsCont, hintText: 'reps'),
+                                  ],
+                                ),
+                              ),
                             ),
                           )
                         ],
@@ -141,14 +144,10 @@ class _SpecificExerciseState extends State<SpecificExercise> {
                                     controllers: controllers
                                 );
 
-                                print(model.muscleName);
-                                print(model.exerciseId);
-
-                                if (widget.exercise.isCustom) {
-                                  exercisesType = CustomExercisesImpl(model: model);
-                                } else {
-                                  exercisesType = DefaultExercisesImpl(model: model);
-                                }
+                                final ExercisesMain exercisesType = SetRecExecuter().factory(
+                                    exercise: widget.exercise,
+                                    model: model
+                                );
 
                                 await ExercisesCubit.getInstance(context).setRecord(
                                         exerciseType: exercisesType,

@@ -5,20 +5,20 @@ extension Routes on BuildContext
   normalNewRoute(Widget newRoute)
   {
     Navigator.push(
-        this,
+      this,
       MaterialPageRoute(
-            builder: (context) => newRoute,
-        ),
+        builder: (context) => newRoute,
+      ),
     );
   }
 
   removeOldRoute(Widget newRoute)
   {
     Navigator.pushAndRemoveUntil(
-        this,
-        MaterialPageRoute(
-          builder: (context) => newRoute,
-        ), (route) => false,
+      this,
+      MaterialPageRoute(
+        builder: (context) => newRoute,
+      ), (route) => false,
     );
   }
 

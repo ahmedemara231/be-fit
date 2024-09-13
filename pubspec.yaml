@@ -36,7 +36,8 @@ dependencies:
   flutter_popup: ^3.3.0
   bottom_navy_bar: ^6.0.0
   easy_stepper: ^0.8.5+1
-  stop_watch_timer: ^3.2.1
+  stop_watch_timer: ^3.1.1
+  showcaseview: ^3.0.0
 
   #responsive ui
   flutter_screenutil: ^5.9.3
@@ -59,8 +60,8 @@ dependencies:
   equatable: ^2.0.5
   in_app_review: ^2.0.9
   in_app_update: ^4.2.3
+  device_preview: ^1.1.0
   audioplayers: ^5.2.1
-
 
   #Firebase
   firebase_core: ^2.16.0
@@ -96,6 +97,7 @@ flutter:
   uses-material-design: true
   assets:
     - images/
+    - assets/audio/
 #    - icons/
 
 

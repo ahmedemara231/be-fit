@@ -1,15 +1,15 @@
 import 'package:be_fit/model/local/cache_helper/shared_prefs.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
-import 'package:be_fit/view/statistics/statistics.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:multiple_result/src/result.dart';
-import '../../../../models/data_types/pick_precord.dart';
-import '../../../../models/data_types/setRecord_model.dart';
-import '../../../../view_model/plan_creation/cubit.dart';
-import '../../../error_handling.dart';
+import '../../../../../models/data_types/delete_record.dart';
+import '../../../../../models/data_types/pick_precord.dart';
+import '../../../../../models/data_types/setRecord_model.dart';
+import '../../../../../view/statistics/statistics.dart';
+import '../../error_handling.dart';
+import '../interface.dart';
 
 class DefaultExercisesImpl extends ExercisesMain
 {
@@ -42,11 +42,12 @@ class DefaultExercisesImpl extends ExercisesMain
     }
   }
 
-
   GetRecord? getRecord;
   SetRecModel? model;
-  DefaultExercisesImpl({this.getRecord, this.model});
+  DeleteRecForExercise? deleteRecModel;
+  DefaultExercisesImpl({this.getRecord, this.model, this.deleteRecModel});
 
+  // one factory
   @override
   Future<Result<List<MyRecord>, FirebaseError>> getRecords(BuildContext context)async {
     List<MyRecord> records = [];
@@ -75,6 +76,7 @@ class DefaultExercisesImpl extends ExercisesMain
     }
   }
 
+  // no one factory
   @override
   Future<void> setRecords() async{
     await FirebaseFirestore.instance
@@ -82,6 +84,18 @@ class DefaultExercisesImpl extends ExercisesMain
         .doc(model!.exerciseId)
         .collection('records')
         .add(model!.toJson());
+  }
+
+  // one factory
+  @override
+  Future<void> deleteRecord()async
+  {
+    await FirebaseFirestore.instance
+        .collection(deleteRecModel!.muscleName)
+        .doc(deleteRecModel?.exerciseId)
+        .collection('records')
+        .doc(deleteRecModel!.recId)
+        .delete();
   }
 }
 
@@ -100,10 +114,6 @@ class CustomExercisesImpl extends ExercisesMain
         .doc(exercise.id)
         .delete()
         .then((value) {
-      PlanCreationCubit.getInstance(context).removeCustomExerciseFromMuscles(
-          muscleName: muscleName,
-          exerciseId: exercise.id
-      );
 
       userDoc.collection('plans').get().then((value) {
         for (var element in value.docs) {
@@ -149,7 +159,8 @@ class CustomExercisesImpl extends ExercisesMain
 
   GetRecordForCustom? getRecordForCustom;
   SetRecModel? model;
-  CustomExercisesImpl({this.getRecordForCustom, this.model});
+  DeleteRecForCustomExercise? deleteRecModel;
+  CustomExercisesImpl({this.getRecordForCustom, this.model, this.deleteRecModel});
 
   @override
   Future<Result<List<MyRecord>, FirebaseError>> getRecords(BuildContext context)async {
@@ -190,4 +201,17 @@ class CustomExercisesImpl extends ExercisesMain
         .collection('records')
         .add(model!.toJson());
   }
+
+  @override
+  Future<void> deleteRecord()async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(CacheHelper.getInstance().shared.getStringList('userData')![0])
+        .collection('customExercises')
+        .doc(deleteRecModel!.exerciseId)
+        .collection('records')
+        .doc(deleteRecModel!.recId)
+        .delete();
+  }
+
 }

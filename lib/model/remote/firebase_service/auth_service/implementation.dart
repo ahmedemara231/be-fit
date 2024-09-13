@@ -1,22 +1,25 @@
+import 'dart:async';
+
 import 'package:be_fit/extensions/routes.dart';
-import 'package:be_fit/model/error_handling.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:multiple_result/src/result.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../../../../constants/constants.dart';
 import '../../../../models/widgets/modules/toast.dart';
 import '../../../../view/BottomNavBar/bottom_nav_bar.dart';
 import '../../../local/cache_helper/shared_prefs.dart';
-import '../errors.dart';
+import 'errors.dart';
 import 'interface.dart';
 
 class FirebaseRegisterCall extends AuthService
 {
   @override
-  Future<Result<UserCredential, FirebaseError2>> callFirebaseAuth({
+  Future<Result<UserCredential, SecondFirebaseError>> callFirebaseAuth({
     required String email,
     required String password,
   })async{
@@ -52,7 +55,13 @@ class FirebaseRegisterCall extends AuthService
 
     await cacheData(userCredential).whenComplete(()
     {
-      context.removeOldRoute(const BottomNavBar());
+      context.removeOldRoute(
+          ShowCaseWidget(
+            builder: (context) {
+              return const BottomNavBar();
+              },
+          )
+      );
 
       MyToast.showToast(
         context,
@@ -76,6 +85,18 @@ class FirebaseRegisterCall extends AuthService
       key: 'isBeginner',
       value: true
     );
+
+    await CacheHelper.getInstance().setData(
+        key: 'showCaseDone',
+        value: false
+    );
+
+    Timer(const Duration(seconds: 10), ()async {
+      await CacheHelper.getInstance().setData(
+          key: 'showCaseDone',
+          value: true
+      );
+    });
   }
 
   Future<void> storeDataOnFirebase(UserCredential userCredential)async
@@ -94,7 +115,7 @@ class FirebaseRegisterCall extends AuthService
 class FirebaseLoginCall extends AuthService
 {
   @override
-  Future<Result<UserCredential, FirebaseError2>> callFirebaseAuth({
+  Future<Result<UserCredential, SecondFirebaseError>> callFirebaseAuth({
     required String email,
     required String password,
   })async{

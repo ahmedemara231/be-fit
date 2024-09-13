@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/routes.dart';
@@ -7,18 +8,17 @@ import 'package:be_fit/view_model/login/states.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:multiple_result/multiple_result.dart';
 import '../../model/local/cache_helper/shared_prefs.dart';
 import '../../model/remote/firebase_service/auth_service/implementation.dart';
 import '../../model/remote/firebase_service/auth_service/interface.dart';
-import '../../model/remote/firebase_service/errors.dart';
+import '../../model/remote/firebase_service/auth_service/errors.dart';
 import '../../view/BottomNavBar/bottom_nav_bar.dart';
 
 class LoginCubit extends Cubit<LoginStates>
 {
-  LoginCubit(super.initialState);
-  static LoginCubit getInstance(context) => BlocProvider.of(context);
+  LoginCubit() : super(LoginInitialState());
+  factory LoginCubit.getInstance(context) => BlocProvider.of(context);
 
   AuthService loginService = FirebaseLoginCall();
 
@@ -28,7 +28,7 @@ class LoginCubit extends Cubit<LoginStates>
   })async
   {
     emit(LoginLoadingState());
-    Result<UserCredential,FirebaseError2> result = await loginService.callFirebaseAuth(
+    Result<UserCredential,SecondFirebaseError> result = await loginService.callFirebaseAuth(
         email: user.email,
         password: user.password
     );
@@ -57,7 +57,6 @@ class LoginCubit extends Cubit<LoginStates>
   void setPasswordVisibility()
   {
     isVisible = !isVisible;
-    print(isVisible);
     emit(SetPasswordVisibility());
   }
 
@@ -98,6 +97,12 @@ class LoginCubit extends Cubit<LoginStates>
         key: 'isBeginner',
         value: true
     );
+
+    await CacheHelper.getInstance().setData(
+        key: 'showCaseDone',
+        value: true
+    );
+
     await CacheHelper.getInstance().setData(
       key: 'userData',
       value: <String>[

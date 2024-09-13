@@ -46,7 +46,9 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
     return BlocBuilder<PlanCreationCubit, PlanCreationStates>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(
+            title: MyText(text: widget.name,fontSize: 20.sp,),
+          ),
           body: Padding(
             padding:  EdgeInsets.all(5.0.r),
             child: Column(
@@ -110,23 +112,23 @@ class _ContinuePlanningState extends State<ContinuePlanning> {
                                         fontSize: 18.sp,
                                         fontWeight: FontWeight.w500,
                                       ),
-                                      trailing: Column(
-                                        children: [
-                                          FittedBox(
-                                            child: MyText(
+                                      trailing: FittedBox(
+                                        child: Column(
+                                          children: [
+                                            MyText(
                                               text: 'Sets X Reps',
                                               fontWeight: FontWeight.w500,
                                               fontSize: 16.sp,
                                             ),
-                                          ),
-                                          SizedBox(height: 7.h),
-                                          MyText(
-                                            text:
-                                                '${planCreationCubit.lists['list${index + 1}']![i].sets} X ${planCreationCubit.lists['list${index + 1}']![i].reps}',
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16.sp,
-                                          ),
-                                        ],
+                                            SizedBox(height: 7.h),
+                                            MyText(
+                                              text:
+                                                  '${planCreationCubit.lists['list${index + 1}']![i].sets} X ${planCreationCubit.lists['list${index + 1}']![i].reps}',
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

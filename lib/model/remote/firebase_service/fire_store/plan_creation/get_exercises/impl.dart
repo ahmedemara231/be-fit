@@ -1,7 +1,7 @@
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../../../models/data_types/muscles_and_checkbox.dart';
-import '../../../../local/cache_helper/shared_prefs.dart';
+import '../../../../../../models/data_types/muscles_and_checkbox.dart';
+import '../../../../../local/cache_helper/shared_prefs.dart';
 import '../../interface.dart';
 
 class GetChestExercises extends GetUserExercises

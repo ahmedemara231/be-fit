@@ -9,31 +9,28 @@ import 'package:be_fit/view_model/plan_creation/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../../model/remote/repositories/plan_creation/create_plan/implementation.dart';
-import '../../model/remote/repositories/plan_creation/get_exercises/get_exercises_to_make_plan.dart';
+import '../../model/remote/firebase_service/fire_store/plan_creation/create_plan/implementation.dart';
+import '../../model/remote/firebase_service/fire_store/plan_creation/get_exercises/get_exercises_to_make_plan.dart';
 import '../../models/data_types/exercises.dart';
 import '../../models/data_types/make_plan.dart';
 
 class PlanCreationCubit extends Cubit<PlanCreationStates>
 {
-  PlanCreationCubit(super.initialState);
+  PlanCreationCubit() : super(PlanCreationInitialState());
 
-  static PlanCreationCubit getInstance(context) => BlocProvider.of(context);
+  factory PlanCreationCubit.getInstance(context) => BlocProvider.of(context);
 
   Map<String, List<Exercises>> musclesAndItsExercises = {};
   Map<String, List<bool>> muscleExercisesCheckBox = {};
 
   void addCustomExerciseToMuscles(CustomExercises exercise)
   {
-    if(musclesAndItsExercises[exercise.muscleName] == null)
+    if(musclesAndItsExercises[exercise.muscleName] != null)
       {
-        return;
+        musclesAndItsExercises[exercise.muscleName]!.add(exercise);
+        muscleExercisesCheckBox[exercise.muscleName]!.add(false);
+        emit(AddCustomExerciseToMuscles());
       }
-    else{
-      musclesAndItsExercises[exercise.muscleName]!.add(exercise);
-      muscleExercisesCheckBox[exercise.muscleName]!.add(false);
-      emit(AddCustomExerciseToMuscles());
-    }
   }
 
   void removeCustomExerciseFromMuscles({
@@ -41,11 +38,8 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
     required String exerciseId,
   })
   {
-    if(musclesAndItsExercises[muscleName] == null)
+    if(musclesAndItsExercises[muscleName] != null)
     {
-      return;
-    }
-    else{
       musclesAndItsExercises[muscleName]!.removeWhere((element) => element.id == exerciseId);
       muscleExercisesCheckBox[muscleName]!.remove(false);
       emit(RemoveCustomExerciseFromMuscles());
@@ -108,6 +102,14 @@ class PlanCreationCubit extends Cubit<PlanCreationStates>
   }
 
 
+  Future<void> handleAsking(BuildContext context)async
+  {
+    if (CacheHelper.getInstance().getData('isBeginner') as bool) {
+      Timer(const Duration(milliseconds: 250), ()async {
+        await askUserIfHeIsBeginner(context);
+      });
+    }
+  }
   Future<void> askUserIfHeIsBeginner(BuildContext context)async
   {
     await AppDialog.showAppDialog(

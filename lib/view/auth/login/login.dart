@@ -97,7 +97,9 @@ class _LoginState extends State<Login> {
                     padding:  EdgeInsets.all(5.0.r),
                     child: TextButton(
                         onPressed: () {
-                          context.normalNewRoute(const ForgotPassword());
+                          context.normalNewRoute(
+                              const ForgotPassword()
+                          );
                         },
                         child: MyText(
                           text: 'forget password?',
@@ -122,6 +124,7 @@ class _LoginState extends State<Login> {
                           },
                     buttonText: 'Login',
                     secondText: 'Don\'t have an account?',
+                    thirdText: 'Sign up',
                     textButtonClick: () =>
                         context.normalNewRoute(const SignUp()),
                   ),

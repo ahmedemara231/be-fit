@@ -1,13 +1,13 @@
-import 'package:be_fit/model/error_handling.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multiple_result/multiple_result.dart';
 import '../../../../models/widgets/modules/toast.dart';
-import '../errors.dart';
+import 'errors.dart';
 
 abstract class AuthService
 {
-  Future<Result<UserCredential,FirebaseError2>> callFirebaseAuth({
+  Future<Result<UserCredential,SecondFirebaseError>> callFirebaseAuth({
     required String email,
     required String password,
   });

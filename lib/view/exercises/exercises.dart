@@ -1,5 +1,4 @@
 import 'package:be_fit/constants/constants.dart';
-import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
 import 'package:be_fit/models/widgets/default_custom_buttons.dart';
 import 'package:be_fit/models/widgets/search_bar.dart';
 import 'package:be_fit/view/exercises/types/custom_exercises.dart';
@@ -10,8 +9,8 @@ import 'package:be_fit/view_model/exercises/cubit.dart';
 import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../model/remote/repositories/interface.dart';
-import '../../models/widgets/modules/textFormField.dart';
+import '../../model/remote/firebase_service/fire_store/exercises/implementation.dart';
+import '../../model/remote/firebase_service/fire_store/interface.dart';
 
 class ExercisesForMuscle extends StatefulWidget {
   final String muscleName;
@@ -34,11 +33,11 @@ class _ExercisesForMuscleState extends State<ExercisesForMuscle> {
   @override
   void initState() {
     ExercisesCubit.getInstance(context).currentIndex = 1;
-    for(ExercisesMain exerciseType in exerciseTypes)
+    for(ExercisesMain type in exerciseTypes)
       {
         ExercisesCubit.getInstance(context).getExercises(
             context,
-            exercisesType: exerciseType,
+            exercisesType: type,
             muscleName: widget.muscleName
         );
       }

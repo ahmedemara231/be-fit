@@ -1,13 +1,13 @@
-import 'package:be_fit/model/error_handling.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:be_fit/models/data_types/move_custom_to_plan.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:multiple_result/multiple_result.dart';
-import '../../../../../models/data_types/make_plan.dart';
-import '../../../../../models/widgets/modules/toast.dart';
-import '../../../../local/cache_helper/shared_prefs.dart';
+import '../../../../../../models/data_types/make_plan.dart';
+import '../../../../../../models/widgets/modules/toast.dart';
+import '../../../../../local/cache_helper/shared_prefs.dart';
+import '../../interface.dart';
 
 class PlanCreationRepo extends PlanCreationRepositories
 {

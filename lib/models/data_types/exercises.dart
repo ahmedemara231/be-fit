@@ -79,8 +79,8 @@ class CustomExercises extends Exercises
       id: element.id,
       isCustom: element.data()['isCustom'],
       muscleName: element.data()['muscle'],
-      reps: element.data()['reps'],
-      sets: element.data()['sets'],
+      reps: element.data()['reps']??'10',
+      sets: element.data()['sets']??'3',
     );
   }
 

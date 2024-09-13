@@ -1,5 +1,4 @@
 import 'package:be_fit/extensions/routes.dart';
-import 'package:be_fit/model/remote/repositories/exercises/implementation.dart';
 import 'package:be_fit/models/widgets/exercises_card.dart';
 import 'package:flutter/material.dart';
 import 'package:be_fit/constants/constants.dart';
@@ -7,6 +6,7 @@ import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:be_fit/models/widgets/specificExercise/specific_exercise.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:be_fit/view_model/exercises/cubit.dart';
+import '../../../model/remote/firebase_service/fire_store/exercises/implementation.dart';
 
 class DefaultExercises extends StatelessWidget {
   final String muscleName;

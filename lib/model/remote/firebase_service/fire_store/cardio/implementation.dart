@@ -1,11 +1,13 @@
-import 'package:be_fit/model/error_handling.dart';
-import 'package:be_fit/model/remote/repositories/interface.dart';
+import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:be_fit/models/data_types/cardio_records.dart';
 import 'package:be_fit/models/data_types/exercises.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multiple_result/multiple_result.dart';
-import '../../../../models/data_types/set_cardio_rec_model.dart';
+import '../../../../../models/data_types/delete_record.dart';
+import '../../../../../models/data_types/set_cardio_rec_model.dart';
+import '../../../../local/cache_helper/shared_prefs.dart';
+import '../interface.dart';
 
 class CardioRepo extends ExercisesMain
 {
@@ -31,10 +33,12 @@ class CardioRepo extends ExercisesMain
 
   String? exerciseId;
   SetCardioRecModel? model;
+  DeleteRecForExercise? deleteRecModel;
 
   CardioRepo({
     this.exerciseId,
     this.model,
+    this.deleteRecModel
   });
 
   @override
@@ -46,6 +50,7 @@ class CardioRepo extends ExercisesMain
           .collection('cardio')
           .doc(exerciseId)
           .collection('records')
+          .where('uId', isEqualTo: CacheHelper.getInstance().shared.getStringList('userData')?[0])
           .get();
       for (var element in records.docs) {
         exerciseRecords.add(CardioRecords.fromJson(element));
@@ -65,6 +70,17 @@ class CardioRepo extends ExercisesMain
         .doc(model!.exerciseId)
         .collection('records')
         .add(model!.toJson());
+  }
+
+  @override
+  Future<void> deleteRecord()async
+  {
+    await FirebaseFirestore.instance
+        .collection(deleteRecModel!.muscleName)
+        .doc(deleteRecModel?.exerciseId)
+        .collection('records')
+        .doc(deleteRecModel!.recId)
+        .delete();
   }
 
   @override
