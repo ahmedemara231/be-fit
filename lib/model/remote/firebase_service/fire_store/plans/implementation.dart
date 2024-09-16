@@ -4,6 +4,7 @@ import 'package:be_fit/models/data_types/get_plans_results.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:multiple_result/multiple_result.dart';
+import '../../../../../models/data_types/add_to_existing_plan.dart';
 import '../../../../../models/data_types/delete_exercise_from_plan.dart';
 import '../../../../../models/data_types/exercises.dart';
 import '../../../../local/cache_helper/shared_prefs.dart';
@@ -17,6 +18,9 @@ class PlansRepo
   Future<Result<GetPlansResults,FirebaseError>> getAllPlans(BuildContext context)async
   {
     try{
+      allPlans = {};
+      allPlansIds = [];
+
       CollectionReference plansCollection = FirebaseFirestore.instance
           .collection('users')
           .doc(CacheHelper.getInstance().getData('userData')[0])
@@ -111,5 +115,28 @@ class PlansRepo
       final error = ErrorHandler().handleFireStoreError(context, e);
       return Result.error(error);
     }
+  }
+
+  Future<void> addExerciseToExistingPlan(BuildContext context,{
+    required AddExerciseToExistingPlanModel model
+})async
+  {
+    try{
+      for(var exercise in model.exercises)
+        {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(CacheHelper.getInstance().shared.getStringList('userData')?[0])
+              .collection('plans')
+              .doc(model.planId)
+              .collection(model.list)
+              .doc(exercise.id)
+              .set(exercise.toJson());
+        }
+    }on FirebaseException catch(e)
+    {
+      ErrorHandler.getInstance().handleFireStoreError(context, e);
+    }
+
   }
 }

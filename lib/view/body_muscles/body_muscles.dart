@@ -7,7 +7,6 @@ import 'package:be_fit/view_model/exercises/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:showcaseview/showcaseview.dart';
 import '../../../models/widgets/modules/myText.dart';
 
 class BodyMuscles extends StatefulWidget {
@@ -33,6 +32,7 @@ class _BodyMusclesState extends State<BodyMuscles> {
 
   @override
   Widget build(BuildContext context) {
+    print(CacheHelper.getInstance().shared.getStringList('userData')?[0]);
     return BlocBuilder<ExercisesCubit, ExercisesStates>(
       builder: (context, state) => Scaffold(
         body: SafeArea(
@@ -49,20 +49,6 @@ class _BodyMusclesState extends State<BodyMuscles> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
-                //
-                // Showcase(
-                //   key: _bottomNavItem2,
-                //   description: 'This is the Settings',
-                //   child: Icon(Icons.settings),
-                // ),
-
-
-
-
-
-
-
 
                 Align(
                   alignment: Alignment.centerLeft,

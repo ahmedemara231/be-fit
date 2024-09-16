@@ -5,6 +5,7 @@ import 'package:be_fit/extensions/mediaQuery.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plan_creation/states.dart';
+import 'package:be_fit/view_model/plans/cubit.dart';
 import '../../../../models/widgets/modules/myText.dart';
 import 'package:be_fit/view/plans/create_plan/continue_planning.dart';
 import 'package:be_fit/models/widgets/number_selector.dart';
@@ -119,13 +120,21 @@ class _CreatePlanState extends State<CreatePlan> {
                               mobileSnackBarPosition: MobileSnackBarPosition.bottom
                           ).show(context);
                         } else {
-                          context.normalNewRoute(
-                            ContinuePlanning(
-                              name: workOutNameCont.text,
-                              daysNumber: PlanCreationCubit.getInstance(context)
-                                  .currentIndex,
-                            ),
-                          );
+                          if(PlansCubit.getInstance(context).allPlans.keys.toList().contains(workOutNameCont.text))
+                          {
+                            AnimatedSnackBar.material(
+                                'This Plan name already exists',
+                                type: AnimatedSnackBarType.info,
+                                mobileSnackBarPosition: MobileSnackBarPosition.bottom
+                            ).show(context);
+                          }else{
+                            context.normalNewRoute(
+                              ContinuePlanning(
+                                name: workOutNameCont.text,
+                                daysNumber: PlanCreationCubit.getInstance(context).currentIndex,
+                              ),
+                            );
+                          }
                         }
                       }
                     },

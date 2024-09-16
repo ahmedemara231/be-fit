@@ -23,3 +23,5 @@ class MakeChartForExerciseInPlanSuccessState extends PlansStates{}
 class MakeChartForExerciseInPlanErrorState extends PlansStates{}
 
 class ChangeDotSuccessState extends PlansStates{}
+
+class AddExerciseToExistingPlan extends PlansStates{}

@@ -20,15 +20,10 @@ class PlanDetails extends StatefulWidget {
 
 class _PlanDetailsState extends State<PlanDetails> {
   late PlansCubit plansCubit;
-  late Map<String, List<Exercises>> currentPlan;
-  late List<String> planLists;
 
   @override
   void initState() {
     plansCubit = PlansCubit.getInstance(context);
-    currentPlan = plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
-        as Map<String, List<Exercises>>;
-    planLists = currentPlan.keys.toList();
     super.initState();
   }
 
@@ -47,8 +42,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                       children: [
                         InkWell(
                           onTap: () {
-                            plansCubit.roadToPlanExercise['listIndex'] =
-                                index + 1;
+                            plansCubit.roadToPlanExercise['listIndex'] = index + 1;
                             context.normalNewRoute(
                               const DayExercises(),
                             );
@@ -57,13 +51,12 @@ class _PlanDetailsState extends State<PlanDetails> {
                             color: Constants.appColor,
                             child: ListTile(
                               title: MyText(
-                                text: planLists[index],
+                                text: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']] as Map).keys.toList()[index],
                                 fontSize: 20.sp,
                                 fontWeight: FontWeight.w500,
                               ),
                               trailing: MyText(
-                                text:
-                                    '${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']?.length} exercises',
+                                text: '${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']?.length} exercises',
                                 fontSize: 20.sp,
                               ),
                             ),
@@ -73,44 +66,36 @@ class _PlanDetailsState extends State<PlanDetails> {
                           padding: EdgeInsets.all(8.0.r),
                           child: Column(
                             children: List.generate(
-                              (plansCubit.allPlans[plansCubit
-                                          .roadToPlanExercise['planName']]
-                                      ['list${index + 1}'] as List<Exercises>)
-                                  .length,
+                              (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                                      ['list${index + 1}'] as List<Exercises>).length,
                               (i) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      border: context.decoration()),
+                                      border: context.decoration()
+                                  ),
                                   child: Padding(
                                     padding: EdgeInsets.all(10.0.r),
                                     child: ListTile(
                                       leading: Padding(
                                         padding: EdgeInsets.all(10.0.r),
                                         child: Container(
-                                            clipBehavior:
-                                                Clip.antiAliasWithSaveLayer,
+                                            clipBehavior: Clip.antiAliasWithSaveLayer,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
+                                              borderRadius: BorderRadius.circular(5),
                                             ),
                                             width: 80.w,
                                             height: 80.h,
                                             child: MyNetworkImage(
-                                              url: plansCubit
-                                                  .allPlans[plansCubit
-                                                              .roadToPlanExercise[
-                                                          'planName']]
-                                                      ['list${index + 1}']![i]
-                                                  .image[0] as String,
+                                              url: plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                                                      ['list${index + 1}']![i].image[0] as String,
                                             )),
                                       ),
                                       subtitle: MyText(
-                                          text:
-                                              '${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']![i].name}',
+                                          text: '${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']![i].name}',
                                           fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500),
+                                          fontWeight: FontWeight.w500
+                                      ),
                                       trailing: Column(
                                         children: [
                                           FittedBox(
@@ -120,10 +105,10 @@ class _PlanDetailsState extends State<PlanDetails> {
                                           ),
                                           SizedBox(height: 7.h),
                                           MyText(
-                                              text:
-                                                  '${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']![i].sets} X ${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']![i].reps}',
+                                              text: '${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']![i].sets} X ${plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${index + 1}']![i].reps}',
                                               fontSize: 16.sp,
-                                              fontWeight: FontWeight.w500),
+                                              fontWeight: FontWeight.w500
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -138,7 +123,8 @@ class _PlanDetailsState extends State<PlanDetails> {
                 separatorBuilder: (context, index) => SizedBox(
                       height: 16.h,
                     ),
-                itemCount: planLists.length),
+                itemCount: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']] as Map).keys.toList().length
+            ),
           ),
         );
       },

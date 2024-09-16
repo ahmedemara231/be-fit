@@ -3,6 +3,8 @@ import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
 import 'package:be_fit/models/widgets/modules/image.dart';
 import 'package:be_fit/models/widgets/specificExercise/specific_exercise.dart';
+import 'package:be_fit/view/plans/create_plan/choose_exercises/choose_exercises.dart';
+import 'package:be_fit/view_model/plan_creation/cubit.dart';
 import 'package:be_fit/view_model/plans/states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,8 +35,18 @@ class _DayExercisesState extends State<DayExercises> {
     return Scaffold(
       appBar: AppBar(
         title: MyText(
-            text:
-                'Day ${plansCubit.roadToPlanExercise['listIndex']} exercises'),
+            text: 'Day ${plansCubit.roadToPlanExercise['listIndex']} exercises'
+        ),
+        actions: [
+          IconButton(
+              onPressed: ()
+              {
+                PlanCreationCubit.getInstance(context).finishGettingMuscles(context, day: 1);
+                context.normalNewRoute(const ChooseExercises(day: 1, isExist: true));
+              },
+              icon: const Icon(Icons.add_box_outlined)
+          )
+        ],
       ),
       body: Padding(
         padding:  EdgeInsets.all(8.0.r),
@@ -42,13 +54,13 @@ class _DayExercisesState extends State<DayExercises> {
             builder: (context, state) => ListView.separated(
                   itemBuilder: (context, index) => InkWell(
                     onTap: () {
-                      Exercises exercise = plansCubit.allPlans[
-                                  plansCubit.roadToPlanExercise['planName']][
-                              'list${plansCubit.roadToPlanExercise['listIndex']}']
-                          [index];
-                      context.normalNewRoute(SpecificExercise(
-                        exercise: exercise,
-                      ));
+                      Exercises exercise = plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                      ['list${plansCubit.roadToPlanExercise['listIndex']}'][index];
+                      context.normalNewRoute(
+                          SpecificExercise(
+                            exercise: exercise,
+                          )
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(border: context.decoration()),
@@ -60,19 +72,12 @@ class _DayExercisesState extends State<DayExercises> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5)),
                               child: MyNetworkImage(
-                                url: (plansCubit.allPlans[plansCubit
-                                                .roadToPlanExercise['planName']]
-                                            [
-                                            'list${plansCubit.roadToPlanExercise['listIndex']}']
-                                        [index] as Exercises)
-                                    .image[0],
+                                url: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                                ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).image[0],
                               )),
                           title: MyText(
-                            text: (plansCubit.allPlans[plansCubit
-                                            .roadToPlanExercise['planName']][
-                                        'list${plansCubit.roadToPlanExercise['listIndex']}']
-                                    [index] as Exercises)
-                                .name,
+                            text: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                            ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name,
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w500,
                           ),
@@ -85,7 +90,7 @@ class _DayExercisesState extends State<DayExercises> {
                                     await AppDialog.showAppDialog(context,
                                         inputs: DialogInputs(
                                             title:
-                                                'Are you sure to delete ${(plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name} From ${plansCubit.roadToPlanExercise['planName']} ?',
+                                            'Are you sure to delete ${(plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name} From ${plansCubit.roadToPlanExercise['planName']} ?',
                                             confirmButtonText: 'Delete',
                                             onTapConfirm: () async =>
                                                 await plansCubit
@@ -93,24 +98,11 @@ class _DayExercisesState extends State<DayExercises> {
                                                   context,
                                                   inputs: DeleteFromPlanModel(
                                                     exerciseIndex: index,
-                                                    planName: plansCubit
-                                                            .roadToPlanExercise[
-                                                        'planName'],
-                                                    planDoc: plansCubit
-                                                            .roadToPlanExercise[
-                                                        'planDoc'],
-                                                    listIndex: plansCubit
-                                                            .roadToPlanExercise[
-                                                        'listIndex'],
-                                                    exerciseDoc: (plansCubit
-                                                                    .allPlans[plansCubit
-                                                                        .roadToPlanExercise[
-                                                                    'planName']]
-                                                                [
-                                                                'list${plansCubit.roadToPlanExercise['listIndex']}']
-                                                            [
-                                                            index] as Exercises)
-                                                        .id,
+                                                    planName: plansCubit.roadToPlanExercise['planName'],
+                                                    planDoc: plansCubit.roadToPlanExercise['planDoc'],
+                                                    listIndex: plansCubit.roadToPlanExercise['listIndex'],
+                                                    exerciseDoc: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                                                    ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).id,
                                                   ),
                                                 )));
                                   },
@@ -126,14 +118,10 @@ class _DayExercisesState extends State<DayExercises> {
                   separatorBuilder: (context, index) => SizedBox(
                     height: 16.h,
                   ),
-                  itemCount: (plansCubit.allPlans[
-                                  plansCubit.roadToPlanExercise['planName']][
-                              'list${plansCubit.roadToPlanExercise['listIndex']}']
-                          as List<Exercises>)
-                      .length,
+                  itemCount: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                  ['list${plansCubit.roadToPlanExercise['listIndex']}'] as List<Exercises>).length,
                 ),
-            buildWhen: (previous, current) =>
-                current is DeleteExerciseFromPlanSuccessState),
+            buildWhen: (previous, current) => current is DeleteExerciseFromPlanSuccessState),
       ),
     );
   }

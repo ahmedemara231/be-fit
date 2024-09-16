@@ -56,8 +56,9 @@ class _PlansState extends State<Plans> {
               } else if (state is GetAllPlansErrorState) {
                 return ErrorBuilder(
                     msg: 'Try Again Later',
-                    onPressed: () async => await PlansCubit.getInstance(context)
-                        .getAllPlans(context));
+                    onPressed: () async =>
+                    await PlansCubit.getInstance(context).getAllPlans(context)
+                );
               } else {
                 return Padding(
                   padding:  EdgeInsets.all(12.0.r),
@@ -76,17 +77,12 @@ class _PlansState extends State<Plans> {
                                 itemBuilder: (context, index) => InkWell(
                                   onTap: () {
                                     Map<String, dynamic> road = {
-                                      'planName':
-                                          PlansCubit.getInstance(context)
-                                              .allPlans
-                                              .keys
-                                              .toList()[index],
-                                      'planDoc': PlansCubit.getInstance(context)
-                                          .allPlansIds[index],
+                                      'planName': PlansCubit.getInstance(context).allPlans.keys.toList()[index],
+                                      'planDoc': PlansCubit.getInstance(context).allPlansIds[index],
                                     };
 
-                                    PlansCubit.getInstance(context)
-                                        .roadToPlanExercise = road;
+                                    print(PlansCubit.getInstance(context).allPlansIds);
+                                    PlansCubit.getInstance(context).roadToPlanExercise = road;
                                     context.normalNewRoute(const PlanDetails());
                                   },
                                   child: Container(
@@ -94,10 +90,7 @@ class _PlansState extends State<Plans> {
                                         border: context.decoration()),
                                     child: ListTile(
                                       title: MyText(
-                                        text: PlansCubit.getInstance(context)
-                                            .allPlans
-                                            .keys
-                                            .toList()[index],
+                                        text: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
                                         fontSize: 20.sp,
                                         fontWeight: FontWeight.w500,
                                       ),
