@@ -268,18 +268,15 @@ class SettingCubit extends Cubit<SettingStates>
     Navigator.pop(context);
     context.removeOldRoute(const Login());
     BottomNavCubit.getInstance(context).returnToFirst();
-    // PlansCubit.getInstance(context).allPlans.clear();
-    // ExercisesCubit.getInstance(context).customExercises.clear();
+    PlansCubit.getInstance(context).allPlans.clear();
+    ExercisesCubit.getInstance(context).customExercises.clear();
   }
 }
 
 Future<void> checkForUpdate() async {
   InAppUpdate.checkForUpdate().then((info)async {
-    print(1);
-    print(info.flexibleUpdateAllowed);
     if(info.flexibleUpdateAllowed)
       {
-        print(info.flexibleUpdateAllowed);
         // await InAppUpdate.completeFlexibleUpdate();
       }
   });

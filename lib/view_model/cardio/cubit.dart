@@ -7,6 +7,7 @@ import '../../model/remote/firebase_service/fire_store/cardio/implementation.dar
 import '../../model/remote/firebase_service/fire_store/interface.dart';
 
 class CardioCubit extends Cubit<CardioStates> {
+
   CardioCubit() : super(CardioInitialState());
   factory CardioCubit.getInstance(context) => BlocProvider.of(context);
 
@@ -59,7 +60,6 @@ class CardioCubit extends Cubit<CardioStates> {
     if(result.isSuccess())
       {
         records = result.getOrThrow();
-        print(records);
         emit(GetCardioRecordsSuccess());
       }
     else{

@@ -24,7 +24,7 @@ class MyStopWatch extends StatefulWidget {
 class MyStopWatchState extends State<MyStopWatch> {
   late StopWatchTimer _stopWatchTimer;
   final _isHours = true;
-  List<String> actions = ['Start' , 'Stop', 'Reset'];
+  List<String> actions = ['Start', 'Stop', 'Reset'];
 
   @override
   void initState() {

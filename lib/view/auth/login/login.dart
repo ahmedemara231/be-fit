@@ -149,10 +149,7 @@ class _LoginState extends State<Login> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: CacheHelper.getInstance()
-                                    .shared
-                                    .getBool('appTheme') ==
-                                false
+                        color: CacheHelper.getInstance().shared.getBool('appTheme') == false
                             ? Colors.grey[200]
                             : HexColor('#333333'),
                       ),

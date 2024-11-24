@@ -103,23 +103,13 @@ class _PlansState extends State<Plans> {
                                                 await AppDialog.showAppDialog(
                                                     context,
                                                     inputs: DialogInputs(
-                                                      title:
-                                                          'Are you sure to delete ${PlansCubit.getInstance(context).allPlans.keys.toList()[index]} ?',
-                                                      confirmButtonText:
-                                                          'Delete',
+                                                      title: 'Are you sure to delete ${PlansCubit.getInstance(context).allPlans.keys.toList()[index]} ?',
+                                                      confirmButtonText: 'Delete',
                                                       onTapConfirm: () async =>
-                                                          await PlansCubit
-                                                                  .getInstance(
-                                                                      context)
-                                                              .deletePlan(
-                                                        context,
-                                                        index: index,
-                                                        planName: PlansCubit
-                                                                .getInstance(
-                                                                    context)
-                                                            .allPlans
-                                                            .keys
-                                                            .toList()[index],
+                                                          await PlansCubit.getInstance(context).deletePlan(
+                                                            context,
+                                                            index: index,
+                                                            planName: PlansCubit.getInstance(context).allPlans.keys.toList()[index],
                                                       ),
                                                     ));
                                               },
@@ -134,9 +124,7 @@ class _PlansState extends State<Plans> {
                                 separatorBuilder: (context, index) => SizedBox(
                                   height: 16.h,
                                 ),
-                                itemCount: PlansCubit.getInstance(context)
-                                    .allPlans
-                                    .length,
+                                itemCount: PlansCubit.getInstance(context).allPlans.length,
                               ),
                       ),
                       Padding(

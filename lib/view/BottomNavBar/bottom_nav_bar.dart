@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/model/local/cache_helper/shared_prefs.dart';
 import 'package:be_fit/models/widgets/modules/myText.dart';
@@ -76,6 +78,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return BlocBuilder<BottomNavCubit,BottomNavState>(
       builder: (context, state)
       {
+        log(CacheHelper.getInstance().getData('showCaseDone').toString());
         return Scaffold(
           bottomNavigationBar: Container(
             clipBehavior: Clip.antiAliasWithSaveLayer,

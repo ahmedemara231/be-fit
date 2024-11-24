@@ -1,3 +1,5 @@
+import 'package:be_fit/tests/bloc.dart';
+import 'package:be_fit/tests/ui.dart';
 import 'package:be_fit/view/splash.dart';
 import 'package:be_fit/view_model/bottomNavBar/cubit.dart';
 import 'package:be_fit/view_model/cardio/cubit.dart';
@@ -39,34 +41,13 @@ class _BeFitAppState extends State<BeFitApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => SettingCubit(),
-        ),
-
-        BlocProvider(
-          create: (context) => BottomNavCubit(),
-        ),
-
-        BlocProvider(
-          create: (context) => ExercisesCubit(),
-        ),
-
-        BlocProvider(
-          create: (context) => PlanCreationCubit(),
-        ),
-
-        BlocProvider(
-          create: (context) => PlansCubit(),
-        ),
-
-        BlocProvider(
-          create: (context) => LoginCubit(),
-        ),
-
-        BlocProvider(
-          create: (context) => CardioCubit()
-        ),
-
+        BlocProvider(create: (context) => SettingCubit()),
+        BlocProvider(create: (context) => BottomNavCubit(),),
+        BlocProvider(create: (context) => ExercisesCubit(),),
+        BlocProvider(create: (context) => PlanCreationCubit(),),
+        BlocProvider(create: (context) => PlansCubit(),),
+        BlocProvider(create: (context) => LoginCubit(),),
+        BlocProvider(create: (context) => CardioCubit()),
         // setting - sign up
       ],
       child: BlocBuilder<SettingCubit, SettingStates>(
@@ -81,7 +62,9 @@ class _BeFitAppState extends State<BeFitApp> {
                         ? ThemeData.light()
                         : ThemeData.dark(),
                 debugShowCheckedModeBanner: false,
-                home: const Splash(),
+                home: BlocProvider(
+                    create: (context) => TestBloc(),
+                    child: const Test1()),
                 builder: EasyLoading.init(),
             ),
           );

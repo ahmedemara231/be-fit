@@ -194,7 +194,6 @@ class _ChooseExercisesState extends State<ChooseExercises> {
                                           exercises: planCreationCubit.lists['list1']!,
                                         );
                                       }
-
                                     },
                                     child: Padding(
                                       padding: EdgeInsets.symmetric(

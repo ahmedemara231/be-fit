@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/view/BottomNavBar/bottom_nav_bar.dart';
 import 'package:be_fit/view/auth/login/login.dart';

@@ -1,7 +1,9 @@
+import 'package:be_fit/constants/constants.dart';
 import 'package:be_fit/extensions/container_decoration.dart';
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/models/data_types/delete_exercise_from_plan.dart';
 import 'package:be_fit/models/widgets/modules/image.dart';
+import 'package:be_fit/models/widgets/modules/toast.dart';
 import 'package:be_fit/models/widgets/specificExercise/specific_exercise.dart';
 import 'package:be_fit/view/plans/create_plan/choose_exercises/choose_exercises.dart';
 import 'package:be_fit/view_model/plan_creation/cubit.dart';
@@ -32,96 +34,112 @@ class _DayExercisesState extends State<DayExercises> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: MyText(
-            text: 'Day ${plansCubit.roadToPlanExercise['listIndex']} exercises'
+    return BlocConsumer<PlansCubit, PlansStates>(
+      listener: (context, state) {
+        if(state is AddExerciseToExistingPlan){
+          MyToast.showToast(
+              context,
+              msg: 'Added!',
+              color: Constants.appColor
+          );
+        }
+      },
+      builder: (context, state) => Scaffold(
+        appBar: AppBar(
+          title: MyText(
+              text: 'Day ${plansCubit.roadToPlanExercise['listIndex']} exercises'
+          ),
+          actions: [
+            IconButton(
+                onPressed: ()
+                {
+                  PlanCreationCubit.getInstance(context).finishGettingMuscles(context, day: 1);
+                  context.normalNewRoute(const ChooseExercises(day: 1, isExist: true));
+                },
+                icon: Container(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Image.asset('images/add_exercises_btn.png'))
+            )
+          ],
         ),
-        actions: [
-          IconButton(
-              onPressed: ()
-              {
-                PlanCreationCubit.getInstance(context).finishGettingMuscles(context, day: 1);
-                context.normalNewRoute(const ChooseExercises(day: 1, isExist: true));
-              },
-              icon: const Icon(Icons.add_box_outlined)
-          )
-        ],
-      ),
-      body: Padding(
-        padding:  EdgeInsets.all(8.0.r),
-        child: BlocBuilder<PlansCubit, PlansStates>(
-            builder: (context, state) => ListView.separated(
-                  itemBuilder: (context, index) => InkWell(
-                    onTap: () {
-                      Exercises exercise = plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
-                      ['list${plansCubit.roadToPlanExercise['listIndex']}'][index];
-                      context.normalNewRoute(
-                          SpecificExercise(
-                            exercise: exercise,
-                          )
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(border: context.decoration()),
-                      child: Padding(
-                        padding:  EdgeInsets.all(12.0.r),
-                        child: ListTile(
-                          leading: Container(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: MyNetworkImage(
-                                url: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
-                                ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).image[0],
-                              )),
-                          title: MyText(
-                            text: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
-                            ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          trailing: PopupMenuButton(
-                            itemBuilder: (context) {
-                              return [
-                                PopupMenuItem(
-                                  child: MyText(text: 'Delete'),
-                                  onTap: () async {
-                                    await AppDialog.showAppDialog(context,
-                                        inputs: DialogInputs(
-                                            title:
-                                            'Are you sure to delete ${(plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name} From ${plansCubit.roadToPlanExercise['planName']} ?',
-                                            confirmButtonText: 'Delete',
-                                            onTapConfirm: () async =>
-                                                await plansCubit
-                                                    .deleteExerciseFromPlan(
-                                                  context,
-                                                  inputs: DeleteFromPlanModel(
-                                                    exerciseIndex: index,
-                                                    planName: plansCubit.roadToPlanExercise['planName'],
-                                                    planDoc: plansCubit.roadToPlanExercise['planDoc'],
-                                                    listIndex: plansCubit.roadToPlanExercise['listIndex'],
-                                                    exerciseDoc: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
-                                                    ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).id,
-                                                  ),
-                                                )));
-                                  },
-                                )
-                              ];
-                            },
-                            icon: const Icon(Icons.menu),
-                          ),
+        body: Padding(
+          padding:  EdgeInsets.all(8.0.r),
+          child: BlocBuilder<PlansCubit, PlansStates>(
+              builder: (context, state) => ListView.separated(
+                itemBuilder: (context, index) => InkWell(
+                  onTap: () {
+                    Exercises exercise = plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                    ['list${plansCubit.roadToPlanExercise['listIndex']}'][index];
+                    context.normalNewRoute(
+                        SpecificExercise(
+                          exercise: exercise,
+                        )
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(border: context.decoration()),
+                    child: Padding(
+                      padding:  EdgeInsets.all(12.0.r),
+                      child: ListTile(
+                        leading: Container(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5)),
+                            child: MyNetworkImage(
+                              url: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                              ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).image[0],
+                            )),
+                        title: MyText(
+                          text: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                          ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        trailing: PopupMenuButton(
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                child: MyText(text: 'Delete'),
+                                onTap: () async {
+                                  await AppDialog.showAppDialog(context,
+                                      inputs: DialogInputs(
+                                          title:
+                                          'Are you sure to delete ${(plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).name} From ${plansCubit.roadToPlanExercise['planName']} ?',
+                                          confirmButtonText: 'Delete',
+                                          onTapConfirm: () async =>
+                                          await plansCubit
+                                              .deleteExerciseFromPlan(
+                                            context,
+                                            inputs: DeleteFromPlanModel(
+                                              exerciseIndex: index,
+                                              planName: plansCubit.roadToPlanExercise['planName'],
+                                              planDoc: plansCubit.roadToPlanExercise['planDoc'],
+                                              listIndex: plansCubit.roadToPlanExercise['listIndex'],
+                                              exerciseDoc: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                                              ['list${plansCubit.roadToPlanExercise['listIndex']}'][index] as Exercises).id,
+                                            ),
+                                          )));
+                                },
+                              )
+                            ];
+                          },
+                          icon: const Icon(Icons.menu),
                         ),
                       ),
                     ),
                   ),
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 16.h,
-                  ),
-                  itemCount: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
-                  ['list${plansCubit.roadToPlanExercise['listIndex']}'] as List<Exercises>).length,
                 ),
-            buildWhen: (previous, current) => current is DeleteExerciseFromPlanSuccessState),
+                separatorBuilder: (context, index) => SizedBox(
+                  height: 16.h,
+                ),
+                itemCount: (plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
+                ['list${plansCubit.roadToPlanExercise['listIndex']}'] as List<Exercises>).length,
+              ),
+              buildWhen: (previous, current) => current is DeleteExerciseFromPlanSuccessState),
+        ),
       ),
     );
   }

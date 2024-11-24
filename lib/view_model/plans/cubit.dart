@@ -94,7 +94,7 @@ class PlansCubit extends Cubit<PlansStates>
     );
 
     await repo.addExerciseToExistingPlan(context, model: model);
-    emit(AddExerciseToExistingPlan());
+    emit(AddExerciseToExistingPlanToDatabase());
   }
 
   void addExercisesToExistingPlan(BuildContext context, {

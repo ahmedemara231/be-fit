@@ -84,8 +84,8 @@ class _PlanDetailsState extends State<PlanDetails> {
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(5),
                                             ),
-                                            width: 80.w,
-                                            height: 80.h,
+                                            width: 60.w,
+                                            height: 60.h,
                                             child: MyNetworkImage(
                                               url: plansCubit.allPlans[plansCubit.roadToPlanExercise['planName']]
                                                       ['list${index + 1}']![i].image[0] as String,

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:be_fit/extensions/routes.dart';
 import 'package:be_fit/model/remote/firebase_service/error_handling.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
