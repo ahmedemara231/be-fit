@@ -44,6 +44,7 @@ dependencies:
 
   #state management
   multiple_result: ^5.1.0
+  get_it: ^7.6.7
   flutter_bloc: ^8.1.3
 
   #cacheing
